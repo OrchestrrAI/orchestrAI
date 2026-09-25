@@ -1,17 +1,11 @@
 # OrchestrAI
 
-A local, terminal-oriented multi-agent orchestration prototype for the
-software development lifecycle. An Orchestrator discovers four specialized
-agents (DevOps, Testing, Documentation, Security), routes tasks
-to them using deterministic keyword matching — falling back to a small
-local semantic classifier (not an LLM, no network call) only when no
-keyword matches — turns multi-step requests into an adaptively-dispatched
-plan via its own LangGraph supervisor, and enforces human approval for
-write-capable operations. Browser dashboards are the primary interface; an
-interactive terminal UI (`apps/tui`) and a process supervisor (`bun run
-orchestrai`, also shippable as one standalone binary) run alongside them.
-The Orchestrator requires a configured LLM provider key to start at all
-(`specs/051` — it is the only `plan-task` planner; see below).
+A local, terminal-oriented multi-agent orchestration system for the software
+development lifecycle. A central Orchestrator coordinates six specialized
+agents (DevOps, Testing, Documentation, Security, Code Review, and Coder),
+decides what to run with an LLM capability router and an adaptive LangGraph
+supervisor, and keeps a human approval gate in front of every write or
+command.
 
 <p align="center">
   <img src="https://img.shields.io/badge/maintained-yes-brightgreen" alt="Maintained">
@@ -41,57 +35,242 @@ The Orchestrator requires a configured LLM provider key to start at all
   <img src="https://img.shields.io/badge/platforms-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey" alt="Platforms">
 </p>
 
-See [CLAUDE.md](CLAUDE.md) for the full architecture, current source of
-truth for implemented behavior, and the operating guide this project's
-own coding agents follow.
+## Overview
+
+The Orchestrator talks to its agents over two protocols:
+
+- **A2A-style HTTP tasks**: a small, project-specific agent-to-agent task
+  protocol between the Orchestrator and each agent (not the full official A2A
+  specification).
+- **MCP (Model Context Protocol)**: five agents use a shared MCP server for
+  git, Docker, project analysis, file access, and approved command execution.
+
+You work with it through a browser dashboard or an interactive OpenTUI
+terminal client. Both support chat, task submission, approve/reject/skip,
+filtering, an audit view, and live activity streamed as AG-UI events.
+
+**Key characteristics**
+
+- **LLM-routed, human-governed.** One capability-router call picks a skill.
+  Multi-step requests go to a LangGraph supervisor that chooses one step at a
+  time from what earlier steps actually returned. The model never sees or
+  controls the approval gate.
+- **Approval as a safety boundary.** Every write or command shows a preview
+  with the exact content or command. The approval is bound to a random
+  `actionId` and a content fingerprint, and the target is re-checked just
+  before the write.
+- **Fail-closed by default.** With no provider key, or a harness that fails,
+  the task fails with a named error rather than silently falling back.
+- **Local first.** Everything runs on your machine, and the MCP server
+  accepts loopback connections only. The optional SQLite store is one local
+  file under the target project's `.orchestrai/` folder, and OrchestrAI's own
+  file tools cannot read that folder.
+- **Spec-driven.** Every behavioral or architectural change goes through a
+  numbered, reviewed spec before implementation (142 checkpoints so far).
+- **One binary.** The whole runtime compiles to a single executable, also
+  published on npm as `orchestrai`.
+
+This is a hackathon-grade prototype. It prefers a reliable end-to-end demo and
+clear safety boundaries over production infrastructure: there is no
+authentication, authorization, or production sandbox.
+
+## Technology stack
+
+| Layer | Technology |
+|---|---|
+| Runtime and language | Bun 1.x, TypeScript 7 (`tsc --noEmit` type checking) |
+| HTTP services | Hono 4 |
+| LLM orchestration | LangGraph 1.4 and LangChain, with Anthropic, OpenAI, and Google providers |
+| Agent protocol | Custom A2A-style HTTP task protocol |
+| Tool protocol | MCP SDK 1.30 (Streamable HTTP for agents, stdio for external clients) |
+| Validation | Zod |
+| Live events | AG-UI (`@ag-ui/core` 0.0.58) over Server-Sent Events, runtime-validated |
+| Persistence | SQLite via `bun:sqlite` (optional, fail-open, no extra dependency) |
+| Terminal UI | OpenTUI 0.5 with React 19 |
+| Browser UI | Server-rendered HTML with inline JavaScript, no build step |
+| Distribution | `bun build --compile` binary, npm packages, Docker Compose |
+
+## Architecture
+
+```text
+User (browser dashboard or OpenTUI terminal client)
+        |
+        | HTTP + SSE (AG-UI events)
+        v
+Orchestrator :3000  (capability router, LangGraph supervisor, approvals, chat)
+        |
+        | A2A-style HTTP tasks
+        |
+        +--> DevOps Agent         :3002
+        +--> Testing Agent        :3003
+        +--> Documentation Agent  :3004
+        +--> Security Agent       :3005   (direct, read-only file access)
+        +--> Code Review Agent    :3007
+        +--> Coder Agent          :3008
+
+DevOps, Testing, Documentation, Code Review, Coder
+        |
+        | MCP Streamable HTTP (loopback only)
+        v
+MCP HTTP Server :3006  (git, Docker, analysis, file and command tools)
+
+DevOps Agent ---- optional direct A2A pre-check ----> Security Agent
+
+External MCP clients ---- MCP over stdio ----> MCP stdio server (same tools)
+```
+
+**Request flow**
+
+1. A request arrives at `POST /tasks` or, for chat, `POST /ask`.
+2. One LLM capability-router call picks a skill from the live set of online
+   agents. It can also return `plan-task` or say the request is unsupported.
+3. A single-skill request goes straight to the agent that owns that skill.
+   A `plan-task` request goes to the adaptive supervisor, which dispatches
+   child tasks one decision at a time. Independent steps can run in parallel.
+4. The receiving agent runs exactly the skill it was sent and uses MCP tools
+   to do the work. A write or command pauses in `input-required` with a
+   preview until a human approves, rejects, or skips it.
+5. The Orchestrator streams run, step, tool-call, and approval events to the
+   dashboard and TUI over `GET /events`.
+
+**Agents and skills**
+
+| Port | Service | Skills |
+|---|---|---|
+| 3000 | Orchestrator | Routing, `plan-task`, `suggest-agents`, approvals, chat (`/ask`), dashboard, AG-UI event stream |
+| 3002 | DevOps | `dockerize`, `create-ci`, `create-gitignore`, `create-compose`, `analyze-project`, `git-status`, `git-diff`, `docker-status`, `build-image`, `verify-deployment`, `commit-changes`, `run-command` |
+| 3003 | Testing | `run-tests`, `check-coverage`, `write-tests` |
+| 3004 | Documentation | `generate-readme`, `document-api` |
+| 3005 | Security | `scan-secrets`, `check-gitignore-coverage`, `audit-dependencies` (read-only) |
+| 3006 | MCP HTTP server | 12 tools shared by the agents |
+| 3007 | Code Review | `review-diff` (read-only) |
+| 3008 | Coder | `edit-file`, `edit-files`, `edit-and-verify` |
+
+Every port can be changed with `ORCHESTRAI_<SERVICE>_PORT`. Each agent also
+serves `GET /.well-known/agent.json`, `GET /healthz`, task endpoints, and its
+own dashboard.
+
+## Codebase at a glance
+
+Measured on 2026-09-25. Line counts are physical lines (as `wc -l` counts
+them) and exclude dependencies and build output.
+
+| Metric | Value |
+|---|---:|
+| Services | 8 (Orchestrator, 6 agents, MCP server) |
+| MCP tools | 12 |
+| Production TypeScript | ~35,000 lines in 79 files |
+| Test TypeScript | ~22,000 lines in 94 files |
+| Test cases / `expect` assertions | ~1,590 / ~3,200 |
+| Latest full test run | 1,631 pass, 2 skipped (need a Docker daemon), 0 fail |
+| Type errors (`tsc --noEmit`) | 0 |
+| Spec checkpoints | 142 (137 implemented) |
+
+Where the production code lives:
+
+| Area | Approx. lines |
+|---|---:|
+| Six agents and their LLM harnesses (`packages/agents/`) | ~10,000 |
+| Terminal UI and init forms (`apps/tui/`, `apps/supervisor/`) | ~6,000 |
+| Orchestrator backend (`apps/orchestrator/`) | ~5,000 |
+| Shared library: protocol, router, LLM factory, audit, MCP client (`packages/shared/`) | ~4,500 |
+| Browser dashboards (HTML embedded in each service) | ~2,700 |
+| Process supervisor and init CLI (`apps/supervisor/`) | ~2,600 |
+| SQLite persistence (`store.ts`, `pending-action-store.ts`) | ~900 |
+| MCP server and tools (`packages/mcp/`) | ~900 |
+
+Tests are mostly unit tests of pure logic (routing validation, dispatch
+outcomes, approval previews, diffs, fingerprints, parsers, TUI layout) plus
+in-process integration tests (HTTP endpoints, real SQLite, temp projects, MCP
+client and server). A dedicated adversarial set covers path traversal,
+symlink escape, secret-file denial, duplicate task IDs, and stale approval
+IDs. CI also starts a real two-service stack on every push, and the release
+workflow smoke-tests the compiled binary on Windows, Linux, and macOS.
+
+## Project structure
+
+```text
+apps/
+  orchestrator/        # Orchestrator API, routing, LangGraph supervisor, dashboard
+  tui/                 # Interactive OpenTUI terminal client
+  supervisor/          # `bun run orchestrai` process supervisor and guided init
+packages/
+  agents/
+    devops/            # Docker, CI, git, project analysis, approved commands
+    testing/           # Test runs, coverage, test authoring
+    documentation/     # README and API documentation
+    security/          # Read-only secret, config, and dependency scans
+    code-review/       # Read-only diff review
+    coder/             # Approval-gated source edits and edit-verify loop
+  mcp/                 # Shared MCP tools with separate stdio and HTTP entrypoints
+  shared/              # Protocol types, router, LLM factory, store, audit, AG-UI
+scripts/               # Binary build, spec catalog, demo rehearsal and preflight
+specs/                 # Numbered spec checkpoints, schema, and generated catalog
+context/               # Project notes, dated worklog, demo app and runbook
+npm-package/           # Thin `orchestrai` npm launcher
+.github/workflows/     # CI (typecheck, tests, live smoke) and binary builds
+Dockerfile, docker-compose.yml
+```
+
+## Getting started
+
+You need [Bun](https://bun.sh) 1.x and an API key for an LLM provider
+(Anthropic, OpenAI, or Google). Routing, planning, and every file-writing
+skill need a key. Without one, requests fail with a named error.
+
+**Run without cloning** (downloads the prebuilt binary for your platform):
+
+```text
+bunx orchestrai --project /path/to/your/project
+npx orchestrai --project /path/to/your/project
+```
+
+**Run from source:**
+
+```text
+bun install
+bun run orchestrai init      # guided setup: provider keys, agents, models, ports
+bun run orchestrai           # start MCP, agents, and the Orchestrator, then open the TUI
+```
+
+Then open the dashboard at <http://localhost:3000/dashboard>, or use the
+terminal UI that `bun run orchestrai` opens. `init` saves its settings to
+`<project>/.orchestrai/config.env`, stores the API key there in plaintext, and
+adds `.orchestrai/` to `.gitignore`.
+
+**Common commands**
+
+| Command | What it does |
+|---|---|
+| `bun run orchestrai` | Supervisor: port checks, ordered startup, prefixed logs, clean shutdown |
+| `bun run orchestrai --only <service,...>` | Start only some services |
+| `bun run dev` | Start MCP HTTP, all six agents, and the Orchestrator in parallel (no supervision) |
+| `bun run tui` | Terminal client on its own |
+| `bun run <service>` | One service: `orchestrator`, `devops-agent`, `testing-agent`, `documentation-agent`, `security-agent`, `code-review-agent`, `coder-agent`, `mcp:http`, or `mcp` (stdio) |
+| `bun test` | Full test suite |
+| `bun run typecheck` | `tsc --noEmit` |
+| `bun run specs:catalog` / `bun run specs:check` | Regenerate / validate the spec catalog |
+| `bun run build` | Compile everything into `dist/bin/orchestrai` (run `bun run fetch-model` first) |
+| `bun run demo:preflight` / `bun run demo:ag-ui` | Demo readiness report / scripted AG-UI rehearsal |
+
+## Development workflow
 
 Feature and architecture changes follow Spec-Driven Development. Read the
 [spec governance guide and catalog](specs/README.md) before adding or changing
-a specification; lifecycle status and verification confidence are tracked
-separately and checked in CI. Each feature has an immutable numbered directory
-containing mandatory `spec.md` and optional, non-empty `plan.md` and
-`verification.md` artifacts when the work needs them.
+a specification. Each change gets an immutable numbered directory under
+`specs/` with a mandatory `spec.md` and, when needed, `plan.md` and
+`verification.md`. Lifecycle status and verification confidence are tracked
+separately and checked in CI. `AGENTS.md` holds the rules coding agents
+follow in this repo, and `context/worklog.md` is the dated handoff log.
 
-## Project Structure
+Before merging, run `bun test`, `bun run typecheck`, and `bun run specs:check`.
 
-```
-apps/               # Orchestrator, terminal UI, process supervisor
-context/            # Handoff notes, history, dated worklog
-models/             # Fetched by `bun run fetch-model`, gitignored — not in the repo
-packages/
-  agents/           # DevOps, Testing, Documentation, Security
-  mcp/              # Shared MCP tools + stdio/HTTP entrypoints
-  shared/           # Shared protocol types, MCP client, path resolution, intent classifier
-scripts/            # bun run build's standalone-binary compiler, fetch-model
-specs/              # Numbered SDD checkpoints + schema/templates/catalog
-.github/workflows/  # CI (typecheck+test) and cross-platform binary builds
-Dockerfile, docker-compose.yml
-CLAUDE.md           # Operating guide and architecture — read this first
-```
+## Feature notes
 
-## Getting Started
-
-```
-bun install
-bun run mcp  # bun run packages/mcp/stdio.ts
-bun run mcp:http  # bun run packages/mcp/http.ts
-bun run devops-agent  # bun run packages/agents/devops/index.ts
-bun run testing-agent  # bun run packages/agents/testing/index.ts
-bun run documentation-agent  # bun run packages/agents/documentation/index.ts
-bun run security-agent  # bun run packages/agents/security/index.ts
-bun run orchestrator  # bun run apps/orchestrator/index.ts
-bun run tui  # bun run apps/tui/index.tsx — interactive: approve/reject, submit tasks, filter by agent
-bun run test  # bun test
-bun run dev  # bun run --parallel mcp:http devops-agent testing-agent documentation-agent security-agent orchestrator
-bun run dev:with-mcp  # bun run --parallel mcp:http devops-agent testing-agent documentation-agent security-agent orchestrator
-bun run dev:with-all-mcp  # bun run --parallel mcp mcp:http devops-agent testing-agent documentation-agent security-agent orchestrator
-bun run orchestrai  # bun run apps/supervisor/index.ts — see below
-bun run fetch-model  # bun run scripts/fetch-model.ts — see below
-bun run build  # bun run scripts/build-binary.ts — see below
-bun run typecheck  # tsc --noEmit
-bun run specs:catalog  # validate specs and regenerate Markdown/JSON catalogs
-bun run specs:check  # read-only metadata/catalog validation used by CI
-```
+The sections below were written as each feature landed. Some describe earlier
+behavior (for example four agents, keyword routing, or opt-in harnesses). The
+[spec catalog](specs/README.md) is the authoritative record of what is
+implemented now.
 
 ### `bun run orchestrai` — the supervisor
 
@@ -172,8 +351,8 @@ own opt-in LangGraph harness (`specs/026`/`029`/`030`). `specs/051-
 planning-retirement-and-required-key/spec.md` (implemented, 2026-09-05)
 deleted that agent entirely: `suggest-agents` is now served directly by
 the Orchestrator, and `plan-task` has exactly one path — the adaptive
-supervisor below, unconditionally. See `CLAUDE.md`'s "Planning Agent
-(retired)" section for the full historical record and what replaced it.
+supervisor below, unconditionally. See `specs/051` for the full historical
+record and what replaced it.
 
 ### Adaptive supervisor — the Orchestrator's only `plan-task` planner
 
@@ -202,7 +381,7 @@ a genuine failure currently look identical by status alone). Adaptation is
 only ever permitted after a **read-only** skill's failure — a write-capable
 skill's unexplained failure ends the run and asks a human to check the
 target's real state, rather than guessing nothing happened. Two independent
-bounds stop a runaway run. See `CLAUDE.md`'s own section on this for the
+bounds stop a runaway run. See `specs/028`'s `verification.md` for the
 full detail, including a real event-correlation bug found and fixed during
 its own verification.
 
