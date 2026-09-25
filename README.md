@@ -9,7 +9,7 @@ command.
 
 <p align="center">
   <img src="https://img.shields.io/badge/maintained-yes-brightgreen" alt="Maintained">
-  <a href="https://github.com/OrchestrrAI/orchestrAI/actions/workflows/ci.yml"><img src="https://github.com/OrchestrrAI/orchestrAI/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white" alt="CI: GitHub Actions">
   <a href="https://www.npmjs.com/package/orchestrai"><img src="https://img.shields.io/npm/v/orchestrai?logo=npm&label=npm" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/orchestrai"><img src="https://img.shields.io/npm/l/orchestrai?label=license" alt="License"></a>
 </p>
