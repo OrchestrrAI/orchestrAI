@@ -1,0 +1,52 @@
+{
+  "name": "orchestrai",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "packages/agents/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "mcp": "bun run packages/mcp/stdio.ts",
+    "mcp:http": "bun run packages/mcp/http.ts",
+    "devops-agent": "bun run packages/agents/devops/index.ts",
+    "testing-agent": "bun run packages/agents/testing/index.ts",
+    "documentation-agent": "bun run packages/agents/documentation/index.ts",
+    "security-agent": "bun run packages/agents/security/index.ts",
+    "code-review-agent": "bun run packages/agents/code-review/index.ts",
+    "coder-agent": "bun run packages/agents/coder/index.ts",
+    "orchestrator": "bun run apps/orchestrator/index.ts",
+    "tui": "bun run apps/tui/index.tsx",
+    "orchestrai": "bun run apps/supervisor/index.ts",
+    "fetch-model": "bun run scripts/fetch-model.ts",
+    "build": "bun run scripts/build-binary.ts",
+    "demo:ag-ui": "bun run scripts/ag-ui-demo.ts",
+    "demo:preflight": "bun run scripts/demo-preflight.ts",
+    "specs:catalog": "bun run scripts/spec-catalog.ts write",
+    "specs:check": "bun run scripts/spec-catalog.ts check",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "dev": "bun run --parallel mcp:http devops-agent testing-agent documentation-agent security-agent code-review-agent coder-agent orchestrator",
+    "dev:with-mcp": "bun run --parallel mcp:http devops-agent testing-agent documentation-agent security-agent code-review-agent coder-agent orchestrator",
+    "dev:with-all-mcp": "bun run --parallel mcp mcp:http devops-agent testing-agent documentation-agent security-agent code-review-agent coder-agent orchestrator"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.14",
+    "@types/react": "^19.2.8",
+    "typescript": "^7.0.2",
+    "yaml": "^2.9.0"
+  },
+  "dependencies": {
+    "@ag-ui/core": "0.0.58",
+    "@huggingface/transformers": "^4.2.0",
+    "@langchain/anthropic": "^1.5.6",
+    "@langchain/core": "^1.2.8",
+    "@langchain/google": "0.2.2",
+    "@langchain/langgraph": "^1.4.10",
+    "@langchain/openai": "^1.5.8",
+    "@opentui/core": "^0.5.1",
+    "@opentui/react": "^0.5.1",
+    "react": "^19.2.8"
+  }
+}

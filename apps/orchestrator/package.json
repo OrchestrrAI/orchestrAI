@@ -1,0 +1,10 @@
+{
+  "name": "@orchestrai/orchestrator",
+  "version": "1.0.0",
+  "dependencies": {
+    "hono": "latest",
+    "@langchain/core": "^1.2.8",
+    "@langchain/langgraph": "^1.4.10",
+    "zod": "^4.4.3"
+  }
+}

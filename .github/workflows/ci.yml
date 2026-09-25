@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+      - run: bun install --frozen-lockfile
+      - run: bun run specs:check
+      - run: bun run typecheck
+      - run: bun test
+
+      # specs/052-ci-plan-task-dispatch-smoke-test/spec.md — catches the
+      # exact regression class specs/051 shipped and bun test alone
+      # missed: dispatchRootTask() depending on a registry lookup that
+      # only a real agent (or a hand-built test fixture standing in for
+      # one) can satisfy. Starts a real process and submits two real HTTP
+      # requests.
+      #
+      # specs/065-llm-only-skill-routing/spec.md — this step used to use
+      # a deliberately non-functional key, because "what agents do you
+      # have" was keyword-matched (no LLM call) and plan-task's initial
+      # reply returned before its own call was awaited. specs/065 retired
+      # keyword matching: EVERY request now routes through a real LLM
+      # call, so "what agents do you have" needs a genuine, working
+      # provider key to route to suggest-agents at all. `ORCHESTRAI_LLM_
+      # API_KEY` is now read from a repository secret — an operational
+      # step outside this repo's own code (GitHub → Settings → Secrets
+      # and variables → Actions). Until that secret exists, this step
+      # fails on the suggest-agents check; that failure is expected and
+      # correct, not a code regression — see specs/065's own Acceptance
+      # Criteria.
+      - name: Smoke test — plan-task and suggest-agents actually dispatch
+        env:
+          ORCHESTRAI_LLM_API_KEY: ${{ secrets.ORCHESTRAI_LLM_API_KEY }}
+          ORCHESTRAI_LLM_PROVIDER: ${{ vars.ORCHESTRAI_LLM_PROVIDER || 'anthropic' }}
+          ORCHESTRAI_LLM_MODEL: ${{ vars.ORCHESTRAI_LLM_MODEL }}
+        run: |
+          set -e
+          bun run apps/supervisor/index.ts --only devops-agent,orchestrator --headless > supervisor.log 2>&1 &
+          SUPERVISOR_PID=$!
+          trap 'kill $SUPERVISOR_PID 2>/dev/null || true' EXIT
+
+          healthy=false
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:3000/healthz > /dev/null; then
+              healthy=true
+              break
+            fi
+            sleep 1
+          done
+          if [ "$healthy" != "true" ]; then
+            echo "Orchestrator did not become healthy within 30s:"
+            cat supervisor.log
+            exit 1
+          fi
+          echo "Orchestrator is healthy."
+
+          echo "--- suggest-agents ---"
+          SUGGEST=$(curl -s -X POST http://localhost:3000/tasks -H "Content-Type: application/json" -d '{"text":"what agents do you have"}')
+          echo "$SUGGEST"
+          if ! echo "$SUGGEST" | grep -q '"assignedAgent":"orchestrator"'; then
+            echo "FAIL: suggest-agents did not report assignedAgent: orchestrator"
+            exit 1
+          fi
+          if ! echo "$SUGGEST" | grep -q '"status":"completed"'; then
+            echo "FAIL: suggest-agents did not complete synchronously"
+            exit 1
+          fi
+
+          echo "--- plan-task ---"
+          PLAN=$(curl -s -X POST http://localhost:3000/tasks -H "Content-Type: application/json" -d '{"text":"build and deploy my bun app"}')
+          echo "$PLAN"
+          if ! echo "$PLAN" | grep -q '"assignedAgent":"orchestrator-supervisor"'; then
+            echo "FAIL: plan-task did not reach the adaptive supervisor — see specs/051's plan-task dispatch-order bug"
+            exit 1
+          fi
+          if echo "$PLAN" | grep -q '"status":"failed"'; then
+            echo "FAIL: plan-task failed immediately — see specs/051's plan-task dispatch-order bug"
+            exit 1
+          fi
+
+          echo "Both dispatch checks passed."

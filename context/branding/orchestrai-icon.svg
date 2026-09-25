@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <line x1="60" y1="60" x2="92.5" y2="92.5" stroke="#5fc8d8" stroke-width="2.5"/>
+  <line x1="60" y1="60" x2="27.5" y2="92.5" stroke="#e0a750" stroke-width="2.5"/>
+  <line x1="60" y1="60" x2="27.5" y2="27.5" stroke="#e08098" stroke-width="2.5"/>
+  <line x1="60" y1="60" x2="92.5" y2="27.5" stroke="#7ba7e8" stroke-width="2.5"/>
+  <polygon points="60,33 82.1,46.5 82.1,73.5 60,87 37.9,73.5 37.9,46.5" fill="#1a1d28" stroke="#e7e8ee" stroke-width="2.5"/>
+  <path d="M50 60 L57 67 L71 51" stroke="#e7e8ee" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="92.5" cy="92.5" r="7" fill="#5fc8d8"/>
+  <circle cx="27.5" cy="92.5" r="7" fill="#e0a750"/>
+  <circle cx="27.5" cy="27.5" r="7" fill="#e08098"/>
+  <circle cx="92.5" cy="27.5" r="7" fill="#7ba7e8"/>
+</svg>

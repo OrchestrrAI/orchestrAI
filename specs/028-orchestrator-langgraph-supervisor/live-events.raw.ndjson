@@ -1,0 +1,118 @@
+event: STATE_SNAPSHOT
+data: {"type":"STATE_SNAPSHOT","snapshot":{"agents":[{"name":"planning-agent","url":"http://localhost:3001","status":"online","skills":["plan-task","suggest-agents"]},{"name":"devops-agent","url":"http://localhost:3002","status":"online","skills":["dockerize","create-compose","create-ci","create-gitignore","analyze-project","git-status"]}],"tasks":[]},"timestamp":1788276412486}
+
+: heartbeat
+
+event: RUN_STARTED
+data: {"type":"RUN_STARTED","threadId":"task-bd9c3f51-ce90-4581-8df4-d4856d47e615","runId":"task-bd9c3f51-ce90-4581-8df4-d4856d47e615","timestamp":1788276418954}
+
+event: CUSTOM
+data: {"type":"CUSTOM","name":"orchestrai.approval-required","value":{"taskId":"task-bd9c3f51-ce90-4581-8df4-d4856d47e615","agent":"devops-agent","skill":"dockerize","approval":{"actionId":"5d29c189-1caf-488c-9c58-209cbce967d5","kind":"mcp-tool","summary":"Call MCP tool \"create_dockerfile\" to write dockerize","target":"C:\\Users\\moham\\test-target-project\\Dockerfile","toolName":"create_dockerfile","parameters":{"app_type":"bun","port":4000,"output_path":"C:\\Users\\moham\\test-target-project\\Dockerfile","app_name":"test-target-project"},"overwrite":true,"risks":["Creates or overwrites a file in the target project.","No sandbox or rollback — the file is written with the current OS user's permissions."]}},"timestamp":1788276418965}
+
+: heartbeat
+
+: heartbeat
+
+: heartbeat
+
+: heartbeat
+
+: heartbeat
+
+event: CUSTOM
+data: {"type":"CUSTOM","name":"orchestrai.approval-resolved","value":{"taskId":"task-bd9c3f51-ce90-4581-8df4-d4856d47e615","decision":"rejected"},"timestamp":1788276447351}
+
+event: RUN_ERROR
+data: {"type":"RUN_ERROR","threadId":"task-bd9c3f51-ce90-4581-8df4-d4856d47e615","runId":"task-bd9c3f51-ce90-4581-8df4-d4856d47e615","message":"Rejected by user","timestamp":1788276447352}
+
+: heartbeat
+
+: heartbeat
+
+: heartbeat
+
+: heartbeat
+
+event: RUN_STARTED
+data: {"type":"RUN_STARTED","threadId":"task-e3ee7540-3382-465b-9f99-8d52c5b6a261","runId":"task-e3ee7540-3382-465b-9f99-8d52c5b6a261","timestamp":1788276466045}
+
+event: RUN_STARTED
+data: {"type":"RUN_STARTED","threadId":"child-946ae1c4-3dce-4261-8f52-19f6c7d0a45a","runId":"child-946ae1c4-3dce-4261-8f52-19f6c7d0a45a","timestamp":1788276467381}
+
+event: STEP_STARTED
+data: {"type":"STEP_STARTED","runId":"task-e3ee7540-3382-465b-9f99-8d52c5b6a261","stepName":"1. analyze-project","timestamp":1788276467381}
+
+event: TOOL_CALL_START
+data: {"type":"TOOL_CALL_START","runId":"task-e3ee7540-3382-465b-9f99-8d52c5b6a261","toolCallId":"child-946ae1c4-3dce-4261-8f52-19f6c7d0a45a","toolCallName":"analyze-project","caller":"orchestrator-supervisor","timestamp":1788276467400}
+
+event: TOOL_CALL_START
+data: {"type":"TOOL_CALL_START","runId":"child-946ae1c4-3dce-4261-8f52-19f6c7d0a45a","toolCallId":"95dd972c-b112-4d7d-80a4-286fa5a9487f","toolCallName":"analyze_project","caller":"devops-agent","timestamp":1788276467402}
+
+event: TOOL_CALL_RESULT
+data: {"type":"TOOL_CALL_RESULT","runId":"child-946ae1c4-3dce-4261-8f52-19f6c7d0a45a","toolCallId":"95dd972c-b112-4d7d-80a4-286fa5a9487f","messageId":"95dd972c-b112-4d7d-80a4-286fa5a9487f","content":"completed; resultBytes=500; resultTruncated=false","outcome":"completed","durationMs":32,"timestamp":1788276467422}
+
+event: TOOL_CALL_START
+data: {"type":"TOOL_CALL_START","runId":"child-946ae1c4-3dce-4261-8f52-19f6c7d0a45a","toolCallId":"a2a-770869fc-7baf-4562-a520-2e01792f79ef","toolCallName":"security-agent","caller":"devops-agent","timestamp":1788276467423}
+
+event: TOOL_CALL_RESULT
+data: {"type":"TOOL_CALL_RESULT","runId":"child-946ae1c4-3dce-4261-8f52-19f6c7d0a45a","toolCallId":"a2a-770869fc-7baf-4562-a520-2e01792f79ef","messageId":"a2a-770869fc-7baf-4562-a520-2e01792f79ef","content":"failed; resultBytes=58; resultTruncated=false","outcome":"failed","durationMs":5,"timestamp":1788276467427}
+
+: heartbeat
+
+event: RUN_FINISHED
+data: {"type":"RUN_FINISHED","threadId":"child-946ae1c4-3dce-4261-8f52-19f6c7d0a45a","runId":"child-946ae1c4-3dce-4261-8f52-19f6c7d0a45a","outcome":{"type":"success"},"timestamp":1788276467909}
+
+event: STEP_FINISHED
+data: {"type":"STEP_FINISHED","runId":"task-e3ee7540-3382-465b-9f99-8d52c5b6a261","stepName":"1. analyze-project","outcome":"completed","timestamp":1788276468412}
+
+event: TOOL_CALL_RESULT
+data: {"type":"TOOL_CALL_RESULT","runId":"task-e3ee7540-3382-465b-9f99-8d52c5b6a261","toolCallId":"child-946ae1c4-3dce-4261-8f52-19f6c7d0a45a","messageId":"child-946ae1c4-3dce-4261-8f52-19f6c7d0a45a","content":"completed; resultBytes=0; resultTruncated=false","outcome":"completed","durationMs":1018,"timestamp":1788276468425}
+
+event: RUN_STARTED
+data: {"type":"RUN_STARTED","threadId":"child-b7cc4e4f-8fdb-4174-b421-71955c7b752d","runId":"child-b7cc4e4f-8fdb-4174-b421-71955c7b752d","timestamp":1788276469165}
+
+event: STEP_STARTED
+data: {"type":"STEP_STARTED","runId":"task-e3ee7540-3382-465b-9f99-8d52c5b6a261","stepName":"2. git-status","timestamp":1788276469166}
+
+event: TOOL_CALL_START
+data: {"type":"TOOL_CALL_START","runId":"child-b7cc4e4f-8fdb-4174-b421-71955c7b752d","toolCallId":"ba6f0b1d-614b-44e1-8dd3-e51a5eba0600","toolCallName":"git_status","caller":"devops-agent","timestamp":1788276469173}
+
+event: TOOL_CALL_START
+data: {"type":"TOOL_CALL_START","runId":"task-e3ee7540-3382-465b-9f99-8d52c5b6a261","toolCallId":"child-b7cc4e4f-8fdb-4174-b421-71955c7b752d","toolCallName":"git-status","caller":"orchestrator-supervisor","timestamp":1788276469176}
+
+event: TOOL_CALL_RESULT
+data: {"type":"TOOL_CALL_RESULT","runId":"child-b7cc4e4f-8fdb-4174-b421-71955c7b752d","toolCallId":"ba6f0b1d-614b-44e1-8dd3-e51a5eba0600","messageId":"ba6f0b1d-614b-44e1-8dd3-e51a5eba0600","content":"completed; resultBytes=237; resultTruncated=false","outcome":"completed","durationMs":148,"timestamp":1788276469322}
+
+event: RUN_FINISHED
+data: {"type":"RUN_FINISHED","threadId":"child-b7cc4e4f-8fdb-4174-b421-71955c7b752d","runId":"child-b7cc4e4f-8fdb-4174-b421-71955c7b752d","outcome":{"type":"success"},"timestamp":1788276469696}
+
+event: STEP_FINISHED
+data: {"type":"STEP_FINISHED","runId":"task-e3ee7540-3382-465b-9f99-8d52c5b6a261","stepName":"2. git-status","outcome":"completed","timestamp":1788276470196}
+
+event: TOOL_CALL_RESULT
+data: {"type":"TOOL_CALL_RESULT","runId":"task-e3ee7540-3382-465b-9f99-8d52c5b6a261","toolCallId":"child-b7cc4e4f-8fdb-4174-b421-71955c7b752d","messageId":"child-b7cc4e4f-8fdb-4174-b421-71955c7b752d","content":"completed; resultBytes=0; resultTruncated=false","outcome":"completed","durationMs":1021,"timestamp":1788276470202}
+
+: heartbeat
+
+event: RUN_STARTED
+data: {"type":"RUN_STARTED","threadId":"child-c2048fc8-803e-41f8-9b86-510d72a230e5","runId":"child-c2048fc8-803e-41f8-9b86-510d72a230e5","timestamp":1788276472559}
+
+event: STEP_STARTED
+data: {"type":"STEP_STARTED","runId":"task-e3ee7540-3382-465b-9f99-8d52c5b6a261","stepName":"3. dockerize","timestamp":1788276472559}
+
+event: TOOL_CALL_START
+data: {"type":"TOOL_CALL_START","runId":"task-e3ee7540-3382-465b-9f99-8d52c5b6a261","toolCallId":"child-c2048fc8-803e-41f8-9b86-510d72a230e5","toolCallName":"dockerize","caller":"orchestrator-supervisor","timestamp":1788276472564}
+
+event: CUSTOM
+data: {"type":"CUSTOM","name":"orchestrai.approval-required","value":{"taskId":"child-c2048fc8-803e-41f8-9b86-510d72a230e5","agent":"devops-agent","skill":"dockerize","approval":{"actionId":"6ad9d229-ab13-4168-acad-77cb83374c37","kind":"mcp-tool","summary":"Call MCP tool \"create_dockerfile\" to write dockerize","target":"C:\\Users\\moham\\test-target-project\\Dockerfile","toolName":"create_dockerfile","parameters":{"app_type":"bun","port":3000,"output_path":"C:\\Users\\moham\\test-target-project\\Dockerfile","app_name":"test-target-project"},"overwrite":true,"risks":["Creates or overwrites a file in the target project.","No sandbox or rollback — the file is written with the current OS user's permissions."]}},"timestamp":1788276472565}
+
+: heartbeat
+
+: heartbeat
+
+: heartbeat
+
+: heartbeat
+
+: heartbeat
+

@@ -1,0 +1,240 @@
+<!--
+  OrchestrAI — Status for team lead review, 2026-09-09.
+  Reuses the level-up-plan family's own design system verbatim (same
+  tokens, same type, same card language) — this is the same reporting
+  lineage as context/level-up-plan-progress.html, not a new one.
+
+  Planning/status document, not runtime code and not a spec. Every risk
+  item and open decision below is described honestly, including where
+  I (Claude) introduced the gap myself (e.g. the retry classifier in
+  specs/055) rather than only listing pre-existing debt.
+-->
+<title>Status for Team Review</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --ground: #F4F6F8;
+    --surface: #FFFFFF;
+    --surface-sunk: #EDF1F5;
+    --ink: #16202E;
+    --muted: #5C6B7F;
+    --faint: #8593A5;
+    --accent: #0E7C7B;
+    --accent-soft: #E2F1F0;
+    --rule: #DCE3EA;
+    --sev-crit: #A93226;
+    --sev-crit-soft: #FBEAE7;
+    --sev-yours: #8A6212;
+    --sev-yours-soft: #F8F0DE;
+    --sev-parked: #5C6B7F;
+    --sev-parked-soft: #EDF1F5;
+    --ok: #1A7F4E;
+    --ok-soft: #E3F3EA;
+    --shadow: 0 1px 2px rgba(22,32,46,.05), 0 6px 18px -12px rgba(22,32,46,.22);
+
+    --display: "Chivo", "Helvetica Neue", Arial, sans-serif;
+    --body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #10151C; --surface: #171E27; --surface-sunk: #1D2531;
+      --ink: #E6EBF1; --muted: #9CAABB; --faint: #6E7E92;
+      --accent: #3FB5B2; --accent-soft: #122E2E; --rule: #2A3441;
+      --sev-crit: #E2695C; --sev-crit-soft: #301A17;
+      --sev-yours: #D9AE55; --sev-yours-soft: #2E2716;
+      --sev-parked: #9CAABB; --sev-parked-soft: #1D2531;
+      --ok: #6FCB9A; --ok-soft: #16281F;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 18px -12px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #10151C; --surface: #171E27; --surface-sunk: #1D2531;
+    --ink: #E6EBF1; --muted: #9CAABB; --faint: #6E7E92;
+    --accent: #3FB5B2; --accent-soft: #122E2E; --rule: #2A3441;
+    --sev-crit: #E2695C; --sev-crit-soft: #301A17;
+    --sev-yours: #D9AE55; --sev-yours-soft: #2E2716;
+    --sev-parked: #9CAABB; --sev-parked-soft: #1D2531;
+    --ok: #6FCB9A; --ok-soft: #16281F;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 18px -12px rgba(0,0,0,.6);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 56px 24px 96px; }
+
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; }
+  h1 { font-family: var(--display); font-size: clamp(30px,4.4vw,42px); line-height: 1.08; letter-spacing: -.018em; font-weight: 700; margin: 0 0 14px; text-wrap: balance; }
+  .lede { font-size: 17.5px; line-height: 1.55; color: var(--muted); max-width: 62ch; margin: 0 0 28px; text-wrap: pretty; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; font-family: var(--mono); font-size: 12.5px; color: var(--faint); padding-bottom: 32px; border-bottom: 1px solid var(--rule); margin-bottom: 40px; }
+  .meta b { color: var(--ink); font-weight: 500; }
+
+  h2 { font-family: var(--display); font-size: 22px; letter-spacing: -.01em; font-weight: 700; margin: 0 0 6px; }
+  h3 { font-family: var(--display); font-size: 15.5px; font-weight: 700; margin: 26px 0 8px; }
+  .section { margin-bottom: 48px; }
+  .section > p.dek { color: var(--muted); font-size: 14.5px; margin: 0 0 20px; max-width: 66ch; }
+  p { margin: 0 0 13px; max-width: 68ch; }
+  a { color: var(--accent); }
+  code { font-family: var(--mono); font-size: .87em; background: var(--surface-sunk); padding: 1.5px 5px; border-radius: 3px; }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stat { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 12px 16px; box-shadow: var(--shadow); min-width: 108px; }
+  .stat b { display: block; font-family: var(--mono); font-size: 22px; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+  .stat span { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+  .stat.warn b { color: var(--sev-yours); }
+  .stat.crit b { color: var(--sev-crit); }
+  .stat.ok b { color: var(--ok); }
+
+  .chip { display: inline-flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .04em; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+  .chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .chip.crit { background: var(--sev-crit-soft); color: var(--sev-crit); }
+  .chip.yours { background: var(--sev-yours-soft); color: var(--sev-yours); }
+  .chip.parked { background: var(--sev-parked-soft); color: var(--sev-parked); }
+  .chip.ok { background: var(--ok-soft); color: var(--ok); }
+
+  .risk { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 18px 20px; margin-bottom: 12px; box-shadow: var(--shadow); }
+  .risk-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+  .risk-top h4 { font-family: var(--display); font-size: 15.5px; font-weight: 700; margin: 0; }
+  .risk p { margin: 0 0 8px; font-size: 14.5px; color: var(--ink); }
+  .risk p:last-child { margin-bottom: 0; }
+  .risk .fix { font-size: 13.5px; color: var(--muted); }
+  .risk .fix b { color: var(--ink); font-weight: 600; }
+
+  .tablewrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 560px; }
+  th { text-align: left; font-family: var(--mono); font-size: 10.5px; letter-spacing: .09em; text-transform: uppercase; color: var(--faint); font-weight: 500; padding: 10px 14px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  td.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--muted); }
+
+  ol.plan { list-style: none; margin: 0; padding: 0; counter-reset: plan; }
+  ol.plan li { counter-increment: plan; position: relative; padding: 14px 0 14px 46px; border-bottom: 1px solid var(--rule); }
+  ol.plan li:last-child { border-bottom: none; }
+  ol.plan li::before { content: counter(plan); position: absolute; left: 0; top: 14px; width: 30px; height: 30px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-family: var(--mono); font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+  ol.plan h4 { font-family: var(--display); font-size: 15px; font-weight: 700; margin: 0 0 4px; }
+  ol.plan p { font-size: 14px; color: var(--muted); margin: 0; }
+
+  .note { border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 20px 0; }
+  .note p { margin: 0; font-size: 14px; max-width: 64ch; }
+  .note p + p { margin-top: 8px; }
+
+  ul.clean { margin: 0 0 14px; padding-left: 20px; max-width: 66ch; }
+  ul.clean li { margin-bottom: 6px; font-size: 14.5px; }
+</style>
+
+<div class="wrap">
+
+  <p class="eyebrow">OrchestrAI · status for team review</p>
+  <h1>Every layer works. Nothing has survived a restart, and two of three model providers have never been called for real.</h1>
+  <p class="lede">
+    A working session-end summary to walk through with the team lead: what's built, what's actually
+    been proven versus assumed, and the two open decisions that came up going into this review.
+  </p>
+  <div class="meta">
+    <span><b>2026-09-09</b></span>
+    <span>62 spec checkpoints</span>
+    <span>831 tests passing, 0 failing</span>
+    <span><code>tsc --noEmit</code> clean</span>
+  </div>
+
+  <section class="section">
+    <h2>Where the project actually is</h2>
+    <p class="dek">Every behavioral change in this codebase goes through a numbered spec with its own lifecycle status and a separate verification confidence — so "the code exists" and "we proved it works" are never the same claim.</p>
+    <div class="stats">
+      <div class="stat"><b>60</b><span>specs implemented</span></div>
+      <div class="stat ok"><b>46</b><span>fully verified</span></div>
+      <div class="stat warn"><b>14</b><span>verification partial</span></div>
+      <div class="stat"><b>1</b><span>drafted today, unapproved</span></div>
+    </div>
+    <p style="margin-top:18px">
+      Target explicitly settled this session: a <b>polished local tool</b> — installed via
+      <code>npx orchestrai</code>, run on someone's own machine, not a shared hosted service.
+      That choice is load-bearing for everything below: it's why authentication/multi-tenancy is
+      correctly out of scope, and why the two items flagged <span class="chip crit">critical</span>
+      below are the ones that matter most for daily solo use.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>What to raise with your team lead</h2>
+    <p class="dek">Ranked by what actually blocks trusting the tool day to day, not by how long each has been known.</p>
+
+    <div class="risk">
+      <div class="risk-top"><h4>Claude and GPT paths have never made a real API call</h4><span class="chip crit">critical</span></div>
+      <p>Every live-provider verification recorded in this project's history — routing, retry, the planning harness, the conversational layer — was run against <b>Gemini only</b>. The Anthropic and OpenAI code paths are complete (same shared LangChain boundary, same tests, same typecheck) but zero real request has ever gone out on either. This is exactly the gap Yusuf flagged going into this review.</p>
+      <p class="fix"><b>Closes with:</b> one short session, real keys for both providers, a deliberate bad-key case (should fail immediately) and a real success case per provider. No spec needed — this is proving existing code, not building anything.</p>
+    </div>
+
+    <div class="risk">
+      <div class="risk-top"><h4>Approval state is memory-only</h4><span class="chip crit">critical</span></div>
+      <p>The entire safety mechanism — a write requires a server-issued <code>actionId</code> bound to immutable parameters — lives in a plain in-memory <code>Map</code> per agent. Restart any agent mid-approval and that binding is gone; the orchestrator keeps waiting on a promise that will never resolve. This is a documented invariant with no durability behind it, not generic "add a database" debt.</p>
+      <p class="fix"><b>Closes with:</b> a new spec — durable task/approval state, file-backed, no new dependency (matches this repo's own minimalism precedent).</p>
+    </div>
+
+    <div class="risk">
+      <div class="risk-top"><h4>The newest retry logic is untested against a real error</h4><span class="chip yours">needs a live pass</span></div>
+      <p>Spec 055's provider-error classifier (which decides "retry" vs. "fail now") was written against each provider's <i>documented</i> error shape, not a captured real one. If a real error nests its status differently than assumed, a genuine rate limit could silently classify as permanent — and every existing test would still pass, because they feed the shape that was assumed. I wrote this code; it hasn't met reality yet.</p>
+      <p class="fix"><b>Closes with:</b> the same live-provider session as the item above — this is the direct payoff of validating Claude/GPT for real.</p>
+    </div>
+
+    <div class="risk">
+      <div class="risk-top"><h4>Published packages are 21 commits behind</h4><span class="chip yours">shipping gap</span></div>
+      <p>Anyone running <code>npx orchestrai@latest</code> today does not get the last stretch of work — eight specs' worth, including the entire browser setup page. This exact failure mode (release tag drifting behind <code>main</code>) has already happened twice before in this project's history.</p>
+      <p class="fix"><b>Closes with:</b> pin the one remaining <code>"latest"</code> dependency, cut a tag, confirm via a fresh install — no spec needed.</p>
+    </div>
+
+    <div class="risk">
+      <div class="risk-top"><h4>14 specs carry partial verification</h4><span class="chip parked">tracked backlog</span></div>
+      <p>These split into three real buckets: needs a live provider key (3 specs — same session as above), needs a real terminal/browser on someone's own machine (4 specs — TUI and browser-form checks that can't run in this sandbox), and an older pre-2026-08 backlog (7 specs) whose evidence predates the project's current verification standard.</p>
+      <p class="fix"><b>Closes with:</b> the live session covers 3; the rest need dedicated hands-on passes, lower urgency than the four items above.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Decided this session</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Question</th><th>Decision</th><th class="mono">Status</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Migrate to MCP SDK v2?</td>
+            <td>Retired from the roadmap, not deferred. Its value (remote/stateless/multi-instance) targets a use case the "polished local tool" choice above rules out permanently. Reversible only if that target ever changes.</td>
+            <td class="mono">closed</td>
+          </tr>
+          <tr>
+            <td>Can each agent use a different <i>provider</i>, not just a different model?</td>
+            <td>Already true at the runtime/config level (specs/039) — only the setup UI never exposed it, by a prior deliberate decision (specs/050) that called it out as a follow-up rather than an oversight. Drafted as <a href="#spec063">specs/063</a> below.</td>
+            <td class="mono">drafted</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" id="spec063">
+    <h2>New spec, awaiting approval — Per-agent provider selection</h2>
+    <p class="dek"><code>specs/063-init-per-component-provider-and-key</code> — not yet approved, no code written. Per this repo's own process, nothing gets implemented until it's reviewed and signed off.</p>
+    <p>Today's setup UI (classic wizard, TUI form, browser form) lets you pick a different <b>model</b> per agent — a cheap model for DevOps parameter-picking, a stronger one for the orchestrator — but only one shared <b>provider and key</b> for everything. This spec exposes per-agent provider and key too, closing the exact footgun the prior decision worried about: a provider chosen with no matching key would silently fall back to the wrong provider's key and surface as a confusing auth error later, not at setup time. The new design makes that state impossible to produce — a provider change and its key change together, always, and an unset key is a setup-time validation error, never a runtime surprise.</p>
+    <ul class="clean">
+      <li>Setting a per-agent provider with no key: rejected at setup, not silently written.</li>
+      <li>Leaving every agent at the shared default: writes the exact same config as today, byte for byte.</li>
+      <li>Clearing an override removes both its provider and key lines together — never one orphaned.</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>Recommended next steps, in order</h2>
+    <ol class="plan">
+      <li><h4>Validate Claude and GPT for real</h4><p>Real keys, a deliberate bad-key case, a real success case per provider. Closes the two critical items above in one sitting.</p></li>
+      <li><h4>Cut a release</h4><p>Pin the last floating dependency, tag, verify via a genuinely fresh install — gets the last eight specs' work to anyone actually using the tool.</p></li>
+      <li><h4>Review and approve specs/063</h4><p>Per-agent provider selection — small, scoped, closes a gap Yusuf raised directly.</p></li>
+      <li><h4>Durable approval state</h4><p>New spec. The single biggest gap between "impressive prototype" and "tool people trust with real writes."</p></li>
+      <li><h4>Work through the remaining partial-verification backlog</h4><p>Terminal/browser passes on your own machine — lower urgency, no live-provider dependency.</p></li>
+    </ol>
+  </section>
+
+  <div class="note">
+    <p><b>One thing worth saying plainly in the room:</b> everything above that's marked critical is a gap in <i>proof</i>, not in code that's known to be broken. The architecture's core safety property — a write always stops for a human, and nothing bypasses that gate — has been unchanged and re-verified across every one of the 62 checkpoints above. What's unproven is provider behavior under real conditions and durability across a restart, not the approval boundary itself.</p>
+  </div>
+
+</div>

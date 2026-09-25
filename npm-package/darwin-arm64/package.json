@@ -1,0 +1,19 @@
+{
+  "name": "orchestrai-darwin-arm64",
+  "version": "0.1.27",
+  "description": "OrchestrAI standalone binary — macOS Apple Silicon (arm64). Unsigned — see the main package's README for the Gatekeeper workaround. Installed automatically as an optional dependency of the \"orchestrai\" package; not meant to be installed directly.",
+  "license": "MIT",
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "arm64"
+  ],
+  "files": [
+    "bin/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Muhamad-Yussuf/devops-mcp-server.git"
+  }
+}

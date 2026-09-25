@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orchestrai.local/schemas/spec-metadata.json",
+  "title": "OrchestrAI specification metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "area",
+    "change_type",
+    "status",
+    "verification",
+    "created",
+    "updated",
+    "approved_by",
+    "approved_on",
+    "implemented_on",
+    "amends",
+    "supersedes",
+    "superseded_by",
+    "related"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^\\d{3}-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "area": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "change_type": {
+      "enum": ["feature", "enhancement", "fix", "migration", "spike", "governance"]
+    },
+    "status": {
+      "enum": ["draft", "approved", "implemented", "superseded", "archived"]
+    },
+    "verification": {
+      "enum": ["pending", "partial", "verified", "not-applicable"]
+    },
+    "created": {
+      "anyOf": [
+        { "type": "string", "format": "date" },
+        { "type": "null" }
+      ]
+    },
+    "updated": {
+      "type": "string",
+      "format": "date"
+    },
+    "approved_by": {
+      "anyOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "null" }
+      ]
+    },
+    "approved_on": {
+      "anyOf": [
+        { "type": "string", "format": "date" },
+        { "type": "null" }
+      ]
+    },
+    "implemented_on": {
+      "anyOf": [
+        { "type": "string", "format": "date" },
+        { "type": "null" }
+      ]
+    },
+    "amends": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/specId" },
+      "uniqueItems": true
+    },
+    "supersedes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/specId" },
+      "uniqueItems": true
+    },
+    "superseded_by": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/specId" },
+      "uniqueItems": true
+    },
+    "related": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/specId" },
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "specId": {
+      "type": "string",
+      "pattern": "^\\d{3}-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    }
+  }
+}

@@ -1,0 +1,554 @@
+<title>OrchestrAI Progress Report</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+  :root{
+    --bg:#0d1117;
+    --panel:#161b22;
+    --panel-2:#1c2129;
+    --border:#30363d;
+    --border-soft:#21262d;
+    --text:#c9d1d9;
+    --text-dim:#8b949e;
+    --text-faint:#6e7681;
+    --accent:#58a6ff;
+    --accent-dim:#1f3a5c;
+    --amber:#d29922;
+    --amber-dim:#3a2e12;
+    --good:#3fb950;
+    --bad:#f85149;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, 'Segoe UI', sans-serif;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent-dim);color:#fff}
+
+  a{color:var(--accent)}
+  code, .mono{font-family:var(--mono)}
+  h1,h2,h3{font-family:var(--mono);text-wrap:balance;font-weight:600;letter-spacing:-0.01em}
+
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px}
+
+  /* ---------- header ---------- */
+  header.top{
+    padding:56px 0 44px;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin:0 0 14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:7px;height:7px;border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 0 3px var(--amber-dim);
+  }
+  h1.title{
+    font-size:clamp(28px,4.2vw,40px);
+    margin:0 0 10px;
+    color:#fff;
+  }
+  .subtitle{
+    color:var(--text-dim);
+    font-size:16px;
+    max-width:60ch;
+    margin:0 0 26px;
+  }
+  .commit-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 22px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--text-faint);
+  }
+  .commit-row b{color:var(--text-dim);font-weight:500}
+  .commit-row .sep{color:var(--border)}
+
+  /* ---------- stat strip ---------- */
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1px;
+    background:var(--border-soft);
+    border:1px solid var(--border-soft);
+    border-radius:10px;
+    overflow:hidden;
+    margin:36px 0 0;
+  }
+  .stat{
+    background:var(--panel);
+    padding:20px 18px;
+  }
+  .stat .from-to{
+    font-family:var(--mono);
+    font-variant-numeric:tabular-nums;
+    font-size:22px;
+    color:#fff;
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .stat .from-to .old{color:var(--text-faint);font-size:15px;text-decoration:line-through;text-decoration-color:var(--border)}
+  .stat .from-to .arrow{color:var(--amber);font-size:14px}
+  .stat .label{
+    margin-top:6px;
+    font-size:11.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+  }
+
+  section{padding:56px 0}
+  section + section{border-top:1px solid var(--border-soft)}
+
+  h2.section-title{
+    font-size:13px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    margin:0 0 6px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  h2.section-title .n{color:var(--amber)}
+  .section-lede{
+    color:var(--text-dim);
+    font-size:15px;
+    max-width:64ch;
+    margin:0 0 32px;
+  }
+
+  /* ---------- timeline ---------- */
+  .timeline{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+  .timeline::before{
+    content:"";
+    position:absolute;
+    left:15px;
+    top:8px;
+    bottom:8px;
+    width:1px;
+    background:linear-gradient(var(--border), var(--border) 90%, transparent);
+  }
+  .tl-item{
+    position:relative;
+    padding:0 0 30px 46px;
+  }
+  .tl-item:last-child{padding-bottom:0}
+  .tl-dot{
+    position:absolute;
+    left:9px; top:3px;
+    width:13px;height:13px;
+    border-radius:50%;
+    background:var(--panel);
+    border:2px solid var(--border);
+  }
+  .tl-item.headline .tl-dot{border-color:var(--amber);background:var(--amber-dim)}
+  .tl-item.open .tl-dot{border-color:var(--text-faint);background:transparent;border-style:dashed}
+
+  .tl-head{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:5px;
+  }
+  .spec-id{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--text-faint);
+  }
+  .tl-name{
+    font-family:var(--mono);
+    font-weight:600;
+    font-size:16px;
+    color:#fff;
+  }
+  .badge{
+    font-family:var(--mono);
+    font-size:10.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:2px 8px;
+    border-radius:20px;
+    border:1px solid;
+  }
+  .badge.verified{color:var(--good);border-color:#1e4620;background:#0f2114}
+  .badge.implemented{color:var(--accent);border-color:#1c3555;background:#101c2e}
+  .badge.draft{color:var(--text-dim);border-color:var(--border);background:var(--panel-2)}
+
+  .tl-desc{color:var(--text-dim);font-size:14.5px;max-width:66ch}
+  .tl-desc b{color:var(--text);font-weight:600}
+
+  /* ---------- harness compare table ---------- */
+  .cmp{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+  }
+  @media (max-width:680px){.cmp{grid-template-columns:1fr}}
+  .cmp-card{
+    background:var(--panel);
+    border:1px solid var(--border-soft);
+    border-radius:10px;
+    padding:20px;
+  }
+  .cmp-card .agent{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-bottom:8px;
+  }
+  .cmp-card h3{
+    font-size:16px;
+    margin:0 0 10px;
+    color:#fff;
+  }
+  .cmp-card p{font-size:13.5px;color:var(--text-dim);margin:0 0 14px}
+  .cmp-card .risk{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--text-faint);
+    border-top:1px solid var(--border-soft);
+    padding-top:12px;
+  }
+  .cmp-card .risk b{color:var(--text-dim)}
+
+  /* ---------- architecture grid ---------- */
+  .agents{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+  }
+  @media (max-width:680px){.agents{grid-template-columns:repeat(2,1fr)}}
+  .agent-tile{
+    background:var(--panel);
+    border:1px solid var(--border-soft);
+    border-radius:8px;
+    padding:14px 12px;
+    text-align:center;
+  }
+  .agent-tile .port{font-family:var(--mono);font-size:11px;color:var(--text-faint);font-variant-numeric:tabular-nums}
+  .agent-tile .name{font-family:var(--mono);font-size:13px;color:var(--text);margin:4px 0 6px;font-weight:500}
+  .agent-tile .llm{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:9.5px;
+    letter-spacing:0.05em;
+    padding:1px 6px;
+    border-radius:10px;
+  }
+  .agent-tile .llm.on{color:var(--amber);background:var(--amber-dim)}
+  .agent-tile .llm.off{color:var(--text-faint);background:var(--panel-2)}
+
+  .flow-note{
+    margin-top:18px;
+    font-size:13px;
+    color:var(--text-faint);
+    font-family:var(--mono);
+  }
+
+  /* ---------- next actions ---------- */
+  .next-list{display:flex;flex-direction:column;gap:14px}
+  .next-item{
+    display:grid;
+    grid-template-columns:26px 1fr;
+    gap:14px;
+    padding:16px 18px;
+    background:var(--panel);
+    border:1px solid var(--border-soft);
+    border-left:3px solid var(--border);
+    border-radius:8px;
+  }
+  .next-item.priority{border-left-color:var(--amber)}
+  .next-item .num{font-family:var(--mono);color:var(--text-faint);font-size:14px;font-variant-numeric:tabular-nums}
+  .next-item h3{font-size:14.5px;margin:0 0 4px;color:#fff}
+  .next-item p{font-size:13.5px;color:var(--text-dim);margin:0}
+  .next-item .tag{
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-left:8px;
+  }
+
+  footer{
+    padding:40px 0 64px;
+    font-size:12.5px;
+    color:var(--text-faint);
+    font-family:var(--mono);
+  }
+  footer code{color:var(--text-dim)}
+  footer .cmds{
+    background:var(--panel);
+    border:1px solid var(--border-soft);
+    border-radius:8px;
+    padding:14px 16px;
+    margin:14px 0;
+    overflow-x:auto;
+    white-space:pre;
+    color:var(--text-dim);
+  }
+
+  @media (prefers-reduced-motion: no-preference){
+    .fade-in{animation:fadeIn .5s ease-out both}
+    .tl-item{animation:slideIn .4s ease-out both}
+    .tl-item:nth-child(1){animation-delay:.02s}
+    .tl-item:nth-child(2){animation-delay:.06s}
+    .tl-item:nth-child(3){animation-delay:.10s}
+    .tl-item:nth-child(4){animation-delay:.14s}
+    .tl-item:nth-child(5){animation-delay:.18s}
+    .tl-item:nth-child(6){animation-delay:.22s}
+    .tl-item:nth-child(7){animation-delay:.26s}
+    .tl-item:nth-child(8){animation-delay:.30s}
+  }
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+
+  ::-webkit-scrollbar{height:10px;width:10px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px}
+</style>
+
+<header class="top">
+  <div class="wrap fade-in">
+    <p class="eyebrow">Progress report</p>
+    <h1 class="title">OrchestrAI, since the demo</h1>
+    <p class="subtitle">A multi-agent DevOps orchestration prototype — deterministic by default, with three agents now optionally reasoning through a real LLM. This covers everything shipped between the demo checkpoint and today.</p>
+    <div class="commit-row">
+      <span><b>From</b> <code>853b583</code> · docs(028): approve LangGraph adaptive supervisor spec · 2026‑09‑01</span>
+      <span class="sep">→</span>
+      <span><b>To</b> <code>aa519a6</code> · HEAD · 2026‑09‑02</span>
+      <span class="sep">·</span>
+      <span>27 commits</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="stats">
+    <div class="stat">
+      <div class="from-to"><span class="old">36</span><span class="arrow">→</span><span>43</span></div>
+      <div class="label">Governed specs</div>
+    </div>
+    <div class="stat">
+      <div class="from-to"><span class="old">310</span><span class="arrow">→</span><span>480</span></div>
+      <div class="label">Passing tests</div>
+    </div>
+    <div class="stat">
+      <div class="from-to"><span>3</span></div>
+      <div class="label">New LLM harnesses</div>
+    </div>
+    <div class="stat">
+      <div class="from-to"><span>0.1.16</span></div>
+      <div class="label">Latest npm release</div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2 class="section-title"><span class="n">01</span> What shipped</h2>
+    <p class="section-lede">In commit order. Amber markers are the headline additions; the dashed marker is drafted but not yet approved.</p>
+
+    <div class="timeline">
+
+      <div class="tl-item headline">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <span class="spec-id">specs/028</span>
+          <span class="tl-name">Adaptive Supervisor</span>
+          <span class="badge verified">verified</span>
+        </div>
+        <div class="tl-desc">The biggest single addition. The Orchestrator can now decide plan steps <b>one at a time</b>, from what earlier steps actually returned — not one static plan walked in order. Five build phases; the approval gate stays entirely outside the model's reach, structurally. Live-proven with a real Gemini deployment: a genuine 3‑step adaptive dispatch, a rejection confirmed terminal, and a runaway‑run bound that actually fired.</div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <span class="spec-id">specs/037</span>
+          <span class="tl-name">TUI approval preview card</span>
+          <span class="badge verified">verified</span>
+        </div>
+        <div class="tl-desc">Brought the terminal client's Detail view up to the same structured rendering both browser dashboards already had — target, risks, and parameters as labeled rows instead of raw JSON.</div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <span class="tl-name">Verification cleanup</span>
+          <span class="badge verified">verified ×4</span>
+        </div>
+        <div class="tl-desc">Closed four already-implemented specs (<span class="mono">016</span>, <span class="mono">031</span>, <span class="mono">034</span>, <span class="mono">035</span>) from partial to fully verified with real live tests — masked key entry, a real Ctrl+C shutdown, wizard UX, and a direct confirmation. No new capability; closed real open risk.</div>
+      </div>
+
+      <div class="tl-item headline">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <span class="spec-id">specs/039</span>
+          <span class="tl-name">Per-component LLM config</span>
+          <span class="badge verified">verified</span>
+        </div>
+        <div class="tl-desc">Each agent can now resolve its own provider/model/key independently, falling back to one shared setting only when it hasn't opted out. The prerequisite every harness below depends on.</div>
+      </div>
+
+      <div class="tl-item headline">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <span class="spec-id">specs/040</span>
+          <span class="tl-name">Approval preview content &amp; diffs</span>
+          <span class="badge verified">verified</span>
+        </div>
+        <div class="tl-desc">Approval popups used to show <i>that</i> a file would be written — never <i>what</i>. Now they show the exact content, or a real line diff on overwrite, computed once and reused verbatim at write time. The safety precondition every LLM harness below needed before it could ship.</div>
+      </div>
+
+      <div class="tl-item headline">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <span class="spec-id">specs/041 · 042 · 043</span>
+          <span class="tl-name">Three opt-in LLM harnesses</span>
+          <span class="badge verified">verified</span>
+        </div>
+        <div class="tl-desc">Documentation, DevOps, and Security can each optionally reason with a real LLM — off by default, one env var per agent. Each got a genuinely different safety shape; see the comparison below.</div>
+      </div>
+
+      <div class="tl-item open">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <span class="spec-id">specs/038</span>
+          <span class="tl-name">Supervisor as default planner</span>
+          <span class="badge draft">draft — open</span>
+        </div>
+        <div class="tl-desc">Proposes making the adaptive supervisor (028) the default path instead of opt-in. Written, rescoped once already, still awaiting a decision.</div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <span class="tl-name">Released to npm</span>
+          <span class="badge implemented">orchestrai@0.1.16</span>
+        </div>
+        <div class="tl-desc">Everything above is now live behind <span class="mono">npx orchestrai</span> — confirmed with a genuinely fresh install running the real binary, not assumed from a version bump.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 class="section-title"><span class="n">02</span> Three harnesses, three different shapes</h2>
+    <p class="section-lede">The same "opt-in LLM" idea, deliberately scoped differently per agent's actual stakes — never a copy-paste of the same pattern three times.</p>
+
+    <div class="cmp">
+      <div class="cmp-card">
+        <div class="agent">Documentation · 041</div>
+        <h3>Authors content</h3>
+        <p>Writes README / API-doc prose directly. Lowest stakes — output is read, not executed, and a bad result is just rejected, same as today.</p>
+        <div class="risk"><b>Failure mode:</b> fails the task closed. Never a silent fallback to the mechanical template.</div>
+      </div>
+      <div class="cmp-card">
+        <div class="agent">DevOps · 042</div>
+        <h3>Picks parameters</h3>
+        <p>Decides <i>parameters</i> fed into existing, unmodified templates — never authors Dockerfile / CI‑YAML itself. Output is <i>executed</i> (docker build, a real pipeline), one stakes-level up.</p>
+        <div class="risk"><b>Failure mode:</b> fails the task closed. Same precedent, restated deliberately.</div>
+      </div>
+      <div class="cmp-card">
+        <div class="agent">Security · 043</div>
+        <h3>Adds commentary</h3>
+        <p>No write path, no approval gate at all — so the model may only append additive commentary. Structurally unable to remove or downgrade a real finding.</p>
+        <div class="risk"><b>Failure mode:</b> stays <span class="mono">completed</span> with findings intact. A departure, reasoned through, not a copy of the other two.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 class="section-title"><span class="n">03</span> The system today</h2>
+    <p class="section-lede">Five agents behind one orchestrator. The amber chip marks where an opt-in LLM harness now lives.</p>
+
+    <div class="agents">
+      <div class="agent-tile"><div class="port">:3001</div><div class="name">planning</div><span class="llm on">LLM harness</span></div>
+      <div class="agent-tile"><div class="port">:3002</div><div class="name">devops</div><span class="llm on">LLM harness</span></div>
+      <div class="agent-tile"><div class="port">:3003</div><div class="name">testing</div><span class="llm off">deterministic</span></div>
+      <div class="agent-tile"><div class="port">:3004</div><div class="name">documentation</div><span class="llm on">LLM harness</span></div>
+      <div class="agent-tile"><div class="port">:3005</div><div class="name">security</div><span class="llm on">LLM harness</span></div>
+    </div>
+    <p class="flow-note">:3000 orchestrator — routes, approves, streams AG‑UI events over SSE to the dashboard and the TUI alike.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 class="section-title"><span class="n">04</span> Next action</h2>
+    <p class="section-lede">In order of what's actually blocking on a decision versus what's simply next in line.</p>
+
+    <div class="next-list">
+      <div class="next-item priority">
+        <div class="num">01</div>
+        <div>
+          <h3>Decide specs/038 <span class="tag">blocked on you</span></h3>
+          <p>Make the adaptive supervisor the default planner, or keep it opt-in. Everything else is unblocked; this one is waiting on a call, not more building.</p>
+        </div>
+      </div>
+      <div class="next-item">
+        <div class="num">02</div>
+        <div>
+          <h3>Confirm the rotated NPM_TOKEN survives an unattended run</h3>
+          <p>The Automation-token fix worked manually this session; not yet re-proven by a tag push with nobody watching.</p>
+        </div>
+      </div>
+      <div class="next-item">
+        <div class="num">03</div>
+        <div>
+          <h3>Try the three new harnesses against a real project of yours</h3>
+          <p>Every scenario so far used disposable scratch projects. Your own project is the next real test.</p>
+        </div>
+      </div>
+      <div class="next-item">
+        <div class="num">04</div>
+        <div>
+          <h3>Team-recorded next step: LLM-based routing</h3>
+          <p>The one open item CLAUDE.md's own roadmap still lists — a supplement to, never a replacement for, the deterministic approval gate.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>Sourced directly from git and this repo's own governed spec catalog — nothing here is estimated.</div>
+    <div class="cmds">git log --reverse --oneline 853b583..HEAD
+git show 853b583:specs/catalog.json &gt; before.json &amp;&amp; diff before.json specs/catalog.json</div>
+    <div>Full narrative in <code>context/worklog.md</code>; live evidence in each spec's own <code>Verification Results</code>.</div>
+  </div>
+</footer>

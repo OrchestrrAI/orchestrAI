@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OrchestrAI — Demo Links</title>
+<link rel="icon" type="image/svg+xml" href="../branding/orchestrai-icon-favicon.svg">
+<style>
+  :root {
+    --bg: #12141c; --surface: #1a1d28; --surface-2: #20232f; --border: #2c3040;
+    --text: #e7e8ee; --text-muted: #9296ab; --text-faint: #6d7284;
+    --accent: #5fc8d8;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, Consolas, monospace;
+    --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .page { max-width: 640px; width: 100%; }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 8px;
+  }
+  h1 { font-size: 26px; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .lede { color: var(--text-muted); font-size: 14px; margin-bottom: 28px; }
+  .note {
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    color: var(--text-faint);
+    margin-bottom: 24px;
+    font-family: var(--font-mono);
+  }
+  .group { margin-bottom: 22px; }
+  .group-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 10px;
+  }
+  .links { display: flex; flex-direction: column; gap: 8px; }
+  a.link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color .15s ease, background .15s ease;
+  }
+  a.link:hover { border-color: var(--accent); background: var(--surface-2); }
+  a.link .name { font-size: 14.5px; font-weight: 600; }
+  a.link .url {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  a.link:hover .url { color: var(--accent); }
+  .port {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px 9px;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
+      <img src="../branding/orchestrai-icon.svg" width="34" height="34" alt="">
+      <span style="font-family: var(--font-mono); font-weight: 600; font-size: 21px;">Orchestr<span style="color: var(--accent);">AI</span></span>
+    </div>
+    <div class="eyebrow">Live-demo reference</div>
+    <h1>Demo links</h1>
+    <p class="lede">Open this before starting the stack — every link below just
+      points at a localhost port, so nothing loads until <code>orchestrai</code>
+      is actually running.</p>
+
+    <div class="note">These will 404 / fail to connect until the stack is up. That's expected — start it, then click through.</div>
+
+    <div class="group">
+      <div class="group-label">Primary — what you'll actually click during the talk</div>
+      <div class="links">
+        <a class="link" href="http://localhost:3000/dashboard" target="_blank" rel="noopener">
+          <span class="name">Orchestrator dashboard</span>
+          <span class="url">localhost:3000/dashboard</span>
+          <span class="port">:3000</span>
+        </a>
+        <a class="link" href="http://localhost:3002/dashboard" target="_blank" rel="noopener">
+          <span class="name">DevOps dashboard</span>
+          <span class="url">localhost:3002/dashboard</span>
+          <span class="port">:3002</span>
+        </a>
+        <a class="link" href="http://localhost:3005/dashboard" target="_blank" rel="noopener">
+          <span class="name">Security dashboard</span>
+          <span class="url">localhost:3005/dashboard</span>
+          <span class="port">:3005</span>
+        </a>
+        <a class="link" href="http://localhost:3000/events" target="_blank" rel="noopener">
+          <span class="name">AG-UI event stream</span>
+          <span class="url">localhost:3000/events</span>
+          <span class="port">:3000</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-label">Rest of the agents — only if a judge asks</div>
+      <div class="links">
+        <a class="link" href="http://localhost:3001/dashboard" target="_blank" rel="noopener">
+          <span class="name">Planning dashboard</span>
+          <span class="url">localhost:3001/dashboard</span>
+          <span class="port">:3001</span>
+        </a>
+        <a class="link" href="http://localhost:3003/dashboard" target="_blank" rel="noopener">
+          <span class="name">Testing dashboard</span>
+          <span class="url">localhost:3003/dashboard</span>
+          <span class="port">:3003</span>
+        </a>
+        <a class="link" href="http://localhost:3004/dashboard" target="_blank" rel="noopener">
+          <span class="name">Documentation dashboard</span>
+          <span class="url">localhost:3004/dashboard</span>
+          <span class="port">:3004</span>
+        </a>
+        <a class="link" href="http://localhost:3006/healthz" target="_blank" rel="noopener">
+          <span class="name">MCP server health</span>
+          <span class="url">localhost:3006/healthz</span>
+          <span class="port">:3006</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

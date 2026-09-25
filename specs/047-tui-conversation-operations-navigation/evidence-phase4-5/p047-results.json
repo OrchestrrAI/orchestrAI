@@ -1,0 +1,58 @@
+[
+  {
+    "label": "00-first-200ms",
+    "note": "earliest possible capture after spawn",
+    "cols": 120,
+    "rows": 40,
+    "hasTooSmall": false
+  },
+  {
+    "label": "01-boot-800ms",
+    "note": "boot at 120x40, real orchestrator on :3000",
+    "cols": 120,
+    "rows": 40,
+    "hasTooSmall": false
+  },
+  {
+    "label": "02-boot-settled",
+    "note": "settled boot, should be Chat mode, no false fallback",
+    "cols": 120,
+    "rows": 40,
+    "hasTooSmall": false
+  },
+  {
+    "label": "03-tasks-mode",
+    "note": "real task list from the already-running stack",
+    "cols": 120,
+    "rows": 40,
+    "hasTooSmall": false
+  },
+  {
+    "label": "04-back-to-chat",
+    "note": "returned to chat mode",
+    "cols": 120,
+    "rows": 40,
+    "hasTooSmall": false
+  },
+  {
+    "label": "05-below-minimum",
+    "note": "resized to 60x20 — should show the real fallback now",
+    "cols": 60,
+    "rows": 20,
+    "hasTooSmall": true
+  },
+  {
+    "label": "06-recovered",
+    "note": "resized back to 120x40 — fallback should clear",
+    "cols": 120,
+    "rows": 40,
+    "hasTooSmall": false
+  },
+  {
+    "label": "07-exact-minimum",
+    "note": "exactly 80x24 — the documented minimum, must be usable not fallback",
+    "cols": 80,
+    "rows": 24,
+    "hasTooSmall": false
+  }
+]

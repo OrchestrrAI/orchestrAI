@@ -1,0 +1,81 @@
+# dependencies (bun install)
+node_modules
+
+# output
+out
+dist
+*.tgz
+
+# compiled standalone binaries and stray build artifacts (specs/
+# standalone-binary-distribution.spec.md) — a bare `bun build --compile`
+# without --outfile pointed at dist/ has landed loose files at the repo
+# root before (orchestrai.exe, .{hash}-00000000.bun-build); never commit
+# a compiled executable regardless of where it ends up.
+/orchestrai
+/orchestrai.exe
+*.bun-build
+
+# code coverage
+coverage
+*.lcov
+
+# logs
+logs
+_.log
+report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+node_modules
+# caches
+.eslintcache
+.cache
+*.tsbuildinfo
+
+# IntelliJ based IDEs
+.idea
+
+# Finder (MacOS) folder config
+.DS_Store
+
+# specs/semantic-intent-fallback.spec.md — fetched by scripts/fetch-model.ts,
+# checksum-verified there; never committed (30 MB of model weights)
+/models
+
+# specs/032-npm-package-distribution/spec.md — scripts/npm-pack-check.ts
+# copies the locally-built dist/bin/* binary into these three PLATFORM
+# packages' bin/ dirs to verify npm package structure/size; the binary
+# itself is never committed (rebuilt/republished by CI from the compiled
+# artifact, matching the "never commit a compiled executable" rule
+# above). Deliberately NOT npm-package/orchestrai/bin/ — that one holds
+# the real, committed dispatcher source (orchestrai.js), not a binary.
+npm-package/windows-x64/bin/*
+npm-package/linux-x64/bin/*
+npm-package/darwin-arm64/bin/*
+.orchestrai
+
+# scripts/build-binary.ts / build-binaries.yml's release job — merged,
+# downloaded release assets from CI artifacts, staged locally for
+# inspection/packaging; never committed (rebuilt by CI, matches the
+# never-commit-a-compiled-executable rule above).
+/release-assets
+
+# Demo/judging prep notes — presenter strategy, not project documentation;
+# kept locally, not version-controlled going forward.
+/context/demo/judge-script.md
+/context/demo/judge-script.docx
+/context/demo/judge-script-cheatsheet.docx
+
+# Local Claude Code tooling config — machine-specific permission allowlists
+# and job-scratch paths (e.g. C:\Users\moham\.claude\jobs\<id>\tmp\...),
+# not useful or safe to share. Same reasoning as .orchestrai/ above.
+# Exception: the shareable, machine-independent workflow assets (agents and
+# slash commands) stay tracked; settings.local.json remains local.
+.claude/*
+!.claude/agents/
+!.claude/commands/
+!.claude/launch.json

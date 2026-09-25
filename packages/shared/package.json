@@ -1,0 +1,14 @@
+{
+  "name": "@orchestrai/shared",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "@ag-ui/core": "0.0.58",
+    "@langchain/anthropic": "^1.5.6",
+    "@langchain/core": "^1.2.8",
+    "@langchain/google": "0.2.2",
+    "@langchain/openai": "^1.5.8",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^3.22.4"
+  }
+}

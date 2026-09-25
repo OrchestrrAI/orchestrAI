@@ -1,0 +1,399 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OrchestrAI — Current Full-Workflow Sequence</title>
+<style>
+  :root {
+    --bg: #f3f5f7;
+    --surface: #ffffff;
+    --surface-2: #eef0f3;
+    --border: #d7dbe2;
+    --text: #1b1e29;
+    --text-muted: #5b606f;
+    --text-faint: #868c9c;
+
+    --mcp: #a3711a;
+    --mcp-bg: rgba(163, 113, 26, 0.10);
+    --a2a: #12798a;
+    --a2a-bg: rgba(18, 121, 138, 0.10);
+    --internal: #5f5796;
+    --internal-bg: rgba(95, 87, 150, 0.10);
+    --classifier: #2f7d4f;
+    --classifier-bg: rgba(47, 125, 79, 0.10);
+    --llm: #a3455f;
+    --llm-bg: rgba(163, 69, 95, 0.10);
+    --agui: #2f5fa8;
+    --agui-bg: rgba(47, 95, 168, 0.10);
+    --gate: #b4442c;
+    --gate-bg: rgba(180, 68, 44, 0.08);
+
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, Consolas, monospace;
+    --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12141c; --surface: #1a1d28; --surface-2: #20232f; --border: #2c3040;
+      --text: #e7e8ee; --text-muted: #9296ab; --text-faint: #6d7284;
+      --mcp: #e0a750; --mcp-bg: rgba(224, 167, 80, 0.13);
+      --a2a: #5fc8d8; --a2a-bg: rgba(95, 200, 216, 0.13);
+      --internal: #a79dd6; --internal-bg: rgba(167, 157, 214, 0.13);
+      --classifier: #6fcf97; --classifier-bg: rgba(111, 207, 151, 0.13);
+      --llm: #e08098; --llm-bg: rgba(224, 128, 152, 0.13);
+      --agui: #7ba7e8; --agui-bg: rgba(123, 167, 232, 0.13);
+      --gate: #f0836a; --gate-bg: rgba(240, 131, 106, 0.10);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #12141c; --surface: #1a1d28; --surface-2: #20232f; --border: #2c3040;
+    --text: #e7e8ee; --text-muted: #9296ab; --text-faint: #6d7284;
+    --mcp: #e0a750; --mcp-bg: rgba(224, 167, 80, 0.13);
+    --a2a: #5fc8d8; --a2a-bg: rgba(95, 200, 216, 0.13);
+    --internal: #a79dd6; --internal-bg: rgba(167, 157, 214, 0.13);
+    --classifier: #6fcf97; --classifier-bg: rgba(111, 207, 151, 0.13);
+    --llm: #e08098; --llm-bg: rgba(224, 128, 152, 0.13);
+    --agui: #7ba7e8; --agui-bg: rgba(123, 167, 232, 0.13);
+    --gate: #f0836a; --gate-bg: rgba(240, 131, 106, 0.10);
+    color-scheme: dark;
+  }
+
+  :root[data-theme="light"] {
+    --bg: #f3f5f7; --surface: #ffffff; --surface-2: #eef0f3; --border: #d7dbe2;
+    --text: #1b1e29; --text-muted: #5b606f; --text-faint: #868c9c;
+    --mcp: #a3711a; --mcp-bg: rgba(163, 113, 26, 0.10);
+    --a2a: #12798a; --a2a-bg: rgba(18, 121, 138, 0.10);
+    --internal: #5f5796; --internal-bg: rgba(95, 87, 150, 0.10);
+    --classifier: #2f7d4f; --classifier-bg: rgba(47, 125, 79, 0.10);
+    --llm: #a3455f; --llm-bg: rgba(163, 69, 95, 0.10);
+    --agui: #2f5fa8; --agui-bg: rgba(47, 95, 168, 0.10);
+    --gate: #b4442c; --gate-bg: rgba(180, 68, 44, 0.08);
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 48px 24px 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  header.top {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  h1 {
+    font-family: var(--font-mono);
+    font-size: 26px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .lede {
+    color: var(--text-muted);
+    max-width: 68ch;
+    font-size: 15px;
+  }
+
+  .stamp {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--text-faint);
+  }
+
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  h2 {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin: 0;
+  }
+
+  p.section-note {
+    margin: 0;
+    color: var(--text-muted);
+    max-width: 70ch;
+  }
+
+  .key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+  }
+
+  .key-item { display: flex; align-items: center; gap: 8px; color: var(--text-muted); }
+  .swatch { width: 26px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+  .swatch.dashed { background: repeating-linear-gradient(to right, currentColor 0 6px, transparent 6px 10px); }
+  .swatch.dotted { background: repeating-linear-gradient(to right, currentColor 0 2.5px, transparent 2.5px 6px); }
+
+  .c-mcp { color: var(--mcp); } .c-a2a { color: var(--a2a); }
+  .c-llm { color: var(--llm); } .c-agui { color: var(--agui); } .c-gate { color: var(--gate); }
+  .swatch.c-mcp, .swatch.c-a2a { background: currentColor; }
+  .swatch.dashed.c-a2a { background: repeating-linear-gradient(to right, var(--a2a) 0 6px, transparent 6px 10px); }
+  .swatch.dashed.c-llm { background: repeating-linear-gradient(to right, var(--llm) 0 6px, transparent 6px 10px); }
+  .swatch.dotted.c-agui { background: repeating-linear-gradient(to right, var(--agui) 0 2.5px, transparent 2.5px 6px); }
+  .swatch.gate-band { background: var(--gate-bg); border: 1px dashed var(--gate); height: 12px; border-radius: 3px; }
+
+  figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+
+  .diagram-frame {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 16px;
+    overflow-x: auto;
+  }
+
+  .diagram-frame svg { display: block; width: 100%; max-width: 100%; height: auto; min-width: 760px; }
+
+  figcaption { font-size: 13px; color: var(--text-muted); max-width: 72ch; }
+
+  .callout {
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gate);
+    background: var(--surface);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .callout h3 { margin: 0 0 6px; font-size: 14px; }
+  .callout p { margin: 0; font-size: 13.5px; color: var(--text-muted); }
+
+  footer.foot {
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--text-faint);
+  }
+</style>
+
+<div class="page">
+
+  <header class="top">
+    <div class="eyebrow">Live-demo reference · OrchestrAI</div>
+    <h1>The current full workflow, hop by hop</h1>
+    <p class="lede">
+      Companion to <code>protocol-cheat-sheet.html</code>'s Fig. 3, extended to the
+      current architecture: the opt-in LLM planning harness, authoritative skill
+      dispatch, and the approval gate. This traces one real run —
+      <code>"setup my project from scratch"</code>, with the LLM harness enabled —
+      from the browser's first request through to a write landing on the gate and
+      the result streaming back out.
+    </p>
+    <p class="stamp">Reflects <code>main</code> @ specs 001–030 · every hop below matches code inspected and, where marked, live-verified this session</p>
+  </header>
+
+  <section aria-labelledby="key-h">
+    <h2 id="key-h">Color key</h2>
+    <div class="key">
+      <span class="key-item"><span class="swatch c-a2a"></span>A2A-style · Orchestrator ↔ Agent</span>
+      <span class="key-item"><span class="swatch c-mcp"></span>MCP · Streamable HTTP tool call</span>
+      <span class="key-item"><span class="swatch dashed c-llm"></span>LLM provider · opt-in, external network call</span>
+      <span class="key-item"><span class="swatch dotted c-agui"></span>AG-UI · SSE event to the browser</span>
+      <span class="key-item"><span class="swatch gate-band"></span>The approval gate — no write executes inside this band without it</span>
+    </div>
+  </section>
+
+  <section aria-labelledby="seq-h">
+    <h2 id="seq-h">Sequence — plan-task with the LLM harness, through to one approved write</h2>
+    <p class="section-note">
+      Six participants. Rows 3–8 are Planning's own tool-calling loop — it can call
+      exactly two <em>read-only</em> MCP tools, enforced when the graph is built, not
+      by a prompt. Rows 10–15 are the part that matters most: the Orchestrator sends
+      the skill it already decided on (never re-derived from free text — this is the
+      spec-030 fix for a real bug this system found live), and the write step cannot
+      execute until a human approves the exact <code>actionId</code>-bound action shown
+      in row 12.
+    </p>
+    <figure>
+      <div class="diagram-frame">
+        <svg viewBox="0 0 1120 930" role="img" aria-label="Sequence diagram: browser submits a plan-task request; the Orchestrator forwards it to Planning with an authoritative selectedSkill and capability snapshot; Planning's LLM harness calls a read-only MCP tool, observes the result, and produces a validated plan; the Orchestrator dispatches the first write step to DevOps with an authoritative skill; DevOps stops at an approval-gated preview; the browser is notified over an AG-UI SSE event, approves, and the Orchestrator forwards the exact actionId to DevOps, which then executes the MCP write tool and reports completion back over another AG-UI event.">
+          <defs>
+            <marker id="ar-a2a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,0 10,5 0,10" style="fill:var(--a2a)"/></marker>
+            <marker id="ar-mcp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,0 10,5 0,10" style="fill:var(--mcp)"/></marker>
+            <marker id="ar-llm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,0 10,5 0,10" style="fill:var(--llm)"/></marker>
+            <marker id="ar-agui" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,0 10,5 0,10" style="fill:var(--agui)"/></marker>
+          </defs>
+
+          <!-- lifelines -->
+          <g style="stroke:var(--border);stroke-width:1.3;stroke-dasharray:3 4">
+            <line x1="80"   y1="55" x2="80"   y2="880" />
+            <line x1="270"  y1="55" x2="270"  y2="880" />
+            <line x1="460"  y1="55" x2="460"  y2="880" />
+            <line x1="650"  y1="55" x2="650"  y2="880" />
+            <line x1="840"  y1="55" x2="840"  y2="880" />
+            <line x1="1030" y1="55" x2="1030" y2="880" />
+          </g>
+
+          <!-- approval-gate band, drawn behind the arrows -->
+          <rect x="20" y="564" width="1070" height="172" rx="8" style="fill:var(--gate-bg);stroke:var(--gate);stroke-width:1.2;stroke-dasharray:5 4" />
+          <text x="34" y="580" style="font:600 10.5px var(--font-mono);fill:var(--gate)">approval gate — rows 12–15</text>
+
+          <!-- lane headers -->
+          <g style="fill:var(--surface-2);stroke:var(--border)">
+            <rect x="20"  y="16" width="120" height="34" rx="7" />
+            <rect x="212" y="16" width="116" height="34" rx="7" />
+            <rect x="395" y="16" width="130" height="34" rx="7" />
+            <rect x="590" y="16" width="120" height="34" rx="7" />
+            <rect x="780" y="16" width="120" height="34" rx="7" />
+            <rect x="970" y="16" width="120" height="34" rx="7" />
+          </g>
+          <g text-anchor="middle" style="font:600 11.5px var(--font-mono);fill:var(--text)">
+            <text x="80"  y="37">Browser</text>
+            <text x="270" y="37">Orchestrator</text>
+            <text x="460" y="37">Planning Agent</text>
+            <text x="650" y="37">LLM Provider</text>
+            <text x="840" y="32">MCP Server</text>
+            <text x="840" y="44" style="font:10.5px var(--font-mono);fill:var(--text-faint)">:3006</text>
+            <text x="1030" y="37">DevOps Agent</text>
+          </g>
+          <text x="650" y="10" text-anchor="middle" style="font:10px var(--font-mono);fill:var(--text-faint)">opt-in — off unless ORCHESTRAI_LLM_HARNESS=1</text>
+
+          <!-- row 1 -->
+          <text x="175" y="94" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--text-muted)">POST /tasks — "setup my project from scratch"</text>
+          <line x1="80" y1="100" x2="270" y2="100" style="stroke:var(--a2a);stroke-width:1.6" marker-end="url(#ar-a2a)" />
+
+          <!-- row 2 -->
+          <text x="365" y="138" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--a2a)">POST / — selectedSkill: plan-task + capabilities</text>
+          <line x1="270" y1="144" x2="460" y2="144" style="stroke:var(--a2a);stroke-width:1.6" marker-end="url(#ar-a2a)" />
+
+          <!-- row 3 -->
+          <text x="555" y="182" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--llm)">decide (tools bound: git_status, analyze_project only)</text>
+          <line x1="460" y1="188" x2="650" y2="188" style="stroke:var(--llm);stroke-width:1.6;stroke-dasharray:6 5" marker-end="url(#ar-llm)" />
+
+          <!-- row 4 -->
+          <text x="555" y="226" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--llm)">tool_call: git_status</text>
+          <line x1="650" y1="232" x2="460" y2="232" style="stroke:var(--llm);stroke-width:1.6;stroke-dasharray:6 5" marker-end="url(#ar-llm)" />
+
+          <!-- row 5 -->
+          <text x="650" y="270" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--mcp)">MCP tool call: git_status</text>
+          <line x1="460" y1="276" x2="840" y2="276" style="stroke:var(--mcp);stroke-width:1.6" marker-end="url(#ar-mcp)" />
+
+          <!-- row 6 -->
+          <text x="650" y="314" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--mcp)">MCP result</text>
+          <line x1="840" y1="320" x2="460" y2="320" style="stroke:var(--mcp);stroke-width:1.6" marker-end="url(#ar-mcp)" />
+
+          <!-- row 7 -->
+          <text x="555" y="358" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--llm)">result fed back → decide again (repeats: analyze_project)</text>
+          <line x1="460" y1="364" x2="650" y2="364" style="stroke:var(--llm);stroke-width:1.6;stroke-dasharray:6 5" marker-end="url(#ar-llm)" />
+
+          <!-- row 8 -->
+          <text x="555" y="402" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--llm)">final plan (schema-validated)</text>
+          <line x1="650" y1="408" x2="460" y2="408" style="stroke:var(--llm);stroke-width:1.6;stroke-dasharray:6 5" marker-end="url(#ar-llm)" />
+
+          <!-- row 9 -->
+          <text x="365" y="446" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--a2a)">plan text — 4 steps</text>
+          <line x1="460" y1="452" x2="270" y2="452" style="stroke:var(--a2a);stroke-width:1.6" marker-end="url(#ar-a2a)" />
+
+          <!-- row 10 -->
+          <text x="650" y="490" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--a2a)">dispatch step — selectedSkill authoritative</text>
+          <line x1="270" y1="496" x2="1030" y2="496" style="stroke:var(--a2a);stroke-width:1.6" marker-end="url(#ar-a2a)" />
+
+          <!-- row 11 -->
+          <text x="935" y="534" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--mcp)">MCP tool call — write, pending approval</text>
+          <line x1="1030" y1="540" x2="840" y2="540" style="stroke:var(--mcp);stroke-width:1.6" marker-end="url(#ar-mcp)" />
+
+          <!-- row 12 -->
+          <text x="650" y="578" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--a2a)">input-required + actionId-bound preview</text>
+          <line x1="1030" y1="584" x2="270" y2="584" style="stroke:var(--a2a);stroke-width:1.6" marker-end="url(#ar-a2a)" />
+
+          <!-- row 13 -->
+          <text x="175" y="622" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--agui)">SSE — CUSTOM orchestrai.approval-required</text>
+          <line x1="270" y1="628" x2="80" y2="628" style="stroke:var(--agui);stroke-width:1.6;stroke-dasharray:2 4" marker-end="url(#ar-agui)" />
+
+          <!-- row 14 -->
+          <text x="175" y="666" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--a2a)">POST /tasks/:id/approve {actionId}</text>
+          <line x1="80" y1="672" x2="270" y2="672" style="stroke:var(--a2a);stroke-width:1.6" marker-end="url(#ar-a2a)" />
+
+          <!-- row 15 -->
+          <text x="650" y="710" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--a2a)">POST /approve {actionId} — forwarded only, never client-supplied</text>
+          <line x1="270" y1="716" x2="1030" y2="716" style="stroke:var(--a2a);stroke-width:1.6" marker-end="url(#ar-a2a)" />
+
+          <!-- row 16 -->
+          <text x="935" y="754" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--mcp)">MCP tool call — execute write</text>
+          <line x1="1030" y1="760" x2="840" y2="760" style="stroke:var(--mcp);stroke-width:1.6" marker-end="url(#ar-mcp)" />
+
+          <!-- row 17 -->
+          <text x="650" y="798" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--a2a)">completed</text>
+          <line x1="1030" y1="804" x2="270" y2="804" style="stroke:var(--a2a);stroke-width:1.6" marker-end="url(#ar-a2a)" />
+
+          <!-- row 18 -->
+          <text x="175" y="842" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--agui)">SSE — RUN_FINISHED (→ browser & TUI, same stream)</text>
+          <line x1="270" y1="848" x2="80" y2="848" style="stroke:var(--agui);stroke-width:1.6;stroke-dasharray:2 4" marker-end="url(#ar-agui)" />
+        </svg>
+      </div>
+      <figcaption>
+        Fig. — rows 3–8 only happen with <code>ORCHESTRAI_LLM_HARNESS=1</code> set; with
+        it unset, Planning goes straight from row 2 to a deterministic keyword plan (row 9)
+        with identical downstream behavior. Row 15's exact wording is load-bearing for the
+        demo: approving through the Orchestrator's own client-facing endpoint (<code>:3000</code>)
+        never accepts an <code>actionId</code> from that request — it only ever forwards the
+        one already stored from row 12. Testing that boundary live means calling
+        <code>:3002</code> (the agent) directly, not <code>:3000</code>.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section aria-labelledby="notes-h">
+    <h2 id="notes-h">Reading notes</h2>
+    <div class="callout">
+      <h3>What's genuinely new vs. the original Fig. 3</h3>
+      <p>
+        Two participants (Planning Agent, LLM Provider) and one new protocol color
+        (LLM, dashed pink). Everything else — the A2A-style envelope, MCP tool calls,
+        AG-UI SSE events, the approval gate's shape — is unchanged from what Fig. 3
+        already documented; this diagram just shows it in a longer, real run instead
+        of the shorter <code>analyze-project</code> one.
+      </p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    context/demo/current-workflow-sequence.html · companion to protocol-cheat-sheet.html (Fig. 3) and status-cheat-sheet.html<br>
+    Sources: apps/orchestrator/index.ts, packages/agents/planning/{llm-harness,index}.ts, specs/021, 026, 027, 030
+  </footer>
+
+</div>

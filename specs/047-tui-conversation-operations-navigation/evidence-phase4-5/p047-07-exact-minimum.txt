@@ -1,0 +1,24 @@
+                                                                                                                      │ 
+ OrchestrAI   [1 Chat]   2 Tasks   3 Agents        ● live · 4/4 agents                                                │ 
+ project: C:\Users\moham\test-target-project   approvals: 0                                                           │ 
+                                                                                                                      │ 
+ ┌────────────────────────────────────────────────────────────────────────────┐                                       │ 
+ │                                                                            │                                       │ 
+ │ Ask a question — "what agents do you have?", "what's my git status?", "is  │                                       │ 
+ │ there test coverage?"                                                      │                                       │ 
+ │                                                                            │                                       │ 
+ │                                                                            │                                       │ 
+ │                                                                            │                                       │ 
+ │                                                                            │                                       │ 
+ │                                                                            │                                       │ 
+ │                                                                            │                                       │ 
+ │                                                                            │                                       │ 
+ │                                                                            │                                       │ 
+ │                                                                            │                                       │ 
+ │                                                                            │                                       │ 
+ │                                                                            │                                       │ 
+ │                                                                            │                                       │ 
+ │                                                                            │                                       │ 
+ └────────────────────────────────────────────────────────────────────────────┘                                       │ 
+ no thread yet · [/] threads · Enter/n type · c new · 1/2/3 modes                                                     │ 
+                                                                                                                      │ 

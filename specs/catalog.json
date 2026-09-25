@@ -1,0 +1,4621 @@
+{
+  "schema_version": 3,
+  "areas": [
+    {
+      "id": "ag-ui",
+      "specs": [
+        "021-ag-ui-event-protocol",
+        "022-ag-ui-demo-stabilization",
+        "027-ag-ui-core-adoption",
+        "141-audit-push-honors-orchestrator-port"
+      ]
+    },
+    {
+      "id": "agent-integration",
+      "specs": [
+        "005-mcp-agent-integration",
+        "011-remaining-agents-mcp",
+        "056-devops-preflight-and-idempotent-writes"
+      ]
+    },
+    {
+      "id": "agent-llm-harnesses",
+      "specs": [
+        "125-configurable-harness-recursion-limit"
+      ]
+    },
+    {
+      "id": "agents",
+      "specs": [
+        "077-agent-enabled-means-llm-on-by-default",
+        "086-code-review-coder-default-on",
+        "090-devops-security-precheck-timeout-too-short",
+        "094-analyze-project-security-precheck-opt-in",
+        "098-harness-recursion-limit-and-clean-failure",
+        "111-testing-documentation-routing-fixes"
+      ]
+    },
+    {
+      "id": "architecture",
+      "specs": [
+        "078-capability-upgrade-roadmap",
+        "101-per-agent-tool-access-expansion",
+        "102-orchestrator-readonly-project-inspection",
+        "106-persistence-store-and-result-cache",
+        "108-durable-audit-trail",
+        "110-approval-state-survives-a-restart"
+      ]
+    },
+    {
+      "id": "ci-cd",
+      "specs": [
+        "019-cicd-recreate-and-binary-builds"
+      ]
+    },
+    {
+      "id": "code-review-agent",
+      "specs": [
+        "082-code-review-agent"
+      ]
+    },
+    {
+      "id": "coder-agent",
+      "specs": [
+        "083-coder-agent",
+        "114-coder-multi-file-edit-and-create",
+        "119-coder-verify-loop-and-reviewer-depth"
+      ]
+    },
+    {
+      "id": "conversation",
+      "specs": [
+        "044-conversational-ask-layer"
+      ]
+    },
+    {
+      "id": "conversational-ask-layer",
+      "specs": [
+        "124-conversation-answer-llm-synthesis"
+      ]
+    },
+    {
+      "id": "dashboard",
+      "specs": [
+        "033-dashboard-approval-preview-card",
+        "035-devops-dashboard-approval-preview-card",
+        "040-approval-preview-content-diff",
+        "046-browser-conversation-operations-workspace",
+        "113-live-audit-log-dashboard"
+      ]
+    },
+    {
+      "id": "deployment",
+      "specs": [
+        "009-dockerization"
+      ]
+    },
+    {
+      "id": "devops-agent",
+      "specs": [
+        "079-phase-a-connect-orphaned-tools",
+        "080-run-command-approved-execution",
+        "103-deep-project-analysis",
+        "143-docker-and-commit-failures-are-failures"
+      ]
+    },
+    {
+      "id": "distribution",
+      "specs": [
+        "017-standalone-binary-distribution",
+        "032-npm-package-distribution"
+      ]
+    },
+    {
+      "id": "documentation",
+      "specs": [
+        "100-document-api-grounded-llm-route-discovery-fallback"
+      ]
+    },
+    {
+      "id": "documentation-agent",
+      "specs": [
+        "002-documentation-agent",
+        "036-document-api-path-fallback",
+        "109-document-api-drift-recheck"
+      ]
+    },
+    {
+      "id": "llm-harness",
+      "specs": [
+        "026-llm-harness-langgraph-planning",
+        "028-orchestrator-langgraph-supervisor",
+        "029-shared-llm-provider-gemini",
+        "038-supervisor-default-and-planning-retirement",
+        "039-per-component-llm-provider-config",
+        "041-llm-harness-documentation",
+        "042-llm-harness-devops",
+        "043-llm-harness-security",
+        "055-provider-call-budgets-and-transient-error-handling",
+        "060-supervisor-parallel-read-only-dispatch",
+        "120-supervisor-parallel-write-dispatch",
+        "134-devops-harness-sees-the-request",
+        "138-model-authored-files-replace-templates"
+      ]
+    },
+    {
+      "id": "mcp",
+      "specs": [
+        "076-run-tests-timeout-mismatch"
+      ]
+    },
+    {
+      "id": "mcp-file-tools",
+      "specs": [
+        "123-safe-env-template-filename-exemption",
+        "129-deny-orchestrai-state-dir"
+      ]
+    },
+    {
+      "id": "orchestrator",
+      "specs": [
+        "051-planning-retirement-and-required-key",
+        "057-project-snapshot-and-cross-request-reuse",
+        "064-supervisor-startup-key-check-non-blocking",
+        "075-real-conversational-chat",
+        "089-plan-step-skip-continue",
+        "091-chat-explain-last-failure",
+        "092-router-classification-conversation-context",
+        "093-conversation-answer-context-blind",
+        "096-router-multi-concern-request-detection",
+        "097-chat-answer-and-plan-description-honesty",
+        "099-tui-port-url-and-analyze-project-stack-awareness",
+        "105-orchestrator-fallback-deep-analysis",
+        "107-task-and-conversation-history",
+        "112-plan-step-no-agent-inspection-fallback",
+        "116-chat-answer-voice-and-collapsed-raw-data",
+        "117-audit-trail-governance-and-investigation",
+        "136-orchestrator-task-and-agent-metadata"
+      ]
+    },
+    {
+      "id": "production-readiness",
+      "specs": [
+        "053-production-readiness-foundation"
+      ]
+    },
+    {
+      "id": "project-targeting",
+      "specs": [
+        "004-configurable-project-paths",
+        "087-target-path-resolver-first-match-bug",
+        "088-target-path-resolver-trailing-colon-bug",
+        "140-target-path-for-and-on-prepositions"
+      ]
+    },
+    {
+      "id": "quality-gates",
+      "specs": [
+        "014-typecheck-ci",
+        "052-ci-plan-task-dispatch-smoke-test",
+        "131-demo-preflight-and-ag-ui-demo-refresh",
+        "142-demo-rehearsal-more-scenarios"
+      ]
+    },
+    {
+      "id": "routing-planning",
+      "specs": [
+        "008-routing-fixes",
+        "015-routing-planning-polish-2",
+        "020-semantic-intent-fallback",
+        "030-authoritative-skill-dispatch-and-capability-catalog",
+        "054-capability-driven-llm-routing",
+        "065-llm-only-skill-routing",
+        "121-skill-description-grounded-routing",
+        "126-write-tests-description-grounded-routing",
+        "128-router-resolves-contextual-replies",
+        "133-supervisor-edit-file-names-its-file",
+        "137-plan-step-acts-only-on-its-own-step"
+      ]
+    },
+    {
+      "id": "runtime-reliability",
+      "specs": [
+        "006-runtime-stabilization",
+        "007-parsing-and-sse-reliability-fixes"
+      ]
+    },
+    {
+      "id": "runtime-supervision",
+      "specs": [
+        "016-orchestrai-supervisor",
+        "018-supervisor-project-path",
+        "045-supervisor-port-preflight-timeout",
+        "066-supervisor-log-suppression-during-tui",
+        "067-supervisor-kill-orphaned-children-on-exit"
+      ]
+    },
+    {
+      "id": "security-agent",
+      "specs": [
+        "003-security-agent",
+        "013-security-skill-detection",
+        "084-security-external-vulnerability-data",
+        "085-multi-ecosystem-dependency-audit"
+      ]
+    },
+    {
+      "id": "spec-governance",
+      "specs": [
+        "023-spec-governance-and-catalog",
+        "024-spec-folder-migration",
+        "025-spec-area-grouping",
+        "104-deferred-work-register",
+        "118-claude-md-size-and-history-relocation"
+      ]
+    },
+    {
+      "id": "supervisor",
+      "specs": [
+        "031-interactive-init-wizard",
+        "034-init-wizard-services-ux",
+        "048-guided-init-experience",
+        "049-guided-init-web-setup",
+        "050-init-per-agent-llm-toggles",
+        "062-guided-init-tui-as-child-process",
+        "063-init-per-component-provider-and-key",
+        "068-init-providers-first-flow-and-model-picker",
+        "070-init-agent-implies-llm-and-model-first-setup",
+        "071-models-view-inline-provider-in-picker",
+        "072-init-form-empty-selection-means-no-agents",
+        "073-configurable-service-ports",
+        "074-fix-exit-backstop-argument-bug",
+        "095-init-models-section-orchestrator-conversation-rows",
+        "122-remove-init-save-and-start",
+        "132-init-multi-provider-keys"
+      ]
+    },
+    {
+      "id": "testing-agent",
+      "specs": [
+        "001-testing-agent",
+        "058-testing-agent-multi-ecosystem-runner-detection",
+        "081-testing-write-tests-skill",
+        "127-write-tests-names-test-file-location"
+      ]
+    },
+    {
+      "id": "tui",
+      "specs": [
+        "010-tui-cli",
+        "012-tui-interactive",
+        "037-tui-approval-preview-card",
+        "047-tui-conversation-operations-navigation",
+        "059-tui-bracketed-paste-support",
+        "069-tui-dashboard-parity-workspace",
+        "115-tui-navigation-redraw-and-answer-clarity",
+        "130-tui-dashboard-parity",
+        "135-tui-80-column-header-and-titles",
+        "139-close-remaining-follow-ups"
+      ]
+    }
+  ],
+  "specs": [
+    {
+      "path": "001-testing-agent/spec.md",
+      "plan_path": null,
+      "verification_path": null,
+      "id": "001-testing-agent",
+      "title": "Testing Agent",
+      "area": "testing-agent",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-08-07",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-07",
+      "implemented_on": "2026-08-07",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "011-remaining-agents-mcp",
+        "015-routing-planning-polish-2",
+        "006-runtime-stabilization"
+      ],
+      "amended_by": [
+        "058-testing-agent-multi-ecosystem-runner-detection"
+      ]
+    },
+    {
+      "path": "002-documentation-agent/spec.md",
+      "plan_path": null,
+      "verification_path": null,
+      "id": "002-documentation-agent",
+      "title": "Documentation Agent",
+      "area": "documentation-agent",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-08-07",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-07",
+      "implemented_on": "2026-08-07",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "011-remaining-agents-mcp",
+        "008-routing-fixes",
+        "006-runtime-stabilization"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "003-security-agent/spec.md",
+      "plan_path": null,
+      "verification_path": null,
+      "id": "003-security-agent",
+      "title": "Security Agent",
+      "area": "security-agent",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-08-07",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-07",
+      "implemented_on": "2026-08-07",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "011-remaining-agents-mcp",
+        "008-routing-fixes",
+        "006-runtime-stabilization",
+        "013-security-skill-detection"
+      ],
+      "amended_by": [
+        "013-security-skill-detection"
+      ]
+    },
+    {
+      "path": "004-configurable-project-paths/spec.md",
+      "plan_path": null,
+      "verification_path": "004-configurable-project-paths/verification.md",
+      "id": "004-configurable-project-paths",
+      "title": "Configurable Target Project Paths",
+      "area": "project-targeting",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-08",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-08",
+      "implemented_on": "2026-08-08",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "018-supervisor-project-path"
+      ],
+      "amended_by": [
+        "007-parsing-and-sse-reliability-fixes",
+        "087-target-path-resolver-first-match-bug",
+        "088-target-path-resolver-trailing-colon-bug"
+      ]
+    },
+    {
+      "path": "005-mcp-agent-integration/spec.md",
+      "plan_path": null,
+      "verification_path": "005-mcp-agent-integration/verification.md",
+      "id": "005-mcp-agent-integration",
+      "title": "MCP Agent Integration and Direct A2A Checkpoint",
+      "area": "agent-integration",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-08",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-08",
+      "implemented_on": "2026-08-08",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "011-remaining-agents-mcp",
+        "006-runtime-stabilization"
+      ],
+      "amended_by": [
+        "011-remaining-agents-mcp",
+        "108-durable-audit-trail"
+      ]
+    },
+    {
+      "path": "006-runtime-stabilization/spec.md",
+      "plan_path": null,
+      "verification_path": "006-runtime-stabilization/verification.md",
+      "id": "006-runtime-stabilization",
+      "title": "Demo Runtime Stabilization and Approval Integrity",
+      "area": "runtime-reliability",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-08",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-08",
+      "implemented_on": "2026-08-08",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "005-mcp-agent-integration",
+        "007-parsing-and-sse-reliability-fixes",
+        "011-remaining-agents-mcp"
+      ],
+      "amended_by": [
+        "007-parsing-and-sse-reliability-fixes",
+        "030-authoritative-skill-dispatch-and-capability-catalog",
+        "080-run-command-approved-execution"
+      ]
+    },
+    {
+      "path": "007-parsing-and-sse-reliability-fixes/spec.md",
+      "plan_path": null,
+      "verification_path": "007-parsing-and-sse-reliability-fixes/verification.md",
+      "id": "007-parsing-and-sse-reliability-fixes",
+      "title": "Target-Path Parsing Fallback and Orchestrator SSE Reliability Fixes",
+      "area": "runtime-reliability",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-08",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-08",
+      "implemented_on": "2026-08-08",
+      "amends": [
+        "004-configurable-project-paths",
+        "006-runtime-stabilization"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "006-runtime-stabilization"
+      ],
+      "amended_by": [
+        "087-target-path-resolver-first-match-bug",
+        "088-target-path-resolver-trailing-colon-bug"
+      ]
+    },
+    {
+      "path": "008-routing-fixes/spec.md",
+      "plan_path": null,
+      "verification_path": "008-routing-fixes/verification.md",
+      "id": "008-routing-fixes",
+      "title": "Orchestrator and Planning Routing Fixes for Documentation and Security",
+      "area": "routing-planning",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-08",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-08",
+      "implemented_on": "2026-08-08",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "002-documentation-agent",
+        "015-routing-planning-polish-2",
+        "003-security-agent"
+      ],
+      "amended_by": [
+        "015-routing-planning-polish-2",
+        "020-semantic-intent-fallback"
+      ]
+    },
+    {
+      "path": "009-dockerization/spec.md",
+      "plan_path": null,
+      "verification_path": "009-dockerization/verification.md",
+      "id": "009-dockerization",
+      "title": "Dockerization of OrchestrAI's Own 7 Services",
+      "area": "deployment",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-08",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-08",
+      "implemented_on": "2026-08-08",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "011-remaining-agents-mcp"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "010-tui-cli/spec.md",
+      "plan_path": null,
+      "verification_path": "010-tui-cli/verification.md",
+      "id": "010-tui-cli",
+      "title": "Minimal Read-Only Terminal UI (OpenTUI)",
+      "area": "tui",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-08-08",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-08",
+      "implemented_on": "2026-08-08",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "012-tui-interactive"
+      ],
+      "amended_by": [
+        "012-tui-interactive"
+      ]
+    },
+    {
+      "path": "011-remaining-agents-mcp/spec.md",
+      "plan_path": null,
+      "verification_path": "011-remaining-agents-mcp/verification.md",
+      "id": "011-remaining-agents-mcp",
+      "title": "Testing and Documentation Agents as MCP Clients",
+      "area": "agent-integration",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-08",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-08",
+      "implemented_on": "2026-08-08",
+      "amends": [
+        "005-mcp-agent-integration"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "002-documentation-agent",
+        "005-mcp-agent-integration",
+        "006-runtime-stabilization",
+        "003-security-agent",
+        "001-testing-agent"
+      ],
+      "amended_by": [
+        "053-production-readiness-foundation",
+        "076-run-tests-timeout-mismatch",
+        "079-phase-a-connect-orphaned-tools",
+        "102-orchestrator-readonly-project-inspection",
+        "123-safe-env-template-filename-exemption",
+        "129-deny-orchestrai-state-dir"
+      ]
+    },
+    {
+      "path": "012-tui-interactive/spec.md",
+      "plan_path": null,
+      "verification_path": "012-tui-interactive/verification.md",
+      "id": "012-tui-interactive",
+      "title": "Interactive TUI — Approve, Reject, and Submit from the Terminal",
+      "area": "tui",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-08-08",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-08",
+      "implemented_on": "2026-08-09",
+      "amends": [
+        "010-tui-cli"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "010-tui-cli"
+      ],
+      "amended_by": [
+        "047-tui-conversation-operations-navigation",
+        "059-tui-bracketed-paste-support",
+        "069-tui-dashboard-parity-workspace",
+        "089-plan-step-skip-continue",
+        "115-tui-navigation-redraw-and-answer-clarity"
+      ]
+    },
+    {
+      "path": "013-security-skill-detection/spec.md",
+      "plan_path": null,
+      "verification_path": "013-security-skill-detection/verification.md",
+      "id": "013-security-skill-detection",
+      "title": "Broaden Security Agent's Own Skill Detection",
+      "area": "security-agent",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-09",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-09",
+      "implemented_on": "2026-08-09",
+      "amends": [
+        "003-security-agent"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "003-security-agent"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "014-typecheck-ci/spec.md",
+      "plan_path": null,
+      "verification_path": "014-typecheck-ci/verification.md",
+      "id": "014-typecheck-ci",
+      "title": "Make Type Checking Reproducible and CI Actually Pass",
+      "area": "quality-gates",
+      "change_type": "governance",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-09",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-09",
+      "implemented_on": "2026-08-09",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "019-cicd-recreate-and-binary-builds"
+      ],
+      "amended_by": [
+        "019-cicd-recreate-and-binary-builds"
+      ]
+    },
+    {
+      "path": "015-routing-planning-polish-2/spec.md",
+      "plan_path": null,
+      "verification_path": "015-routing-planning-polish-2/verification.md",
+      "id": "015-routing-planning-polish-2",
+      "title": "Routing/Planning Polish — Round 2 (Testing routing, ci-substring, \"set up\")",
+      "area": "routing-planning",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-09",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-09",
+      "implemented_on": "2026-08-09",
+      "amends": [
+        "008-routing-fixes"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "008-routing-fixes"
+      ],
+      "amended_by": [
+        "020-semantic-intent-fallback"
+      ]
+    },
+    {
+      "path": "016-orchestrai-supervisor/spec.md",
+      "plan_path": null,
+      "verification_path": "016-orchestrai-supervisor/verification.md",
+      "id": "016-orchestrai-supervisor",
+      "title": "`orchestrai` Process Supervisor",
+      "area": "runtime-supervision",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-09",
+      "updated": "2026-09-01",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-09",
+      "implemented_on": "2026-08-09",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "017-standalone-binary-distribution",
+        "018-supervisor-project-path"
+      ],
+      "amended_by": [
+        "018-supervisor-project-path",
+        "045-supervisor-port-preflight-timeout",
+        "066-supervisor-log-suppression-during-tui",
+        "067-supervisor-kill-orphaned-children-on-exit",
+        "073-configurable-service-ports"
+      ]
+    },
+    {
+      "path": "017-standalone-binary-distribution/spec.md",
+      "plan_path": null,
+      "verification_path": "017-standalone-binary-distribution/verification.md",
+      "id": "017-standalone-binary-distribution",
+      "title": "Standalone Binary Distribution — One Combined Executable",
+      "area": "distribution",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-09",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-09",
+      "implemented_on": "2026-08-09",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "019-cicd-recreate-and-binary-builds",
+        "016-orchestrai-supervisor",
+        "018-supervisor-project-path"
+      ],
+      "amended_by": [
+        "018-supervisor-project-path",
+        "019-cicd-recreate-and-binary-builds"
+      ]
+    },
+    {
+      "path": "018-supervisor-project-path/spec.md",
+      "plan_path": null,
+      "verification_path": "018-supervisor-project-path/verification.md",
+      "id": "018-supervisor-project-path",
+      "title": "Convenient Project-Path Configuration for the Supervisor/Binary",
+      "area": "runtime-supervision",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-09",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-09",
+      "implemented_on": "2026-08-09",
+      "amends": [
+        "016-orchestrai-supervisor",
+        "017-standalone-binary-distribution"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "004-configurable-project-paths",
+        "016-orchestrai-supervisor",
+        "017-standalone-binary-distribution"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "019-cicd-recreate-and-binary-builds/spec.md",
+      "plan_path": null,
+      "verification_path": "019-cicd-recreate-and-binary-builds/verification.md",
+      "id": "019-cicd-recreate-and-binary-builds",
+      "title": "Recreate CI Workflow + Add Cross-Platform Binary Build/Publish",
+      "area": "ci-cd",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-09",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-09",
+      "implemented_on": "2026-08-09",
+      "amends": [
+        "014-typecheck-ci",
+        "017-standalone-binary-distribution"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "017-standalone-binary-distribution",
+        "014-typecheck-ci"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "020-semantic-intent-fallback/spec.md",
+      "plan_path": null,
+      "verification_path": "020-semantic-intent-fallback/verification.md",
+      "id": "020-semantic-intent-fallback",
+      "title": "Semantic Intent Fallback (Model2Vec Static Embeddings)",
+      "area": "routing-planning",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-10",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-10",
+      "implemented_on": "2026-08-10",
+      "amends": [
+        "008-routing-fixes",
+        "015-routing-planning-polish-2"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "015-routing-planning-polish-2"
+      ],
+      "amended_by": [
+        "054-capability-driven-llm-routing",
+        "065-llm-only-skill-routing",
+        "087-target-path-resolver-first-match-bug",
+        "088-target-path-resolver-trailing-colon-bug"
+      ]
+    },
+    {
+      "path": "021-ag-ui-event-protocol/spec.md",
+      "plan_path": null,
+      "verification_path": "021-ag-ui-event-protocol/verification.md",
+      "id": "021-ag-ui-event-protocol",
+      "title": "AG-UI Event Protocol for the Dashboard/TUI Live Layer",
+      "area": "ag-ui",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-10",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-10",
+      "implemented_on": "2026-08-10",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "022-ag-ui-demo-stabilization",
+        "023-spec-governance-and-catalog"
+      ],
+      "amended_by": [
+        "022-ag-ui-demo-stabilization",
+        "027-ag-ui-core-adoption",
+        "108-durable-audit-trail",
+        "113-live-audit-log-dashboard",
+        "131-demo-preflight-and-ag-ui-demo-refresh"
+      ]
+    },
+    {
+      "path": "022-ag-ui-demo-stabilization/spec.md",
+      "plan_path": "022-ag-ui-demo-stabilization/plan.md",
+      "verification_path": "022-ag-ui-demo-stabilization/verification.md",
+      "id": "022-ag-ui-demo-stabilization",
+      "title": "AG-UI Demo and TUI Stabilization",
+      "area": "ag-ui",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-08-16",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-16",
+      "implemented_on": "2026-08-16",
+      "amends": [
+        "021-ag-ui-event-protocol"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "021-ag-ui-event-protocol",
+        "023-spec-governance-and-catalog"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "023-spec-governance-and-catalog/spec.md",
+      "plan_path": null,
+      "verification_path": "023-spec-governance-and-catalog/verification.md",
+      "id": "023-spec-governance-and-catalog",
+      "title": "Spec Governance, Lifecycle Metadata, and Catalog",
+      "area": "spec-governance",
+      "change_type": "governance",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-16",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-16",
+      "implemented_on": "2026-08-16",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "022-ag-ui-demo-stabilization",
+        "024-spec-folder-migration"
+      ],
+      "amended_by": [
+        "024-spec-folder-migration",
+        "025-spec-area-grouping",
+        "118-claude-md-size-and-history-relocation"
+      ]
+    },
+    {
+      "path": "024-spec-folder-migration/spec.md",
+      "plan_path": "024-spec-folder-migration/plan.md",
+      "verification_path": "024-spec-folder-migration/verification.md",
+      "id": "024-spec-folder-migration",
+      "title": "Numbered Feature Folders for Specification Artifacts",
+      "area": "spec-governance",
+      "change_type": "migration",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-16",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-16",
+      "implemented_on": "2026-08-16",
+      "amends": [
+        "023-spec-governance-and-catalog"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "023-spec-governance-and-catalog"
+      ],
+      "amended_by": [
+        "025-spec-area-grouping"
+      ]
+    },
+    {
+      "path": "025-spec-area-grouping/spec.md",
+      "plan_path": "025-spec-area-grouping/plan.md",
+      "verification_path": "025-spec-area-grouping/verification.md",
+      "id": "025-spec-area-grouping",
+      "title": "Specification Area Grouping and Amendment Semantics",
+      "area": "spec-governance",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-16",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-16",
+      "implemented_on": "2026-08-16",
+      "amends": [
+        "023-spec-governance-and-catalog",
+        "024-spec-folder-migration"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "023-spec-governance-and-catalog",
+        "024-spec-folder-migration"
+      ],
+      "amended_by": [
+        "118-claude-md-size-and-history-relocation"
+      ]
+    },
+    {
+      "path": "026-llm-harness-langgraph-planning/spec.md",
+      "plan_path": null,
+      "verification_path": "026-llm-harness-langgraph-planning/verification.md",
+      "id": "026-llm-harness-langgraph-planning",
+      "title": "Opt-In LangGraph Tool-Calling Harness for the Planning Agent",
+      "area": "llm-harness",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-16",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-16",
+      "implemented_on": "2026-08-16",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "020-semantic-intent-fallback",
+        "021-ag-ui-event-protocol",
+        "006-runtime-stabilization",
+        "011-remaining-agents-mcp"
+      ],
+      "amended_by": [
+        "029-shared-llm-provider-gemini",
+        "030-authoritative-skill-dispatch-and-capability-catalog"
+      ]
+    },
+    {
+      "path": "027-ag-ui-core-adoption/spec.md",
+      "plan_path": null,
+      "verification_path": "027-ag-ui-core-adoption/verification.md",
+      "id": "027-ag-ui-core-adoption",
+      "title": "Official AG-UI Core Adoption",
+      "area": "ag-ui",
+      "change_type": "migration",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-16",
+      "updated": "2026-08-20",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-20",
+      "implemented_on": "2026-08-20",
+      "amends": [
+        "021-ag-ui-event-protocol"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "022-ag-ui-demo-stabilization",
+        "028-orchestrator-langgraph-supervisor"
+      ],
+      "amended_by": [
+        "044-conversational-ask-layer",
+        "113-live-audit-log-dashboard"
+      ]
+    },
+    {
+      "path": "028-orchestrator-langgraph-supervisor/spec.md",
+      "plan_path": "028-orchestrator-langgraph-supervisor/plan.md",
+      "verification_path": "028-orchestrator-langgraph-supervisor/verification.md",
+      "id": "028-orchestrator-langgraph-supervisor",
+      "title": "Opt-In LangGraph Adaptive Supervisor for the Orchestrator",
+      "area": "llm-harness",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-16",
+      "updated": "2026-09-01",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-01",
+      "implemented_on": "2026-09-01",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "026-llm-harness-langgraph-planning",
+        "027-ag-ui-core-adoption",
+        "020-semantic-intent-fallback",
+        "006-runtime-stabilization",
+        "021-ag-ui-event-protocol"
+      ],
+      "amended_by": [
+        "038-supervisor-default-and-planning-retirement",
+        "051-planning-retirement-and-required-key",
+        "055-provider-call-budgets-and-transient-error-handling",
+        "060-supervisor-parallel-read-only-dispatch",
+        "089-plan-step-skip-continue",
+        "097-chat-answer-and-plan-description-honesty",
+        "112-plan-step-no-agent-inspection-fallback",
+        "120-supervisor-parallel-write-dispatch",
+        "121-skill-description-grounded-routing",
+        "137-plan-step-acts-only-on-its-own-step"
+      ]
+    },
+    {
+      "path": "029-shared-llm-provider-gemini/spec.md",
+      "plan_path": null,
+      "verification_path": "029-shared-llm-provider-gemini/verification.md",
+      "id": "029-shared-llm-provider-gemini",
+      "title": "Shared LLM Provider Factory and Gemini Support",
+      "area": "llm-harness",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-16",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-16",
+      "implemented_on": "2026-08-16",
+      "amends": [
+        "026-llm-harness-langgraph-planning"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "028-orchestrator-langgraph-supervisor"
+      ],
+      "amended_by": [
+        "039-per-component-llm-provider-config"
+      ]
+    },
+    {
+      "path": "030-authoritative-skill-dispatch-and-capability-catalog/spec.md",
+      "plan_path": "030-authoritative-skill-dispatch-and-capability-catalog/plan.md",
+      "verification_path": "030-authoritative-skill-dispatch-and-capability-catalog/verification.md",
+      "id": "030-authoritative-skill-dispatch-and-capability-catalog",
+      "title": "Authoritative Skill Dispatch and Agent-Card Capability Catalog",
+      "area": "routing-planning",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-16",
+      "updated": "2026-08-16",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-16",
+      "implemented_on": "2026-08-16",
+      "amends": [
+        "006-runtime-stabilization",
+        "026-llm-harness-langgraph-planning"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "028-orchestrator-langgraph-supervisor",
+        "029-shared-llm-provider-gemini"
+      ],
+      "amended_by": [
+        "053-production-readiness-foundation",
+        "097-chat-answer-and-plan-description-honesty",
+        "121-skill-description-grounded-routing"
+      ]
+    },
+    {
+      "path": "031-interactive-init-wizard/spec.md",
+      "plan_path": null,
+      "verification_path": "031-interactive-init-wizard/verification.md",
+      "id": "031-interactive-init-wizard",
+      "title": "Interactive \"orch init\" Setup Wizard",
+      "area": "supervisor",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-21",
+      "updated": "2026-09-01",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-21",
+      "implemented_on": "2026-08-21",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "016-orchestrai-supervisor",
+        "018-supervisor-project-path",
+        "026-llm-harness-langgraph-planning",
+        "029-shared-llm-provider-gemini"
+      ],
+      "amended_by": [
+        "034-init-wizard-services-ux",
+        "048-guided-init-experience",
+        "049-guided-init-web-setup",
+        "050-init-per-agent-llm-toggles",
+        "077-agent-enabled-means-llm-on-by-default"
+      ]
+    },
+    {
+      "path": "032-npm-package-distribution/spec.md",
+      "plan_path": null,
+      "verification_path": "032-npm-package-distribution/verification.md",
+      "id": "032-npm-package-distribution",
+      "title": "npm Package Distribution (bunx/npx orchestrai)",
+      "area": "distribution",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-08-21",
+      "updated": "2026-08-21",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-21",
+      "implemented_on": "2026-08-21",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "017-standalone-binary-distribution",
+        "019-cicd-recreate-and-binary-builds"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "033-dashboard-approval-preview-card/spec.md",
+      "plan_path": null,
+      "verification_path": "033-dashboard-approval-preview-card/verification.md",
+      "id": "033-dashboard-approval-preview-card",
+      "title": "Structured Dashboard Approval-Preview Card",
+      "area": "dashboard",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-21",
+      "updated": "2026-08-21",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-21",
+      "implemented_on": "2026-08-21",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "006-runtime-stabilization",
+        "030-authoritative-skill-dispatch-and-capability-catalog"
+      ],
+      "amended_by": [
+        "035-devops-dashboard-approval-preview-card",
+        "037-tui-approval-preview-card",
+        "040-approval-preview-content-diff",
+        "046-browser-conversation-operations-workspace",
+        "089-plan-step-skip-continue"
+      ]
+    },
+    {
+      "path": "034-init-wizard-services-ux/spec.md",
+      "plan_path": null,
+      "verification_path": "034-init-wizard-services-ux/verification.md",
+      "id": "034-init-wizard-services-ux",
+      "title": "Init Wizard Services Prompt — Numbered Selection, No Infrastructure Choices",
+      "area": "supervisor",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-21",
+      "updated": "2026-09-01",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-21",
+      "implemented_on": "2026-08-21",
+      "amends": [
+        "031-interactive-init-wizard"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "016-orchestrai-supervisor",
+        "018-supervisor-project-path",
+        "032-npm-package-distribution"
+      ],
+      "amended_by": [
+        "048-guided-init-experience",
+        "072-init-form-empty-selection-means-no-agents"
+      ]
+    },
+    {
+      "path": "035-devops-dashboard-approval-preview-card/spec.md",
+      "plan_path": null,
+      "verification_path": "035-devops-dashboard-approval-preview-card/verification.md",
+      "id": "035-devops-dashboard-approval-preview-card",
+      "title": "Extend the Approval-Preview Card to the DevOps Agent's Own Dashboard",
+      "area": "dashboard",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-22",
+      "updated": "2026-09-01",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-22",
+      "implemented_on": "2026-08-22",
+      "amends": [
+        "033-dashboard-approval-preview-card"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "006-runtime-stabilization",
+        "030-authoritative-skill-dispatch-and-capability-catalog"
+      ],
+      "amended_by": [
+        "040-approval-preview-content-diff",
+        "089-plan-step-skip-continue"
+      ]
+    },
+    {
+      "path": "036-document-api-path-fallback/spec.md",
+      "plan_path": null,
+      "verification_path": "036-document-api-path-fallback/verification.md",
+      "id": "036-document-api-path-fallback",
+      "title": "A Bounded Entry-File Fallback for document-api's Explicit-Path Requirement",
+      "area": "documentation-agent",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-08-22",
+      "updated": "2026-08-22",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-08-22",
+      "implemented_on": "2026-08-22",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "004-configurable-project-paths"
+      ],
+      "amended_by": [
+        "100-document-api-grounded-llm-route-discovery-fallback"
+      ]
+    },
+    {
+      "path": "037-tui-approval-preview-card/spec.md",
+      "plan_path": null,
+      "verification_path": "037-tui-approval-preview-card/verification.md",
+      "id": "037-tui-approval-preview-card",
+      "title": "Structured Approval-Preview in the TUI Detail View",
+      "area": "tui",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-01",
+      "updated": "2026-09-01",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-01",
+      "implemented_on": "2026-09-01",
+      "amends": [
+        "033-dashboard-approval-preview-card"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "006-runtime-stabilization",
+        "012-tui-interactive",
+        "030-authoritative-skill-dispatch-and-capability-catalog",
+        "035-devops-dashboard-approval-preview-card"
+      ],
+      "amended_by": [
+        "040-approval-preview-content-diff",
+        "047-tui-conversation-operations-navigation"
+      ]
+    },
+    {
+      "path": "038-supervisor-default-and-planning-retirement/spec.md",
+      "plan_path": "038-supervisor-default-and-planning-retirement/plan.md",
+      "verification_path": "038-supervisor-default-and-planning-retirement/verification.md",
+      "id": "038-supervisor-default-and-planning-retirement",
+      "title": "Adaptive Supervisor as Default Planner; Planning Retirement Deferred",
+      "area": "llm-harness",
+      "change_type": "migration",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-01",
+      "updated": "2026-09-02",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-02",
+      "implemented_on": "2026-09-02",
+      "amends": [
+        "028-orchestrator-langgraph-supervisor"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "020-semantic-intent-fallback",
+        "026-llm-harness-langgraph-planning",
+        "029-shared-llm-provider-gemini",
+        "030-authoritative-skill-dispatch-and-capability-catalog"
+      ],
+      "amended_by": [
+        "051-planning-retirement-and-required-key"
+      ]
+    },
+    {
+      "path": "039-per-component-llm-provider-config/spec.md",
+      "plan_path": null,
+      "verification_path": "039-per-component-llm-provider-config/verification.md",
+      "id": "039-per-component-llm-provider-config",
+      "title": "Per-Component LLM Provider Configuration",
+      "area": "llm-harness",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-01",
+      "updated": "2026-09-01",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-01",
+      "implemented_on": "2026-09-01",
+      "amends": [
+        "029-shared-llm-provider-gemini"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "026-llm-harness-langgraph-planning",
+        "028-orchestrator-langgraph-supervisor",
+        "031-interactive-init-wizard",
+        "034-init-wizard-services-ux"
+      ],
+      "amended_by": [
+        "077-agent-enabled-means-llm-on-by-default",
+        "080-run-command-approved-execution"
+      ]
+    },
+    {
+      "path": "040-approval-preview-content-diff/spec.md",
+      "plan_path": null,
+      "verification_path": "040-approval-preview-content-diff/verification.md",
+      "id": "040-approval-preview-content-diff",
+      "title": "Approval Previews Show Real Content — a Diff When Overwriting",
+      "area": "dashboard",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-01",
+      "updated": "2026-09-02",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-02",
+      "implemented_on": "2026-09-02",
+      "amends": [
+        "033-dashboard-approval-preview-card",
+        "035-devops-dashboard-approval-preview-card",
+        "037-tui-approval-preview-card"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "006-runtime-stabilization",
+        "011-remaining-agents-mcp"
+      ],
+      "amended_by": [
+        "053-production-readiness-foundation",
+        "056-devops-preflight-and-idempotent-writes",
+        "079-phase-a-connect-orphaned-tools",
+        "109-document-api-drift-recheck",
+        "110-approval-state-survives-a-restart",
+        "120-supervisor-parallel-write-dispatch"
+      ]
+    },
+    {
+      "path": "041-llm-harness-documentation/spec.md",
+      "plan_path": null,
+      "verification_path": "041-llm-harness-documentation/verification.md",
+      "id": "041-llm-harness-documentation",
+      "title": "Opt-in LLM Harness for Documentation's Write Skills",
+      "area": "llm-harness",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-02",
+      "updated": "2026-09-02",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-02",
+      "implemented_on": "2026-09-02",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "026-llm-harness-langgraph-planning",
+        "029-shared-llm-provider-gemini",
+        "039-per-component-llm-provider-config",
+        "040-approval-preview-content-diff"
+      ],
+      "amended_by": [
+        "077-agent-enabled-means-llm-on-by-default",
+        "098-harness-recursion-limit-and-clean-failure",
+        "100-document-api-grounded-llm-route-discovery-fallback",
+        "109-document-api-drift-recheck",
+        "111-testing-documentation-routing-fixes",
+        "138-model-authored-files-replace-templates"
+      ]
+    },
+    {
+      "path": "042-llm-harness-devops/spec.md",
+      "plan_path": null,
+      "verification_path": "042-llm-harness-devops/verification.md",
+      "id": "042-llm-harness-devops",
+      "title": "Opt-in LLM Harness for DevOps's Write Skills — Smarter Parameters, Not New Templates",
+      "area": "llm-harness",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-02",
+      "updated": "2026-09-02",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-02",
+      "implemented_on": "2026-09-02",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "026-llm-harness-langgraph-planning",
+        "029-shared-llm-provider-gemini",
+        "039-per-component-llm-provider-config",
+        "040-approval-preview-content-diff",
+        "041-llm-harness-documentation"
+      ],
+      "amended_by": [
+        "077-agent-enabled-means-llm-on-by-default",
+        "080-run-command-approved-execution",
+        "098-harness-recursion-limit-and-clean-failure",
+        "103-deep-project-analysis",
+        "134-devops-harness-sees-the-request",
+        "138-model-authored-files-replace-templates"
+      ]
+    },
+    {
+      "path": "043-llm-harness-security/spec.md",
+      "plan_path": null,
+      "verification_path": "043-llm-harness-security/verification.md",
+      "id": "043-llm-harness-security",
+      "title": "Opt-in LLM Harness for Security — Additive Commentary, Never a Filter",
+      "area": "llm-harness",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-02",
+      "updated": "2026-09-02",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-02",
+      "implemented_on": "2026-09-02",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "011-remaining-agents-mcp",
+        "026-llm-harness-langgraph-planning",
+        "029-shared-llm-provider-gemini",
+        "039-per-component-llm-provider-config",
+        "041-llm-harness-documentation",
+        "042-llm-harness-devops"
+      ],
+      "amended_by": [
+        "077-agent-enabled-means-llm-on-by-default",
+        "090-devops-security-precheck-timeout-too-short"
+      ]
+    },
+    {
+      "path": "044-conversational-ask-layer/spec.md",
+      "plan_path": "044-conversational-ask-layer/plan.md",
+      "verification_path": "044-conversational-ask-layer/verification.md",
+      "id": "044-conversational-ask-layer",
+      "title": "Conversational Ask Layer — Questions, Grounded Answers, and Conversation Threads",
+      "area": "conversation",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-02",
+      "updated": "2026-09-05",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-02",
+      "implemented_on": "2026-09-02",
+      "amends": [
+        "027-ag-ui-core-adoption"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "012-tui-interactive",
+        "020-semantic-intent-fallback",
+        "021-ag-ui-event-protocol",
+        "028-orchestrator-langgraph-supervisor",
+        "030-authoritative-skill-dispatch-and-capability-catalog",
+        "038-supervisor-default-and-planning-retirement",
+        "040-approval-preview-content-diff",
+        "043-llm-harness-security"
+      ],
+      "amended_by": [
+        "046-browser-conversation-operations-workspace",
+        "047-tui-conversation-operations-navigation",
+        "053-production-readiness-foundation",
+        "075-real-conversational-chat",
+        "091-chat-explain-last-failure",
+        "092-router-classification-conversation-context",
+        "093-conversation-answer-context-blind",
+        "097-chat-answer-and-plan-description-honesty",
+        "102-orchestrator-readonly-project-inspection",
+        "107-task-and-conversation-history",
+        "115-tui-navigation-redraw-and-answer-clarity",
+        "116-chat-answer-voice-and-collapsed-raw-data"
+      ]
+    },
+    {
+      "path": "045-supervisor-port-preflight-timeout/spec.md",
+      "plan_path": null,
+      "verification_path": "045-supervisor-port-preflight-timeout/verification.md",
+      "id": "045-supervisor-port-preflight-timeout",
+      "title": "Supervisor Port Preflight — Bounded Timeout, Never a Silent Hang",
+      "area": "runtime-supervision",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-02",
+      "updated": "2026-09-02",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-02",
+      "implemented_on": "2026-09-02",
+      "amends": [
+        "016-orchestrai-supervisor"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "038-supervisor-default-and-planning-retirement"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "046-browser-conversation-operations-workspace/spec.md",
+      "plan_path": "046-browser-conversation-operations-workspace/plan.md",
+      "verification_path": "046-browser-conversation-operations-workspace/verification.md",
+      "id": "046-browser-conversation-operations-workspace",
+      "title": "Browser Conversation and Operations Workspace",
+      "area": "dashboard",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-02",
+      "updated": "2026-09-03",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-02",
+      "implemented_on": "2026-09-03",
+      "amends": [
+        "033-dashboard-approval-preview-card",
+        "044-conversational-ask-layer"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "021-ag-ui-event-protocol",
+        "027-ag-ui-core-adoption",
+        "040-approval-preview-content-diff",
+        "047-tui-conversation-operations-navigation"
+      ],
+      "amended_by": [
+        "113-live-audit-log-dashboard",
+        "115-tui-navigation-redraw-and-answer-clarity",
+        "116-chat-answer-voice-and-collapsed-raw-data"
+      ]
+    },
+    {
+      "path": "047-tui-conversation-operations-navigation/spec.md",
+      "plan_path": "047-tui-conversation-operations-navigation/plan.md",
+      "verification_path": "047-tui-conversation-operations-navigation/verification.md",
+      "id": "047-tui-conversation-operations-navigation",
+      "title": "TUI Conversation and Operations Navigation",
+      "area": "tui",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-02",
+      "updated": "2026-09-06",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-03",
+      "implemented_on": "2026-09-05",
+      "amends": [
+        "012-tui-interactive",
+        "037-tui-approval-preview-card",
+        "044-conversational-ask-layer"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "021-ag-ui-event-protocol",
+        "027-ag-ui-core-adoption",
+        "040-approval-preview-content-diff",
+        "046-browser-conversation-operations-workspace"
+      ],
+      "amended_by": [
+        "053-production-readiness-foundation",
+        "115-tui-navigation-redraw-and-answer-clarity"
+      ]
+    },
+    {
+      "path": "048-guided-init-experience/spec.md",
+      "plan_path": "048-guided-init-experience/plan.md",
+      "verification_path": "048-guided-init-experience/verification.md",
+      "id": "048-guided-init-experience",
+      "title": "Guided Init — TUI Setup Form and Launch Handoff",
+      "area": "supervisor",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-04",
+      "updated": "2026-09-05",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-04",
+      "implemented_on": "2026-09-04",
+      "amends": [
+        "031-interactive-init-wizard",
+        "034-init-wizard-services-ux"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "012-tui-interactive",
+        "016-orchestrai-supervisor",
+        "017-standalone-binary-distribution",
+        "018-supervisor-project-path",
+        "032-npm-package-distribution",
+        "039-per-component-llm-provider-config",
+        "047-tui-conversation-operations-navigation",
+        "049-guided-init-web-setup"
+      ],
+      "amended_by": [
+        "050-init-per-agent-llm-toggles",
+        "053-production-readiness-foundation",
+        "059-tui-bracketed-paste-support",
+        "062-guided-init-tui-as-child-process",
+        "072-init-form-empty-selection-means-no-agents",
+        "073-configurable-service-ports",
+        "122-remove-init-save-and-start"
+      ]
+    },
+    {
+      "path": "049-guided-init-web-setup/spec.md",
+      "plan_path": null,
+      "verification_path": "049-guided-init-web-setup/verification.md",
+      "id": "049-guided-init-web-setup",
+      "title": "Guided Init — Browser Setup Page",
+      "area": "supervisor",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-04",
+      "updated": "2026-09-07",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-04",
+      "implemented_on": "2026-09-07",
+      "amends": [
+        "031-interactive-init-wizard"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "005-mcp-agent-integration",
+        "018-supervisor-project-path",
+        "032-npm-package-distribution",
+        "040-approval-preview-content-diff",
+        "046-browser-conversation-operations-workspace",
+        "048-guided-init-experience"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "050-init-per-agent-llm-toggles/spec.md",
+      "plan_path": "050-init-per-agent-llm-toggles/plan.md",
+      "verification_path": "050-init-per-agent-llm-toggles/verification.md",
+      "id": "050-init-per-agent-llm-toggles",
+      "title": "Init — Per-Agent LLM Toggles, Model Overrides, and Non-Destructive Config Writes",
+      "area": "supervisor",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-04",
+      "updated": "2026-09-05",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-04",
+      "implemented_on": "2026-09-05",
+      "amends": [
+        "031-interactive-init-wizard",
+        "048-guided-init-experience"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "034-init-wizard-services-ux",
+        "038-supervisor-default-and-planning-retirement",
+        "039-per-component-llm-provider-config",
+        "041-llm-harness-documentation",
+        "042-llm-harness-devops",
+        "043-llm-harness-security"
+      ],
+      "amended_by": [
+        "063-init-per-component-provider-and-key",
+        "070-init-agent-implies-llm-and-model-first-setup",
+        "071-models-view-inline-provider-in-picker"
+      ]
+    },
+    {
+      "path": "051-planning-retirement-and-required-key/spec.md",
+      "plan_path": "051-planning-retirement-and-required-key/plan.md",
+      "verification_path": "051-planning-retirement-and-required-key/verification.md",
+      "id": "051-planning-retirement-and-required-key",
+      "title": "Planning Agent Retirement and a Required Provider Key",
+      "area": "orchestrator",
+      "change_type": "migration",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-05",
+      "updated": "2026-09-05",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-05",
+      "implemented_on": "2026-09-05",
+      "amends": [
+        "038-supervisor-default-and-planning-retirement",
+        "028-orchestrator-langgraph-supervisor"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "026-llm-harness-langgraph-planning",
+        "028-orchestrator-langgraph-supervisor",
+        "030-authoritative-skill-dispatch-and-capability-catalog",
+        "039-per-component-llm-provider-config",
+        "050-init-per-agent-llm-toggles"
+      ],
+      "amended_by": [
+        "064-supervisor-startup-key-check-non-blocking"
+      ]
+    },
+    {
+      "path": "052-ci-plan-task-dispatch-smoke-test/spec.md",
+      "plan_path": null,
+      "verification_path": "052-ci-plan-task-dispatch-smoke-test/verification.md",
+      "id": "052-ci-plan-task-dispatch-smoke-test",
+      "title": "CI Smoke Test — plan-task and suggest-agents Actually Dispatch",
+      "area": "quality-gates",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-05",
+      "updated": "2026-09-05",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-05",
+      "implemented_on": "2026-09-05",
+      "amends": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "014-typecheck-ci",
+        "015-routing-planning-polish-2",
+        "019-cicd-recreate-and-binary-builds",
+        "051-planning-retirement-and-required-key"
+      ],
+      "amended_by": [
+        "065-llm-only-skill-routing"
+      ]
+    },
+    {
+      "path": "053-production-readiness-foundation/spec.md",
+      "plan_path": "053-production-readiness-foundation/plan.md",
+      "verification_path": null,
+      "id": "053-production-readiness-foundation",
+      "title": "Production-Readiness Foundation — Capability Routing, Project-Aware Operations, Testing, and TUI Input",
+      "area": "production-readiness",
+      "change_type": "enhancement",
+      "status": "archived",
+      "verification": "not-applicable",
+      "created": "2026-09-05",
+      "updated": "2026-09-05",
+      "approved_by": null,
+      "approved_on": null,
+      "implemented_on": null,
+      "amends": [
+        "011-remaining-agents-mcp",
+        "030-authoritative-skill-dispatch-and-capability-catalog",
+        "040-approval-preview-content-diff",
+        "044-conversational-ask-layer",
+        "047-tui-conversation-operations-navigation",
+        "048-guided-init-experience"
+      ],
+      "supersedes": [],
+      "superseded_by": [
+        "054-capability-driven-llm-routing",
+        "055-provider-call-budgets-and-transient-error-handling",
+        "056-devops-preflight-and-idempotent-writes",
+        "057-project-snapshot-and-cross-request-reuse",
+        "058-testing-agent-multi-ecosystem-runner-detection",
+        "059-tui-bracketed-paste-support"
+      ],
+      "related": [
+        "020-semantic-intent-fallback",
+        "028-orchestrator-langgraph-supervisor",
+        "029-shared-llm-provider-gemini",
+        "039-per-component-llm-provider-config",
+        "042-llm-harness-devops",
+        "045-supervisor-port-preflight-timeout",
+        "051-planning-retirement-and-required-key",
+        "052-ci-plan-task-dispatch-smoke-test"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "054-capability-driven-llm-routing/spec.md",
+      "plan_path": null,
+      "verification_path": "054-capability-driven-llm-routing/verification.md",
+      "id": "054-capability-driven-llm-routing",
+      "title": "Capability-Driven LLM Routing Tier, Validated Against Live Agent Cards",
+      "area": "routing-planning",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-05",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-06",
+      "implemented_on": "2026-09-06",
+      "amends": [
+        "020-semantic-intent-fallback"
+      ],
+      "supersedes": [
+        "053-production-readiness-foundation"
+      ],
+      "superseded_by": [],
+      "related": [
+        "030-authoritative-skill-dispatch-and-capability-catalog",
+        "028-orchestrator-langgraph-supervisor",
+        "051-planning-retirement-and-required-key"
+      ],
+      "amended_by": [
+        "065-llm-only-skill-routing",
+        "075-real-conversational-chat",
+        "092-router-classification-conversation-context"
+      ]
+    },
+    {
+      "path": "055-provider-call-budgets-and-transient-error-handling/spec.md",
+      "plan_path": null,
+      "verification_path": "055-provider-call-budgets-and-transient-error-handling/verification.md",
+      "id": "055-provider-call-budgets-and-transient-error-handling",
+      "title": "Provider Call Budgets and Transient-vs-Terminal Error Handling",
+      "area": "llm-harness",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-05",
+      "updated": "2026-09-14",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-08",
+      "implemented_on": "2026-09-08",
+      "amends": [
+        "028-orchestrator-langgraph-supervisor"
+      ],
+      "supersedes": [
+        "053-production-readiness-foundation"
+      ],
+      "superseded_by": [],
+      "related": [
+        "026-llm-harness-langgraph-planning",
+        "029-shared-llm-provider-gemini",
+        "039-per-component-llm-provider-config",
+        "051-planning-retirement-and-required-key"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "056-devops-preflight-and-idempotent-writes/spec.md",
+      "plan_path": null,
+      "verification_path": "056-devops-preflight-and-idempotent-writes/verification.md",
+      "id": "056-devops-preflight-and-idempotent-writes",
+      "title": "DevOps Preflight and Idempotent Writes — Never a Silent Overwrite",
+      "area": "agent-integration",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-05",
+      "updated": "2026-09-06",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-06",
+      "implemented_on": "2026-09-06",
+      "amends": [
+        "040-approval-preview-content-diff"
+      ],
+      "supersedes": [
+        "053-production-readiness-foundation"
+      ],
+      "superseded_by": [],
+      "related": [
+        "042-llm-harness-devops",
+        "057-project-snapshot-and-cross-request-reuse"
+      ],
+      "amended_by": [
+        "079-phase-a-connect-orphaned-tools",
+        "109-document-api-drift-recheck",
+        "110-approval-state-survives-a-restart"
+      ]
+    },
+    {
+      "path": "057-project-snapshot-and-cross-request-reuse/spec.md",
+      "plan_path": null,
+      "verification_path": "057-project-snapshot-and-cross-request-reuse/verification.md",
+      "id": "057-project-snapshot-and-cross-request-reuse",
+      "title": "Project Snapshot and Safe Cross-Request Read Reuse",
+      "area": "orchestrator",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-05",
+      "updated": "2026-09-06",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-06",
+      "implemented_on": "2026-09-06",
+      "amends": [],
+      "supersedes": [
+        "053-production-readiness-foundation"
+      ],
+      "superseded_by": [],
+      "related": [
+        "044-conversational-ask-layer",
+        "056-devops-preflight-and-idempotent-writes"
+      ],
+      "amended_by": [
+        "102-orchestrator-readonly-project-inspection",
+        "103-deep-project-analysis",
+        "106-persistence-store-and-result-cache"
+      ]
+    },
+    {
+      "path": "058-testing-agent-multi-ecosystem-runner-detection/spec.md",
+      "plan_path": null,
+      "verification_path": "058-testing-agent-multi-ecosystem-runner-detection/verification.md",
+      "id": "058-testing-agent-multi-ecosystem-runner-detection",
+      "title": "Testing Agent — Real Multi-Ecosystem Runner Detection, Never a Guess",
+      "area": "testing-agent",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-05",
+      "updated": "2026-09-06",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-06",
+      "implemented_on": "2026-09-06",
+      "amends": [
+        "001-testing-agent"
+      ],
+      "supersedes": [
+        "053-production-readiness-foundation"
+      ],
+      "superseded_by": [],
+      "related": [
+        "044-conversational-ask-layer",
+        "057-project-snapshot-and-cross-request-reuse"
+      ],
+      "amended_by": [
+        "080-run-command-approved-execution",
+        "111-testing-documentation-routing-fixes"
+      ]
+    },
+    {
+      "path": "059-tui-bracketed-paste-support/spec.md",
+      "plan_path": null,
+      "verification_path": "059-tui-bracketed-paste-support/verification.md",
+      "id": "059-tui-bracketed-paste-support",
+      "title": "TUI and Guided-Init Bracketed Paste Support",
+      "area": "tui",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-05",
+      "updated": "2026-09-07",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-07",
+      "implemented_on": "2026-09-07",
+      "amends": [
+        "012-tui-interactive",
+        "048-guided-init-experience"
+      ],
+      "supersedes": [
+        "053-production-readiness-foundation"
+      ],
+      "superseded_by": [],
+      "related": [
+        "047-tui-conversation-operations-navigation"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "060-supervisor-parallel-read-only-dispatch/spec.md",
+      "plan_path": null,
+      "verification_path": "060-supervisor-parallel-read-only-dispatch/verification.md",
+      "id": "060-supervisor-parallel-read-only-dispatch",
+      "title": "Adaptive Supervisor — Parallel Dispatch, Read-Only Steps First",
+      "area": "llm-harness",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-06",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-06",
+      "implemented_on": "2026-09-06",
+      "amends": [
+        "028-orchestrator-langgraph-supervisor"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "038-supervisor-default-and-planning-retirement",
+        "051-planning-retirement-and-required-key"
+      ],
+      "amended_by": [
+        "120-supervisor-parallel-write-dispatch"
+      ]
+    },
+    {
+      "path": "062-guided-init-tui-as-child-process/spec.md",
+      "plan_path": null,
+      "verification_path": "062-guided-init-tui-as-child-process/verification.md",
+      "id": "062-guided-init-tui-as-child-process",
+      "title": "Guided Init — Spawn the Auto-Launched TUI as a Separate Process",
+      "area": "supervisor",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-06",
+      "updated": "2026-09-06",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-06",
+      "implemented_on": "2026-09-06",
+      "amends": [
+        "048-guided-init-experience"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "012-tui-interactive",
+        "016-orchestrai-supervisor",
+        "017-standalone-binary-distribution",
+        "047-tui-conversation-operations-navigation"
+      ],
+      "amended_by": [
+        "066-supervisor-log-suppression-during-tui"
+      ]
+    },
+    {
+      "path": "063-init-per-component-provider-and-key/spec.md",
+      "plan_path": null,
+      "verification_path": "063-init-per-component-provider-and-key/verification.md",
+      "id": "063-init-per-component-provider-and-key",
+      "title": "Init — Provider Credentials Tab and Live Per-Agent Model Discovery",
+      "area": "supervisor",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-09",
+      "updated": "2026-09-10",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-10",
+      "implemented_on": "2026-09-10",
+      "amends": [
+        "050-init-per-agent-llm-toggles"
+      ],
+      "related": [
+        "039-per-component-llm-provider-config",
+        "031-interactive-init-wizard",
+        "048-guided-init-experience",
+        "049-guided-init-web-setup",
+        "045-supervisor-port-preflight-timeout"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "068-init-providers-first-flow-and-model-picker",
+        "070-init-agent-implies-llm-and-model-first-setup",
+        "071-models-view-inline-provider-in-picker",
+        "132-init-multi-provider-keys"
+      ]
+    },
+    {
+      "path": "064-supervisor-startup-key-check-non-blocking/spec.md",
+      "plan_path": null,
+      "verification_path": "064-supervisor-startup-key-check-non-blocking/verification.md",
+      "id": "064-supervisor-startup-key-check-non-blocking",
+      "title": "Supervisor Startup Key Check — Warn, Don't Block",
+      "area": "orchestrator",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-09",
+      "updated": "2026-09-10",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-10",
+      "implemented_on": "2026-09-10",
+      "amends": [
+        "051-planning-retirement-and-required-key"
+      ],
+      "related": [
+        "039-per-component-llm-provider-config",
+        "016-orchestrai-supervisor"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": []
+    },
+    {
+      "path": "065-llm-only-skill-routing/spec.md",
+      "plan_path": null,
+      "verification_path": "065-llm-only-skill-routing/verification.md",
+      "id": "065-llm-only-skill-routing",
+      "title": "LLM-Only Skill Routing — Retire Keyword Matching and the Local Classifier",
+      "area": "routing-planning",
+      "change_type": "migration",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-09",
+      "updated": "2026-09-10",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-10",
+      "implemented_on": "2026-09-10",
+      "amends": [
+        "020-semantic-intent-fallback",
+        "054-capability-driven-llm-routing",
+        "052-ci-plan-task-dispatch-smoke-test"
+      ],
+      "related": [
+        "030-authoritative-skill-dispatch-and-capability-catalog",
+        "051-planning-retirement-and-required-key",
+        "064-supervisor-startup-key-check-non-blocking"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "075-real-conversational-chat",
+        "092-router-classification-conversation-context",
+        "096-router-multi-concern-request-detection",
+        "102-orchestrator-readonly-project-inspection"
+      ]
+    },
+    {
+      "path": "066-supervisor-log-suppression-during-tui/spec.md",
+      "plan_path": null,
+      "verification_path": "066-supervisor-log-suppression-during-tui/verification.md",
+      "id": "066-supervisor-log-suppression-during-tui",
+      "title": "Suppress Raw Backend Logs Once the Auto-Launched TUI Owns the Terminal",
+      "area": "runtime-supervision",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-10",
+      "updated": "2026-09-10",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-10",
+      "implemented_on": "2026-09-10",
+      "amends": [
+        "016-orchestrai-supervisor",
+        "062-guided-init-tui-as-child-process"
+      ],
+      "related": [
+        "021-ag-ui-event-protocol"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": []
+    },
+    {
+      "path": "067-supervisor-kill-orphaned-children-on-exit/spec.md",
+      "plan_path": null,
+      "verification_path": "067-supervisor-kill-orphaned-children-on-exit/verification.md",
+      "id": "067-supervisor-kill-orphaned-children-on-exit",
+      "title": "Supervisor — Kill Child Services on Any Parent Exit, Including Window Close",
+      "area": "runtime-supervision",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-10",
+      "updated": "2026-09-10",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-10",
+      "implemented_on": "2026-09-10",
+      "amends": [
+        "016-orchestrai-supervisor"
+      ],
+      "related": [
+        "045-supervisor-port-preflight-timeout",
+        "062-guided-init-tui-as-child-process"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "074-fix-exit-backstop-argument-bug"
+      ]
+    },
+    {
+      "path": "068-init-providers-first-flow-and-model-picker/spec.md",
+      "plan_path": null,
+      "verification_path": "068-init-providers-first-flow-and-model-picker/verification.md",
+      "id": "068-init-providers-first-flow-and-model-picker",
+      "title": "Guided Init — Providers-First Flow and a Real Model Picker",
+      "area": "supervisor",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-10",
+      "updated": "2026-09-10",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-10",
+      "implemented_on": "2026-09-10",
+      "amends": [
+        "063-init-per-component-provider-and-key"
+      ],
+      "related": [
+        "048-guided-init-experience",
+        "050-init-per-agent-llm-toggles",
+        "031-interactive-init-wizard"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "070-init-agent-implies-llm-and-model-first-setup",
+        "071-models-view-inline-provider-in-picker"
+      ]
+    },
+    {
+      "path": "069-tui-dashboard-parity-workspace/spec.md",
+      "plan_path": "069-tui-dashboard-parity-workspace/plan.md",
+      "verification_path": "069-tui-dashboard-parity-workspace/verification.md",
+      "id": "069-tui-dashboard-parity-workspace",
+      "title": "TUI — Dashboard-Parity Three-Panel Workspace",
+      "area": "tui",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-10",
+      "updated": "2026-09-12",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-10",
+      "implemented_on": "2026-09-10",
+      "amends": [
+        "012-tui-interactive"
+      ],
+      "related": [
+        "046-browser-conversation-operations-workspace",
+        "044-conversational-ask-layer",
+        "047-tui-conversation-operations-navigation",
+        "021-ag-ui-event-protocol"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "115-tui-navigation-redraw-and-answer-clarity",
+        "130-tui-dashboard-parity",
+        "135-tui-80-column-header-and-titles"
+      ]
+    },
+    {
+      "path": "070-init-agent-implies-llm-and-model-first-setup/spec.md",
+      "plan_path": null,
+      "verification_path": "070-init-agent-implies-llm-and-model-first-setup/verification.md",
+      "id": "070-init-agent-implies-llm-and-model-first-setup",
+      "title": "Guided Init — Agent Selection Implies LLM, and a Model-First Setup Screen",
+      "area": "supervisor",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "pending",
+      "created": "2026-09-10",
+      "updated": "2026-09-10",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-10",
+      "implemented_on": "2026-09-10",
+      "amends": [
+        "050-init-per-agent-llm-toggles",
+        "068-init-providers-first-flow-and-model-picker",
+        "063-init-per-component-provider-and-key"
+      ],
+      "related": [
+        "048-guided-init-experience",
+        "031-interactive-init-wizard"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "071-models-view-inline-provider-in-picker",
+        "132-init-multi-provider-keys"
+      ]
+    },
+    {
+      "path": "071-models-view-inline-provider-in-picker/spec.md",
+      "plan_path": null,
+      "verification_path": "071-models-view-inline-provider-in-picker/verification.md",
+      "id": "071-models-view-inline-provider-in-picker",
+      "title": "Fold Per-Agent Model & Provider Selection Into the Setup Screen (Retire the Models View)",
+      "area": "supervisor",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "pending",
+      "created": "2026-09-11",
+      "updated": "2026-09-11",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-11",
+      "implemented_on": "2026-09-11",
+      "amends": [
+        "050-init-per-agent-llm-toggles",
+        "063-init-per-component-provider-and-key",
+        "068-init-providers-first-flow-and-model-picker",
+        "070-init-agent-implies-llm-and-model-first-setup"
+      ],
+      "related": [
+        "048-guided-init-experience"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "072-init-form-empty-selection-means-no-agents",
+        "073-configurable-service-ports",
+        "095-init-models-section-orchestrator-conversation-rows",
+        "132-init-multi-provider-keys"
+      ]
+    },
+    {
+      "path": "072-init-form-empty-selection-means-no-agents/spec.md",
+      "plan_path": null,
+      "verification_path": "072-init-form-empty-selection-means-no-agents/verification.md",
+      "id": "072-init-form-empty-selection-means-no-agents",
+      "title": "Guided Init Forms — An Explicitly Empty Agent Selection Means No Agents, Not All",
+      "area": "supervisor",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-11",
+      "updated": "2026-09-11",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-11",
+      "implemented_on": "2026-09-11",
+      "amends": [
+        "034-init-wizard-services-ux",
+        "048-guided-init-experience",
+        "071-models-view-inline-provider-in-picker"
+      ],
+      "related": [
+        "049-guided-init-web-setup"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "102-orchestrator-readonly-project-inspection"
+      ]
+    },
+    {
+      "path": "073-configurable-service-ports/spec.md",
+      "plan_path": null,
+      "verification_path": "073-configurable-service-ports/verification.md",
+      "id": "073-configurable-service-ports",
+      "title": "Configurable Service Ports (Env-Var Plumbing + Guided Init UI)",
+      "area": "supervisor",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-11",
+      "updated": "2026-09-11",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-11",
+      "implemented_on": "2026-09-11",
+      "amends": [
+        "016-orchestrai-supervisor",
+        "048-guided-init-experience",
+        "071-models-view-inline-provider-in-picker"
+      ],
+      "related": [
+        "039-per-component-llm-provider-config",
+        "034-init-wizard-services-ux"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "099-tui-port-url-and-analyze-project-stack-awareness",
+        "141-audit-push-honors-orchestrator-port"
+      ]
+    },
+    {
+      "path": "074-fix-exit-backstop-argument-bug/spec.md",
+      "plan_path": null,
+      "verification_path": "074-fix-exit-backstop-argument-bug/verification.md",
+      "id": "074-fix-exit-backstop-argument-bug",
+      "title": "Fix the Supervisor's exit Backstop — killAllChildrenSync Never Actually Ran",
+      "area": "supervisor",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-11",
+      "updated": "2026-09-11",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-11",
+      "implemented_on": "2026-09-11",
+      "amends": [
+        "067-supervisor-kill-orphaned-children-on-exit"
+      ],
+      "related": [
+        "073-configurable-service-ports"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": []
+    },
+    {
+      "path": "075-real-conversational-chat/spec.md",
+      "plan_path": null,
+      "verification_path": "075-real-conversational-chat/verification.md",
+      "id": "075-real-conversational-chat",
+      "title": "Make Chat a Real Conversation — LLM-Classified Intent, Live Progress, Real Findings",
+      "area": "orchestrator",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-11",
+      "updated": "2026-09-14",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-14",
+      "implemented_on": "2026-09-14",
+      "amends": [
+        "044-conversational-ask-layer",
+        "054-capability-driven-llm-routing",
+        "065-llm-only-skill-routing"
+      ],
+      "related": [
+        "028-orchestrator-langgraph-supervisor",
+        "069-tui-dashboard-parity-workspace"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "091-chat-explain-last-failure",
+        "092-router-classification-conversation-context",
+        "093-conversation-answer-context-blind",
+        "102-orchestrator-readonly-project-inspection",
+        "112-plan-step-no-agent-inspection-fallback",
+        "128-router-resolves-contextual-replies"
+      ]
+    },
+    {
+      "path": "076-run-tests-timeout-mismatch/spec.md",
+      "plan_path": null,
+      "verification_path": "076-run-tests-timeout-mismatch/verification.md",
+      "id": "076-run-tests-timeout-mismatch",
+      "title": "run-tests Always Times Out on a Real Project — Client Timeout Shorter Than the Runner's Own Budget",
+      "area": "mcp",
+      "change_type": "fix",
+      "status": "archived",
+      "verification": "not-applicable",
+      "created": "2026-09-12",
+      "updated": "2026-09-12",
+      "approved_by": null,
+      "approved_on": null,
+      "implemented_on": null,
+      "amends": [
+        "011-remaining-agents-mcp"
+      ],
+      "related": [
+        "006-runtime-stabilization",
+        "080-run-command-approved-execution"
+      ],
+      "supersedes": [],
+      "superseded_by": [
+        "080-run-command-approved-execution"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "077-agent-enabled-means-llm-on-by-default/spec.md",
+      "plan_path": null,
+      "verification_path": "077-agent-enabled-means-llm-on-by-default/verification.md",
+      "id": "077-agent-enabled-means-llm-on-by-default",
+      "title": "Selecting/Starting an Agent Enables Its LLM Harness by Default",
+      "area": "agents",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "pending",
+      "created": "2026-09-12",
+      "updated": "2026-09-14",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-14",
+      "implemented_on": "2026-09-14",
+      "amends": [
+        "039-per-component-llm-provider-config",
+        "041-llm-harness-documentation",
+        "042-llm-harness-devops",
+        "043-llm-harness-security",
+        "031-interactive-init-wizard",
+        "080-run-command-approved-execution"
+      ],
+      "related": [
+        "070-init-agent-implies-llm-and-model-first-setup",
+        "064-supervisor-startup-key-check-non-blocking"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "086-code-review-coder-default-on",
+        "090-devops-security-precheck-timeout-too-short"
+      ]
+    },
+    {
+      "path": "078-capability-upgrade-roadmap/spec.md",
+      "plan_path": "078-capability-upgrade-roadmap/plan.md",
+      "verification_path": "078-capability-upgrade-roadmap/verification.md",
+      "id": "078-capability-upgrade-roadmap",
+      "title": "System-Wide Capability Upgrade Roadmap",
+      "area": "architecture",
+      "change_type": "governance",
+      "status": "approved",
+      "verification": "pending",
+      "created": "2026-09-12",
+      "updated": "2026-09-12",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-12",
+      "implemented_on": null,
+      "amends": [],
+      "related": [
+        "005-mcp-agent-integration",
+        "011-remaining-agents-mcp",
+        "058-testing-agent-multi-ecosystem-runner-detection",
+        "075-real-conversational-chat",
+        "077-agent-enabled-means-llm-on-by-default"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": []
+    },
+    {
+      "path": "079-phase-a-connect-orphaned-tools/spec.md",
+      "plan_path": null,
+      "verification_path": "079-phase-a-connect-orphaned-tools/verification.md",
+      "id": "079-phase-a-connect-orphaned-tools",
+      "title": "Phase A: Connect the Orphaned MCP Tools + Fix safeExec's Argv Handling",
+      "area": "devops-agent",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-12",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-12",
+      "implemented_on": "2026-09-12",
+      "amends": [
+        "011-remaining-agents-mcp",
+        "040-approval-preview-content-diff",
+        "056-devops-preflight-and-idempotent-writes"
+      ],
+      "related": [
+        "078-capability-upgrade-roadmap",
+        "073-configurable-service-ports"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "101-per-agent-tool-access-expansion",
+        "143-docker-and-commit-failures-are-failures"
+      ]
+    },
+    {
+      "path": "080-run-command-approved-execution/spec.md",
+      "plan_path": null,
+      "verification_path": "080-run-command-approved-execution/verification.md",
+      "id": "080-run-command-approved-execution",
+      "title": "Phase B: run-command — a General, Per-Invocation-Approved Execution Primitive",
+      "area": "devops-agent",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-12",
+      "updated": "2026-09-12",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-12",
+      "implemented_on": "2026-09-12",
+      "amends": [
+        "006-runtime-stabilization",
+        "042-llm-harness-devops",
+        "058-testing-agent-multi-ecosystem-runner-detection",
+        "039-per-component-llm-provider-config"
+      ],
+      "related": [
+        "078-capability-upgrade-roadmap",
+        "079-phase-a-connect-orphaned-tools"
+      ],
+      "supersedes": [
+        "076-run-tests-timeout-mismatch"
+      ],
+      "superseded_by": [],
+      "amended_by": [
+        "077-agent-enabled-means-llm-on-by-default",
+        "081-testing-write-tests-skill",
+        "097-chat-answer-and-plan-description-honesty",
+        "098-harness-recursion-limit-and-clean-failure",
+        "110-approval-state-survives-a-restart",
+        "111-testing-documentation-routing-fixes",
+        "119-coder-verify-loop-and-reviewer-depth"
+      ]
+    },
+    {
+      "path": "081-testing-write-tests-skill/spec.md",
+      "plan_path": null,
+      "verification_path": "081-testing-write-tests-skill/verification.md",
+      "id": "081-testing-write-tests-skill",
+      "title": "Phase C: write-tests — Testing Agent Authors a Real Test File",
+      "area": "testing-agent",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-12",
+      "updated": "2026-09-12",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-12",
+      "implemented_on": "2026-09-12",
+      "amends": [
+        "080-run-command-approved-execution"
+      ],
+      "related": [
+        "078-capability-upgrade-roadmap",
+        "041-llm-harness-documentation",
+        "058-testing-agent-multi-ecosystem-runner-detection",
+        "040-approval-preview-content-diff",
+        "056-devops-preflight-and-idempotent-writes",
+        "036-document-api-path-fallback"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "098-harness-recursion-limit-and-clean-failure",
+        "110-approval-state-survives-a-restart",
+        "126-write-tests-description-grounded-routing",
+        "127-write-tests-names-test-file-location"
+      ]
+    },
+    {
+      "path": "082-code-review-agent/spec.md",
+      "plan_path": null,
+      "verification_path": "082-code-review-agent/verification.md",
+      "id": "082-code-review-agent",
+      "title": "Phase D: Code Review Agent — the First Genuinely New Agent",
+      "area": "code-review-agent",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-12",
+      "updated": "2026-09-14",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-12",
+      "implemented_on": "2026-09-12",
+      "amends": [],
+      "related": [
+        "078-capability-upgrade-roadmap",
+        "079-phase-a-connect-orphaned-tools",
+        "043-llm-harness-security",
+        "039-per-component-llm-provider-config",
+        "073-configurable-service-ports",
+        "048-guided-init-experience",
+        "030-authoritative-skill-dispatch-and-capability-catalog",
+        "065-llm-only-skill-routing",
+        "081-testing-write-tests-skill"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "086-code-review-coder-default-on",
+        "098-harness-recursion-limit-and-clean-failure",
+        "101-per-agent-tool-access-expansion",
+        "119-coder-verify-loop-and-reviewer-depth"
+      ]
+    },
+    {
+      "path": "083-coder-agent/spec.md",
+      "plan_path": "083-coder-agent/plan.md",
+      "verification_path": "083-coder-agent/verification.md",
+      "id": "083-coder-agent",
+      "title": "Phase E: Coder Agent v1 — Write-Capable Source Edits",
+      "area": "coder-agent",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-14",
+      "updated": "2026-09-14",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-14",
+      "implemented_on": "2026-09-14",
+      "amends": [],
+      "related": [
+        "078-capability-upgrade-roadmap",
+        "081-testing-write-tests-skill",
+        "082-code-review-agent",
+        "056-devops-preflight-and-idempotent-writes",
+        "040-approval-preview-content-diff",
+        "073-configurable-service-ports"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "086-code-review-coder-default-on",
+        "098-harness-recursion-limit-and-clean-failure",
+        "101-per-agent-tool-access-expansion",
+        "110-approval-state-survives-a-restart",
+        "114-coder-multi-file-edit-and-create",
+        "119-coder-verify-loop-and-reviewer-depth",
+        "125-configurable-harness-recursion-limit"
+      ]
+    },
+    {
+      "path": "084-security-external-vulnerability-data/spec.md",
+      "plan_path": "084-security-external-vulnerability-data/plan.md",
+      "verification_path": "084-security-external-vulnerability-data/verification.md",
+      "id": "084-security-external-vulnerability-data",
+      "title": "Phase F: Security Gains Real Vulnerability Data (OSV.dev)",
+      "area": "security-agent",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-14",
+      "updated": "2026-09-14",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-14",
+      "implemented_on": "2026-09-14",
+      "amends": [],
+      "related": [
+        "078-capability-upgrade-roadmap",
+        "043-llm-harness-security",
+        "011-remaining-agents-mcp",
+        "079-phase-a-connect-orphaned-tools"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": []
+    },
+    {
+      "path": "085-multi-ecosystem-dependency-audit/spec.md",
+      "plan_path": null,
+      "verification_path": "085-multi-ecosystem-dependency-audit/verification.md",
+      "id": "085-multi-ecosystem-dependency-audit",
+      "title": "audit-dependencies — Real Python, Go, PHP, and Java Support, Not npm-Only",
+      "area": "security-agent",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-14",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-14",
+      "implemented_on": "2026-09-14",
+      "amends": [],
+      "related": [
+        "084-security-external-vulnerability-data",
+        "043-llm-harness-security",
+        "058-testing-agent-multi-ecosystem-runner-detection"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "099-tui-port-url-and-analyze-project-stack-awareness"
+      ]
+    },
+    {
+      "path": "086-code-review-coder-default-on/spec.md",
+      "plan_path": null,
+      "verification_path": "086-code-review-coder-default-on/verification.md",
+      "id": "086-code-review-coder-default-on",
+      "title": "Code Review and Coder Agents Also Default-On, Same as the Other Four",
+      "area": "agents",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "pending",
+      "created": "2026-09-14",
+      "updated": "2026-09-14",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-14",
+      "implemented_on": "2026-09-14",
+      "amends": [
+        "077-agent-enabled-means-llm-on-by-default",
+        "082-code-review-agent",
+        "083-coder-agent"
+      ],
+      "related": [
+        "064-supervisor-startup-key-check-non-blocking"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": []
+    },
+    {
+      "path": "087-target-path-resolver-first-match-bug/spec.md",
+      "plan_path": null,
+      "verification_path": "087-target-path-resolver-first-match-bug/verification.md",
+      "id": "087-target-path-resolver-first-match-bug",
+      "title": "extractExplicitTargetPath() Stops at the First at/in/to/from Match, Even When It's Wrong",
+      "area": "project-targeting",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-15",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-15",
+      "implemented_on": "2026-09-15",
+      "amends": [
+        "004-configurable-project-paths",
+        "007-parsing-and-sse-reliability-fixes",
+        "020-semantic-intent-fallback"
+      ],
+      "related": [
+        "028-orchestrator-langgraph-supervisor",
+        "075-real-conversational-chat"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "088-target-path-resolver-trailing-colon-bug",
+        "102-orchestrator-readonly-project-inspection",
+        "140-target-path-for-and-on-prepositions"
+      ]
+    },
+    {
+      "path": "088-target-path-resolver-trailing-colon-bug/spec.md",
+      "plan_path": null,
+      "verification_path": "088-target-path-resolver-trailing-colon-bug/verification.md",
+      "id": "088-target-path-resolver-trailing-colon-bug",
+      "title": "normalizeAbsolutePath() Leaves a Stray Trailing Colon When a Path Is Immediately Followed by ':'",
+      "area": "project-targeting",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-15",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-15",
+      "implemented_on": "2026-09-15",
+      "amends": [
+        "004-configurable-project-paths",
+        "007-parsing-and-sse-reliability-fixes",
+        "020-semantic-intent-fallback",
+        "087-target-path-resolver-first-match-bug"
+      ],
+      "related": [
+        "083-coder-agent"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": []
+    },
+    {
+      "path": "089-plan-step-skip-continue/spec.md",
+      "plan_path": null,
+      "verification_path": "089-plan-step-skip-continue/verification.md",
+      "id": "089-plan-step-skip-continue",
+      "title": "A Third Approval Outcome — Skip One Write-Capable Plan Step Without Ending the Whole Plan",
+      "area": "orchestrator",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-15",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-15",
+      "implemented_on": "2026-09-15",
+      "amends": [
+        "028-orchestrator-langgraph-supervisor",
+        "012-tui-interactive",
+        "033-dashboard-approval-preview-card",
+        "035-devops-dashboard-approval-preview-card"
+      ],
+      "related": [
+        "037-tui-approval-preview-card",
+        "060-supervisor-parallel-read-only-dispatch"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": []
+    },
+    {
+      "path": "090-devops-security-precheck-timeout-too-short/spec.md",
+      "plan_path": null,
+      "verification_path": "090-devops-security-precheck-timeout-too-short/verification.md",
+      "id": "090-devops-security-precheck-timeout-too-short",
+      "title": "DevOps's Own Security Secrets Pre-check Times Out Now That Security's AI Commentary Is Default-On",
+      "area": "agents",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-15",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-15",
+      "implemented_on": "2026-09-15",
+      "amends": [
+        "077-agent-enabled-means-llm-on-by-default",
+        "043-llm-harness-security"
+      ],
+      "related": [
+        "076-run-tests-timeout-mismatch",
+        "080-run-command-approved-execution",
+        "055-provider-call-budgets-and-transient-error-handling"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": []
+    },
+    {
+      "path": "091-chat-explain-last-failure/spec.md",
+      "plan_path": null,
+      "verification_path": "091-chat-explain-last-failure/verification.md",
+      "id": "091-chat-explain-last-failure",
+      "title": "Chat's State-Question Answer Never Surfaces a Specific Task's Real Failure Reason",
+      "area": "orchestrator",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-15",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-15",
+      "implemented_on": "2026-09-15",
+      "amends": [
+        "075-real-conversational-chat",
+        "044-conversational-ask-layer"
+      ],
+      "related": [
+        "054-capability-driven-llm-routing",
+        "065-llm-only-skill-routing"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "092-router-classification-conversation-context",
+        "097-chat-answer-and-plan-description-honesty",
+        "107-task-and-conversation-history",
+        "116-chat-answer-voice-and-collapsed-raw-data"
+      ]
+    },
+    {
+      "path": "092-router-classification-conversation-context/spec.md",
+      "plan_path": null,
+      "verification_path": "092-router-classification-conversation-context/verification.md",
+      "id": "092-router-classification-conversation-context",
+      "title": "The Router's Own Classification Call Is Blind to Conversation History — Only Answer Phrasing Sees It",
+      "area": "orchestrator",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-15",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-15",
+      "implemented_on": "2026-09-15",
+      "amends": [
+        "044-conversational-ask-layer",
+        "054-capability-driven-llm-routing",
+        "065-llm-only-skill-routing",
+        "075-real-conversational-chat",
+        "091-chat-explain-last-failure"
+      ],
+      "related": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "093-conversation-answer-context-blind",
+        "116-chat-answer-voice-and-collapsed-raw-data",
+        "128-router-resolves-contextual-replies"
+      ]
+    },
+    {
+      "path": "093-conversation-answer-context-blind/spec.md",
+      "plan_path": null,
+      "verification_path": "093-conversation-answer-context-blind/verification.md",
+      "id": "093-conversation-answer-context-blind",
+      "title": "The 'conversation' Tier 0 Answer Is a Fixed String, Blind to What Was Actually Said",
+      "area": "orchestrator",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-15",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-15",
+      "implemented_on": "2026-09-15",
+      "amends": [
+        "075-real-conversational-chat",
+        "044-conversational-ask-layer",
+        "092-router-classification-conversation-context"
+      ],
+      "related": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "097-chat-answer-and-plan-description-honesty",
+        "116-chat-answer-voice-and-collapsed-raw-data",
+        "124-conversation-answer-llm-synthesis"
+      ]
+    },
+    {
+      "path": "094-analyze-project-security-precheck-opt-in/spec.md",
+      "plan_path": null,
+      "verification_path": "094-analyze-project-security-precheck-opt-in/verification.md",
+      "id": "094-analyze-project-security-precheck-opt-in",
+      "title": "analyze-project's Security Secrets Pre-check Runs Unconditionally — Make It Opt-In",
+      "area": "agents",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-15",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-15",
+      "implemented_on": "2026-09-15",
+      "amends": [],
+      "related": [
+        "090-devops-security-precheck-timeout-too-short"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": []
+    },
+    {
+      "path": "095-init-models-section-orchestrator-conversation-rows/spec.md",
+      "plan_path": null,
+      "verification_path": "095-init-models-section-orchestrator-conversation-rows/verification.md",
+      "id": "095-init-models-section-orchestrator-conversation-rows",
+      "title": "Guided Init's Models Section Gains orchestrator and conversation Rows",
+      "area": "supervisor",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-15",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-15",
+      "implemented_on": "2026-09-15",
+      "amends": [
+        "071-models-view-inline-provider-in-picker"
+      ],
+      "related": [
+        "044-conversational-ask-layer",
+        "063-init-per-component-provider-and-key"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": []
+    },
+    {
+      "path": "096-router-multi-concern-request-detection/spec.md",
+      "plan_path": null,
+      "verification_path": "096-router-multi-concern-request-detection/verification.md",
+      "id": "096-router-multi-concern-request-detection",
+      "title": "Router Recognizes Multi-Concern Requests and Routes Them to plan-task",
+      "area": "orchestrator",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-15",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-15",
+      "implemented_on": "2026-09-15",
+      "amends": [
+        "065-llm-only-skill-routing"
+      ],
+      "related": [
+        "054-capability-driven-llm-routing",
+        "028-orchestrator-langgraph-supervisor",
+        "075-real-conversational-chat"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": []
+    },
+    {
+      "path": "097-chat-answer-and-plan-description-honesty/spec.md",
+      "plan_path": null,
+      "verification_path": "097-chat-answer-and-plan-description-honesty/verification.md",
+      "id": "097-chat-answer-and-plan-description-honesty",
+      "title": "Chat Answer De-Duplication, Plan-Step Description Honesty, and a Configurable Dispatch Limit",
+      "area": "orchestrator",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-15",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-15",
+      "implemented_on": "2026-09-15",
+      "amends": [
+        "044-conversational-ask-layer",
+        "091-chat-explain-last-failure",
+        "093-conversation-answer-context-blind",
+        "030-authoritative-skill-dispatch-and-capability-catalog",
+        "080-run-command-approved-execution",
+        "028-orchestrator-langgraph-supervisor"
+      ],
+      "related": [
+        "040-approval-preview-content-diff",
+        "042-llm-harness-devops",
+        "073-configurable-service-ports",
+        "089-plan-step-skip-continue"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "116-chat-answer-voice-and-collapsed-raw-data"
+      ]
+    },
+    {
+      "path": "098-harness-recursion-limit-and-clean-failure/spec.md",
+      "plan_path": null,
+      "verification_path": "098-harness-recursion-limit-and-clean-failure/verification.md",
+      "id": "098-harness-recursion-limit-and-clean-failure",
+      "title": "Every Agent LLM Harness Gets an Explicit Recursion Limit, a Clean Failure Message, and Coder Gains File-Type-Aware Early Refusal",
+      "area": "agents",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-15",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-15",
+      "implemented_on": "2026-09-15",
+      "amends": [
+        "083-coder-agent",
+        "042-llm-harness-devops",
+        "041-llm-harness-documentation",
+        "080-run-command-approved-execution",
+        "081-testing-write-tests-skill",
+        "082-code-review-agent"
+      ],
+      "related": [
+        "028-orchestrator-langgraph-supervisor"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "114-coder-multi-file-edit-and-create",
+        "125-configurable-harness-recursion-limit"
+      ]
+    },
+    {
+      "path": "099-tui-port-url-and-analyze-project-stack-awareness/spec.md",
+      "plan_path": null,
+      "verification_path": "099-tui-port-url-and-analyze-project-stack-awareness/verification.md",
+      "id": "099-tui-port-url-and-analyze-project-stack-awareness",
+      "title": "TUI Follows ORCHESTRAI_ORCHESTRATOR_PORT, and analyze-project Becomes Stack-Aware",
+      "area": "orchestrator",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-15",
+      "updated": "2026-09-15",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-15",
+      "implemented_on": "2026-09-15",
+      "amends": [
+        "073-configurable-service-ports",
+        "085-multi-ecosystem-dependency-audit"
+      ],
+      "related": [
+        "012-tui-interactive",
+        "016-orchestrai-supervisor"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "103-deep-project-analysis"
+      ]
+    },
+    {
+      "path": "100-document-api-grounded-llm-route-discovery-fallback/spec.md",
+      "plan_path": null,
+      "verification_path": "100-document-api-grounded-llm-route-discovery-fallback/verification.md",
+      "id": "100-document-api-grounded-llm-route-discovery-fallback",
+      "title": "document-api Gains a Grounded LLM Route-Discovery Fallback for Non-JS/TS Files",
+      "area": "documentation",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-15",
+      "updated": "2026-09-20",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-20",
+      "implemented_on": "2026-09-20",
+      "amends": [
+        "041-llm-harness-documentation",
+        "036-document-api-path-fallback"
+      ],
+      "related": [
+        "082-code-review-agent",
+        "081-testing-write-tests-skill",
+        "085-multi-ecosystem-dependency-audit"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "111-testing-documentation-routing-fixes"
+      ]
+    },
+    {
+      "path": "101-per-agent-tool-access-expansion/spec.md",
+      "plan_path": null,
+      "verification_path": "101-per-agent-tool-access-expansion/verification.md",
+      "id": "101-per-agent-tool-access-expansion",
+      "title": "Expand Per-Agent Tool Access, and Write Down the Tool-vs-Skill Rule",
+      "area": "architecture",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-20",
+      "updated": "2026-09-20",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-20",
+      "implemented_on": "2026-09-20",
+      "amends": [
+        "079-phase-a-connect-orphaned-tools",
+        "082-code-review-agent",
+        "083-coder-agent"
+      ],
+      "related": [
+        "011-remaining-agents-mcp",
+        "030-authoritative-skill-dispatch-and-capability-catalog",
+        "042-llm-harness-devops",
+        "054-capability-driven-llm-routing",
+        "080-run-command-approved-execution",
+        "085-multi-ecosystem-dependency-audit",
+        "099-tui-port-url-and-analyze-project-stack-awareness"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "114-coder-multi-file-edit-and-create",
+        "119-coder-verify-loop-and-reviewer-depth",
+        "138-model-authored-files-replace-templates"
+      ]
+    },
+    {
+      "path": "102-orchestrator-readonly-project-inspection/spec.md",
+      "plan_path": null,
+      "verification_path": "102-orchestrator-readonly-project-inspection/verification.md",
+      "id": "102-orchestrator-readonly-project-inspection",
+      "title": "Orchestrator Gains a Read-Only, Strictly Optional Project Inspection Capability",
+      "area": "architecture",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-20",
+      "updated": "2026-09-20",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-20",
+      "implemented_on": "2026-09-20",
+      "amends": [
+        "011-remaining-agents-mcp",
+        "044-conversational-ask-layer",
+        "057-project-snapshot-and-cross-request-reuse",
+        "065-llm-only-skill-routing",
+        "072-init-form-empty-selection-means-no-agents",
+        "075-real-conversational-chat",
+        "087-target-path-resolver-first-match-bug"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "028-orchestrator-langgraph-supervisor",
+        "077-agent-enabled-means-llm-on-by-default",
+        "082-code-review-agent",
+        "088-target-path-resolver-trailing-colon-bug",
+        "101-per-agent-tool-access-expansion"
+      ],
+      "amended_by": [
+        "103-deep-project-analysis",
+        "105-orchestrator-fallback-deep-analysis",
+        "106-persistence-store-and-result-cache",
+        "112-plan-step-no-agent-inspection-fallback"
+      ]
+    },
+    {
+      "path": "103-deep-project-analysis/spec.md",
+      "plan_path": null,
+      "verification_path": "103-deep-project-analysis/verification.md",
+      "id": "103-deep-project-analysis",
+      "title": "analyze-project Gains Real, Grounded Codebase Analysis",
+      "area": "devops-agent",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-20",
+      "updated": "2026-09-21",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-20",
+      "implemented_on": "2026-09-20",
+      "amends": [
+        "042-llm-harness-devops",
+        "057-project-snapshot-and-cross-request-reuse",
+        "099-tui-port-url-and-analyze-project-stack-awareness",
+        "102-orchestrator-readonly-project-inspection"
+      ],
+      "related": [
+        "043-llm-harness-security",
+        "077-agent-enabled-means-llm-on-by-default",
+        "082-code-review-agent",
+        "094-analyze-project-security-precheck-opt-in",
+        "100-document-api-grounded-llm-route-discovery-fallback",
+        "101-per-agent-tool-access-expansion"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "105-orchestrator-fallback-deep-analysis"
+      ]
+    },
+    {
+      "path": "104-deferred-work-register/spec.md",
+      "plan_path": null,
+      "verification_path": "104-deferred-work-register/verification.md",
+      "id": "104-deferred-work-register",
+      "title": "Deferred Work Register — Known Gaps Not Yet Specced",
+      "area": "spec-governance",
+      "change_type": "governance",
+      "status": "approved",
+      "verification": "not-applicable",
+      "created": "2026-09-20",
+      "updated": "2026-09-22",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-20",
+      "implemented_on": null,
+      "amends": [],
+      "related": [
+        "078-capability-upgrade-roadmap",
+        "079-phase-a-connect-orphaned-tools",
+        "085-multi-ecosystem-dependency-audit",
+        "099-tui-port-url-and-analyze-project-stack-awareness",
+        "100-document-api-grounded-llm-route-discovery-fallback",
+        "101-per-agent-tool-access-expansion",
+        "102-orchestrator-readonly-project-inspection",
+        "103-deep-project-analysis",
+        "105-orchestrator-fallback-deep-analysis",
+        "106-persistence-store-and-result-cache",
+        "107-task-and-conversation-history",
+        "108-durable-audit-trail",
+        "109-document-api-drift-recheck",
+        "110-approval-state-survives-a-restart",
+        "111-testing-documentation-routing-fixes",
+        "112-plan-step-no-agent-inspection-fallback"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "109-document-api-drift-recheck",
+        "138-model-authored-files-replace-templates"
+      ]
+    },
+    {
+      "path": "105-orchestrator-fallback-deep-analysis/spec.md",
+      "plan_path": null,
+      "verification_path": "105-orchestrator-fallback-deep-analysis/verification.md",
+      "id": "105-orchestrator-fallback-deep-analysis",
+      "title": "Shared Project Analysis — One Implementation, Reachable With DevOps Off",
+      "area": "orchestrator",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-21",
+      "updated": "2026-09-22",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-22",
+      "implemented_on": "2026-09-22",
+      "amends": [
+        "102-orchestrator-readonly-project-inspection",
+        "103-deep-project-analysis"
+      ],
+      "related": [
+        "038-supervisor-default-and-planning-retirement",
+        "043-llm-harness-security",
+        "054-capability-driven-llm-routing",
+        "065-llm-only-skill-routing",
+        "075-real-conversational-chat",
+        "104-deferred-work-register",
+        "106-persistence-store-and-result-cache"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "106-persistence-store-and-result-cache"
+      ]
+    },
+    {
+      "path": "106-persistence-store-and-result-cache/spec.md",
+      "plan_path": null,
+      "verification_path": "106-persistence-store-and-result-cache/verification.md",
+      "id": "106-persistence-store-and-result-cache",
+      "title": "A Local SQLite Store, and No Redundant Expensive Work",
+      "area": "architecture",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-22",
+      "updated": "2026-09-22",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-22",
+      "implemented_on": "2026-09-22",
+      "amends": [
+        "057-project-snapshot-and-cross-request-reuse",
+        "102-orchestrator-readonly-project-inspection",
+        "105-orchestrator-fallback-deep-analysis"
+      ],
+      "related": [
+        "005-mcp-agent-integration",
+        "006-runtime-stabilization",
+        "066-supervisor-log-suppression-during-tui",
+        "077-agent-enabled-means-llm-on-by-default",
+        "084-security-external-vulnerability-data",
+        "103-deep-project-analysis",
+        "107-task-and-conversation-history",
+        "108-durable-audit-trail"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "107-task-and-conversation-history",
+        "108-durable-audit-trail",
+        "110-approval-state-survives-a-restart"
+      ]
+    },
+    {
+      "path": "107-task-and-conversation-history/spec.md",
+      "plan_path": null,
+      "verification_path": "107-task-and-conversation-history/verification.md",
+      "id": "107-task-and-conversation-history",
+      "title": "Tasks and Chat Survive a Restart",
+      "area": "orchestrator",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-22",
+      "updated": "2026-09-22",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-22",
+      "implemented_on": "2026-09-22",
+      "amends": [
+        "044-conversational-ask-layer",
+        "091-chat-explain-last-failure",
+        "106-persistence-store-and-result-cache"
+      ],
+      "related": [
+        "043-llm-harness-security",
+        "046-browser-conversation-operations-workspace",
+        "056-devops-preflight-and-idempotent-writes",
+        "075-real-conversational-chat",
+        "108-durable-audit-trail"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "110-approval-state-survives-a-restart"
+      ]
+    },
+    {
+      "path": "108-durable-audit-trail/spec.md",
+      "plan_path": null,
+      "verification_path": "108-durable-audit-trail/verification.md",
+      "id": "108-durable-audit-trail",
+      "title": "A Durable, Queryable Audit Trail",
+      "area": "architecture",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-22",
+      "updated": "2026-09-22",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-22",
+      "implemented_on": "2026-09-22",
+      "amends": [
+        "005-mcp-agent-integration",
+        "021-ag-ui-event-protocol",
+        "106-persistence-store-and-result-cache"
+      ],
+      "related": [
+        "022-ag-ui-demo-stabilization",
+        "080-run-command-approved-execution",
+        "107-task-and-conversation-history"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "113-live-audit-log-dashboard",
+        "115-tui-navigation-redraw-and-answer-clarity",
+        "117-audit-trail-governance-and-investigation",
+        "136-orchestrator-task-and-agent-metadata"
+      ]
+    },
+    {
+      "path": "109-document-api-drift-recheck/spec.md",
+      "plan_path": null,
+      "verification_path": "109-document-api-drift-recheck/verification.md",
+      "id": "109-document-api-drift-recheck",
+      "title": "Documentation's Write Path Gains the Post-Approval Drift Recheck",
+      "area": "documentation-agent",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-22",
+      "updated": "2026-09-22",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-22",
+      "implemented_on": "2026-09-22",
+      "amends": [
+        "040-approval-preview-content-diff",
+        "041-llm-harness-documentation",
+        "056-devops-preflight-and-idempotent-writes",
+        "104-deferred-work-register"
+      ],
+      "related": [
+        "081-testing-write-tests-skill",
+        "083-coder-agent",
+        "110-approval-state-survives-a-restart"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": []
+    },
+    {
+      "path": "110-approval-state-survives-a-restart/spec.md",
+      "plan_path": null,
+      "verification_path": "110-approval-state-survives-a-restart/verification.md",
+      "id": "110-approval-state-survives-a-restart",
+      "title": "Approval State Survives an Agent Restart",
+      "area": "architecture",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-22",
+      "updated": "2026-09-22",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-22",
+      "implemented_on": "2026-09-22",
+      "amends": [
+        "040-approval-preview-content-diff",
+        "056-devops-preflight-and-idempotent-writes",
+        "080-run-command-approved-execution",
+        "081-testing-write-tests-skill",
+        "083-coder-agent",
+        "106-persistence-store-and-result-cache",
+        "107-task-and-conversation-history"
+      ],
+      "related": [
+        "021-ag-ui-event-protocol",
+        "104-deferred-work-register",
+        "108-durable-audit-trail",
+        "109-document-api-drift-recheck"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "114-coder-multi-file-edit-and-create"
+      ]
+    },
+    {
+      "path": "111-testing-documentation-routing-fixes/spec.md",
+      "plan_path": null,
+      "verification_path": "111-testing-documentation-routing-fixes/verification.md",
+      "id": "111-testing-documentation-routing-fixes",
+      "title": "Ambiguous-Runner Harness Resolution and Read-Only document-api Harness Reachability",
+      "area": "agents",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-22",
+      "updated": "2026-09-22",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-22",
+      "implemented_on": "2026-09-22",
+      "amends": [
+        "058-testing-agent-multi-ecosystem-runner-detection",
+        "080-run-command-approved-execution",
+        "041-llm-harness-documentation",
+        "100-document-api-grounded-llm-route-discovery-fallback"
+      ],
+      "related": [
+        "081-testing-write-tests-skill",
+        "104-deferred-work-register"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": []
+    },
+    {
+      "path": "112-plan-step-no-agent-inspection-fallback/spec.md",
+      "plan_path": null,
+      "verification_path": "112-plan-step-no-agent-inspection-fallback/verification.md",
+      "id": "112-plan-step-no-agent-inspection-fallback",
+      "title": "dispatchPlanStep() Gains the Same No-Agent Inspection Fallback dispatchRootTask() Already Has",
+      "area": "orchestrator",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-22",
+      "updated": "2026-09-22",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-22",
+      "implemented_on": "2026-09-22",
+      "amends": [
+        "102-orchestrator-readonly-project-inspection",
+        "028-orchestrator-langgraph-supervisor",
+        "075-real-conversational-chat"
+      ],
+      "related": [
+        "104-deferred-work-register",
+        "060-supervisor-parallel-read-only-dispatch"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": []
+    },
+    {
+      "path": "113-live-audit-log-dashboard/spec.md",
+      "plan_path": null,
+      "verification_path": "113-live-audit-log-dashboard/verification.md",
+      "id": "113-live-audit-log-dashboard",
+      "title": "The Dashboard Audit Tab Goes Live, With a Legible Kind Badge (Phase 1: Dashboard Only)",
+      "area": "dashboard",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-22",
+      "updated": "2026-09-22",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-22",
+      "implemented_on": "2026-09-22",
+      "amends": [
+        "108-durable-audit-trail",
+        "021-ag-ui-event-protocol",
+        "027-ag-ui-core-adoption",
+        "046-browser-conversation-operations-workspace"
+      ],
+      "related": [
+        "108-durable-audit-trail"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "115-tui-navigation-redraw-and-answer-clarity",
+        "117-audit-trail-governance-and-investigation"
+      ]
+    },
+    {
+      "path": "114-coder-multi-file-edit-and-create/spec.md",
+      "plan_path": null,
+      "verification_path": "114-coder-multi-file-edit-and-create/verification.md",
+      "id": "114-coder-multi-file-edit-and-create",
+      "title": "Coder Agent v2: Multi-File Edits and New-File Creation",
+      "area": "coder-agent",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-22",
+      "updated": "2026-09-23",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-22",
+      "implemented_on": "2026-09-23",
+      "amends": [
+        "083-coder-agent",
+        "098-harness-recursion-limit-and-clean-failure",
+        "101-per-agent-tool-access-expansion",
+        "110-approval-state-survives-a-restart"
+      ],
+      "related": [
+        "104-deferred-work-register",
+        "082-code-review-agent",
+        "040-approval-preview-content-diff",
+        "056-devops-preflight-and-idempotent-writes"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "119-coder-verify-loop-and-reviewer-depth",
+        "130-tui-dashboard-parity"
+      ]
+    },
+    {
+      "path": "115-tui-navigation-redraw-and-answer-clarity/spec.md",
+      "plan_path": null,
+      "verification_path": "115-tui-navigation-redraw-and-answer-clarity/verification.md",
+      "id": "115-tui-navigation-redraw-and-answer-clarity",
+      "title": "TUI: Real Thread Selection, a Tab-Cycle Redraw Investigation, One Chat Answer Instead of Three, and a More Declarative Audit View",
+      "area": "tui",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-23",
+      "updated": "2026-09-23",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-23",
+      "implemented_on": "2026-09-23",
+      "amends": [
+        "012-tui-interactive",
+        "044-conversational-ask-layer",
+        "046-browser-conversation-operations-workspace",
+        "047-tui-conversation-operations-navigation",
+        "069-tui-dashboard-parity-workspace",
+        "108-durable-audit-trail",
+        "113-live-audit-log-dashboard"
+      ],
+      "related": [
+        "075-real-conversational-chat",
+        "093-conversation-answer-context-blind"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "116-chat-answer-voice-and-collapsed-raw-data",
+        "117-audit-trail-governance-and-investigation"
+      ]
+    },
+    {
+      "path": "116-chat-answer-voice-and-collapsed-raw-data/spec.md",
+      "plan_path": null,
+      "verification_path": "116-chat-answer-voice-and-collapsed-raw-data/verification.md",
+      "id": "116-chat-answer-voice-and-collapsed-raw-data",
+      "title": "Chat: One Voice for Conversational Answers, and the Raw Report Collapses Behind the Synthesis",
+      "area": "orchestrator",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-23",
+      "updated": "2026-09-23",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-23",
+      "implemented_on": "2026-09-23",
+      "amends": [
+        "044-conversational-ask-layer",
+        "046-browser-conversation-operations-workspace",
+        "091-chat-explain-last-failure",
+        "092-router-classification-conversation-context",
+        "093-conversation-answer-context-blind",
+        "097-chat-answer-and-plan-description-honesty",
+        "115-tui-navigation-redraw-and-answer-clarity"
+      ],
+      "related": [],
+      "supersedes": [],
+      "superseded_by": [],
+      "amended_by": [
+        "124-conversation-answer-llm-synthesis"
+      ]
+    },
+    {
+      "path": "117-audit-trail-governance-and-investigation/spec.md",
+      "plan_path": null,
+      "verification_path": null,
+      "id": "117-audit-trail-governance-and-investigation",
+      "title": "Audit Trail: Record Human Decisions, and Make the Log Investigable",
+      "area": "orchestrator",
+      "change_type": "enhancement",
+      "status": "draft",
+      "verification": "pending",
+      "created": "2026-09-23",
+      "updated": "2026-09-23",
+      "approved_by": null,
+      "approved_on": null,
+      "implemented_on": null,
+      "amends": [
+        "108-durable-audit-trail",
+        "113-live-audit-log-dashboard",
+        "115-tui-navigation-redraw-and-answer-clarity"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "089-plan-step-skip-continue",
+        "006-runtime-stabilization"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "118-claude-md-size-and-history-relocation/spec.md",
+      "plan_path": "118-claude-md-size-and-history-relocation/plan.md",
+      "verification_path": "118-claude-md-size-and-history-relocation/verification.md",
+      "id": "118-claude-md-size-and-history-relocation",
+      "title": "CLAUDE.md Under a Hard Size Budget: Relocate Per-Spec History into specs/",
+      "area": "spec-governance",
+      "change_type": "governance",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-23",
+      "updated": "2026-09-23",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-23",
+      "implemented_on": "2026-09-23",
+      "amends": [
+        "023-spec-governance-and-catalog",
+        "025-spec-area-grouping"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "024-spec-folder-migration",
+        "104-deferred-work-register"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "119-coder-verify-loop-and-reviewer-depth/spec.md",
+      "plan_path": "119-coder-verify-loop-and-reviewer-depth/plan.md",
+      "verification_path": "119-coder-verify-loop-and-reviewer-depth/verification.md",
+      "id": "119-coder-verify-loop-and-reviewer-depth",
+      "title": "Coder and Code Review as Iterating Agents: a Verify-and-Fix Loop, and Review With Real Project Depth",
+      "area": "coder-agent",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-23",
+      "updated": "2026-09-25",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-23",
+      "implemented_on": "2026-09-24",
+      "amends": [
+        "083-coder-agent",
+        "082-code-review-agent",
+        "101-per-agent-tool-access-expansion",
+        "114-coder-multi-file-edit-and-create",
+        "080-run-command-approved-execution"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "078-capability-upgrade-roadmap",
+        "104-deferred-work-register",
+        "105-orchestrator-fallback-deep-analysis",
+        "110-approval-state-survives-a-restart"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "120-supervisor-parallel-write-dispatch/spec.md",
+      "plan_path": "120-supervisor-parallel-write-dispatch/plan.md",
+      "verification_path": "120-supervisor-parallel-write-dispatch/verification.md",
+      "id": "120-supervisor-parallel-write-dispatch",
+      "title": "Parallel Write Dispatch with Grouped Approval Over Disjoint Targets",
+      "area": "llm-harness",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-23",
+      "updated": "2026-09-25",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-24",
+      "implemented_on": "2026-09-24",
+      "amends": [
+        "060-supervisor-parallel-read-only-dispatch",
+        "028-orchestrator-langgraph-supervisor",
+        "040-approval-preview-content-diff"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "089-plan-step-skip-continue",
+        "097-chat-answer-and-plan-description-honesty",
+        "056-devops-preflight-and-idempotent-writes",
+        "114-coder-multi-file-edit-and-create",
+        "046-browser-conversation-operations-workspace",
+        "069-tui-dashboard-parity-workspace",
+        "119-coder-verify-loop-and-reviewer-depth"
+      ],
+      "amended_by": [
+        "130-tui-dashboard-parity"
+      ]
+    },
+    {
+      "path": "121-skill-description-grounded-routing/spec.md",
+      "plan_path": null,
+      "verification_path": "121-skill-description-grounded-routing/verification.md",
+      "id": "121-skill-description-grounded-routing",
+      "title": "Skill-Description-Grounded Routing (Router and Adaptive Supervisor)",
+      "area": "routing-planning",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-24",
+      "updated": "2026-09-24",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-24",
+      "implemented_on": "2026-09-24",
+      "amends": [
+        "030-authoritative-skill-dispatch-and-capability-catalog",
+        "028-orchestrator-langgraph-supervisor"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "054-capability-driven-llm-routing",
+        "065-llm-only-skill-routing",
+        "083-coder-agent",
+        "114-coder-multi-file-edit-and-create",
+        "120-supervisor-parallel-write-dispatch"
+      ],
+      "amended_by": [
+        "126-write-tests-description-grounded-routing",
+        "133-supervisor-edit-file-names-its-file"
+      ]
+    },
+    {
+      "path": "122-remove-init-save-and-start/spec.md",
+      "plan_path": null,
+      "verification_path": null,
+      "id": "122-remove-init-save-and-start",
+      "title": "Remove the Same-Session \"Save and Start\" Path From orchestrai init",
+      "area": "supervisor",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "partial",
+      "created": "2026-09-24",
+      "updated": "2026-09-25",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-24",
+      "implemented_on": "2026-09-24",
+      "amends": [
+        "048-guided-init-experience"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "062-guided-init-tui-as-child-process",
+        "066-supervisor-log-suppression-during-tui"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "123-safe-env-template-filename-exemption/spec.md",
+      "plan_path": null,
+      "verification_path": "123-safe-env-template-filename-exemption/verification.md",
+      "id": "123-safe-env-template-filename-exemption",
+      "title": "Exempt Safe .env Template Filenames From the Sensitive-Filename Denial",
+      "area": "mcp-file-tools",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-24",
+      "updated": "2026-09-24",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-24",
+      "implemented_on": "2026-09-24",
+      "amends": [
+        "011-remaining-agents-mcp"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "121-skill-description-grounded-routing"
+      ],
+      "amended_by": [
+        "129-deny-orchestrai-state-dir"
+      ]
+    },
+    {
+      "path": "124-conversation-answer-llm-synthesis/spec.md",
+      "plan_path": null,
+      "verification_path": "124-conversation-answer-llm-synthesis/verification.md",
+      "id": "124-conversation-answer-llm-synthesis",
+      "title": "Conversation-Intent Answers Are LLM-Synthesized, Not Two Fixed Strings",
+      "area": "conversational-ask-layer",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-24",
+      "updated": "2026-09-24",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-24",
+      "implemented_on": "2026-09-24",
+      "amends": [
+        "093-conversation-answer-context-blind",
+        "116-chat-answer-voice-and-collapsed-raw-data"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "039-per-component-llm-provider-config",
+        "044-conversational-ask-layer",
+        "055-provider-call-budgets-and-transient-error-handling",
+        "075-real-conversational-chat",
+        "091-chat-explain-last-failure",
+        "097-chat-answer-and-plan-description-honesty"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "125-configurable-harness-recursion-limit/spec.md",
+      "plan_path": null,
+      "verification_path": "125-configurable-harness-recursion-limit/verification.md",
+      "id": "125-configurable-harness-recursion-limit",
+      "title": "Configurable Shared LLM Harness Tool-Call Recursion Limit",
+      "area": "agent-llm-harnesses",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-24",
+      "updated": "2026-09-24",
+      "approved_by": "Yusuf",
+      "approved_on": "2026-09-24",
+      "implemented_on": "2026-09-24",
+      "amends": [
+        "083-coder-agent",
+        "098-harness-recursion-limit-and-clean-failure"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "042-llm-harness-devops",
+        "041-llm-harness-documentation",
+        "073-configurable-service-ports",
+        "080-run-command-approved-execution",
+        "081-testing-write-tests-skill",
+        "082-code-review-agent",
+        "097-chat-answer-and-plan-description-honesty",
+        "114-coder-multi-file-edit-and-create"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "126-write-tests-description-grounded-routing/spec.md",
+      "plan_path": null,
+      "verification_path": "126-write-tests-description-grounded-routing/verification.md",
+      "id": "126-write-tests-description-grounded-routing",
+      "title": "Route Whole-Project Test Requests to the Planner via write-tests' Own Description",
+      "area": "routing-planning",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-24",
+      "updated": "2026-09-24",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-24",
+      "implemented_on": "2026-09-24",
+      "amends": [
+        "121-skill-description-grounded-routing",
+        "081-testing-write-tests-skill"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "065-llm-only-skill-routing",
+        "028-orchestrator-langgraph-supervisor"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "127-write-tests-names-test-file-location/spec.md",
+      "plan_path": null,
+      "verification_path": null,
+      "id": "127-write-tests-names-test-file-location",
+      "title": "write-tests Harness Is Told Where Its Test File Will Be Written",
+      "area": "testing-agent",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-24",
+      "updated": "2026-09-24",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-24",
+      "implemented_on": "2026-09-24",
+      "amends": [
+        "081-testing-write-tests-skill"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "126-write-tests-description-grounded-routing"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "128-router-resolves-contextual-replies/spec.md",
+      "plan_path": null,
+      "verification_path": "128-router-resolves-contextual-replies/verification.md",
+      "id": "128-router-resolves-contextual-replies",
+      "title": "The Router Rewrites a Contextual Chat Reply into a Self-Contained Request",
+      "area": "routing-planning",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-24",
+      "updated": "2026-09-24",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-24",
+      "implemented_on": "2026-09-24",
+      "amends": [
+        "092-router-classification-conversation-context",
+        "075-real-conversational-chat"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "044-conversational-ask-layer",
+        "124-conversation-answer-llm-synthesis"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "129-deny-orchestrai-state-dir/spec.md",
+      "plan_path": null,
+      "verification_path": "129-deny-orchestrai-state-dir/verification.md",
+      "id": "129-deny-orchestrai-state-dir",
+      "title": "Agents Can Never Read, Write, or List OrchestrAI's Own .orchestrai State Directory",
+      "area": "mcp-file-tools",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-25",
+      "updated": "2026-09-25",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-25",
+      "implemented_on": "2026-09-25",
+      "amends": [
+        "011-remaining-agents-mcp",
+        "123-safe-env-template-filename-exemption"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "031-interactive-init-wizard",
+        "043-llm-harness-security",
+        "080-run-command-approved-execution"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "130-tui-dashboard-parity/spec.md",
+      "plan_path": null,
+      "verification_path": "130-tui-dashboard-parity/verification.md",
+      "id": "130-tui-dashboard-parity",
+      "title": "TUI Parity with the Orchestrator Dashboard",
+      "area": "tui",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-25",
+      "updated": "2026-09-25",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-25",
+      "implemented_on": "2026-09-25",
+      "amends": [
+        "069-tui-dashboard-parity-workspace",
+        "114-coder-multi-file-edit-and-create",
+        "120-supervisor-parallel-write-dispatch"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "012-tui-interactive",
+        "047-tui-conversation-operations-navigation",
+        "097-chat-answer-and-plan-description-honesty",
+        "115-tui-navigation-redraw-and-answer-clarity"
+      ],
+      "amended_by": [
+        "139-close-remaining-follow-ups"
+      ]
+    },
+    {
+      "path": "131-demo-preflight-and-ag-ui-demo-refresh/spec.md",
+      "plan_path": null,
+      "verification_path": "131-demo-preflight-and-ag-ui-demo-refresh/verification.md",
+      "id": "131-demo-preflight-and-ag-ui-demo-refresh",
+      "title": "Demo Preflight Check and a Working AG-UI Demo Script",
+      "area": "quality-gates",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-25",
+      "updated": "2026-09-25",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-25",
+      "implemented_on": "2026-09-25",
+      "amends": [
+        "021-ag-ui-event-protocol"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "094-analyze-project-security-precheck-opt-in",
+        "065-llm-only-skill-routing",
+        "129-deny-orchestrai-state-dir"
+      ],
+      "amended_by": [
+        "142-demo-rehearsal-more-scenarios"
+      ]
+    },
+    {
+      "path": "132-init-multi-provider-keys/spec.md",
+      "plan_path": null,
+      "verification_path": "132-init-multi-provider-keys/verification.md",
+      "id": "132-init-multi-provider-keys",
+      "title": "Guided Init Keeps Every Registered Provider Key and Lets Any Row, Including the Default, Use Any of Them",
+      "area": "supervisor",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-25",
+      "updated": "2026-09-25",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-25",
+      "implemented_on": "2026-09-25",
+      "amends": [
+        "063-init-per-component-provider-and-key",
+        "070-init-agent-implies-llm-and-model-first-setup",
+        "071-models-view-inline-provider-in-picker"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "068-init-providers-first-flow-and-model-picker",
+        "039-per-component-llm-provider-config"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "133-supervisor-edit-file-names-its-file/spec.md",
+      "plan_path": null,
+      "verification_path": "133-supervisor-edit-file-names-its-file/verification.md",
+      "id": "133-supervisor-edit-file-names-its-file",
+      "title": "Supervisor Names the File in Every edit-file Step, and Plans a Multi-File Change as One edit-files Step",
+      "area": "routing-planning",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-25",
+      "updated": "2026-09-25",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-25",
+      "implemented_on": "2026-09-25",
+      "amends": [
+        "121-skill-description-grounded-routing"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "126-write-tests-description-grounded-routing",
+        "114-coder-multi-file-edit-and-create",
+        "120-supervisor-parallel-write-dispatch",
+        "083-coder-agent",
+        "130-tui-dashboard-parity"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "134-devops-harness-sees-the-request/spec.md",
+      "plan_path": null,
+      "verification_path": "134-devops-harness-sees-the-request/verification.md",
+      "id": "134-devops-harness-sees-the-request",
+      "title": "DevOps Parameter Harnesses See the User's Request, So Stated Values Like a Port Are Honored",
+      "area": "llm-harness",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-25",
+      "updated": "2026-09-25",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-25",
+      "implemented_on": "2026-09-25",
+      "amends": [
+        "042-llm-harness-devops"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "040-approval-preview-content-diff",
+        "077-agent-enabled-means-llm-on-by-default",
+        "130-tui-dashboard-parity"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "135-tui-80-column-header-and-titles/spec.md",
+      "plan_path": null,
+      "verification_path": "135-tui-80-column-header-and-titles/verification.md",
+      "id": "135-tui-80-column-header-and-titles",
+      "title": "TUI Header Fits 80 Columns, and Centre Titles (Audit, Chat) Show at 80×24",
+      "area": "tui",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-25",
+      "updated": "2026-09-25",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-25",
+      "implemented_on": "2026-09-25",
+      "amends": [
+        "069-tui-dashboard-parity-workspace"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "047-tui-conversation-operations-navigation",
+        "115-tui-navigation-redraw-and-answer-clarity",
+        "130-tui-dashboard-parity"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "136-orchestrator-task-and-agent-metadata/spec.md",
+      "plan_path": null,
+      "verification_path": "136-orchestrator-task-and-agent-metadata/verification.md",
+      "id": "136-orchestrator-task-and-agent-metadata",
+      "title": "Orchestrator Exposes Each Task's Conversation, Tracks Agent Liveness, and Matches a Task's Agent-Side Audit Events",
+      "area": "orchestrator",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-25",
+      "updated": "2026-09-25",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-25",
+      "implemented_on": "2026-09-25",
+      "amends": [
+        "108-durable-audit-trail"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "113-live-audit-log-dashboard",
+        "046-browser-conversation-operations-workspace",
+        "065-llm-only-skill-routing",
+        "130-tui-dashboard-parity"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "137-plan-step-acts-only-on-its-own-step/spec.md",
+      "plan_path": null,
+      "verification_path": "137-plan-step-acts-only-on-its-own-step/verification.md",
+      "id": "137-plan-step-acts-only-on-its-own-step",
+      "title": "Every Plan Step Acts Only on Its Own Step, With the Full Request as Background",
+      "area": "routing-planning",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-25",
+      "updated": "2026-09-25",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-25",
+      "implemented_on": "2026-09-25",
+      "amends": [
+        "028-orchestrator-langgraph-supervisor"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "133-supervisor-edit-file-names-its-file",
+        "120-supervisor-parallel-write-dispatch",
+        "114-coder-multi-file-edit-and-create",
+        "119-coder-verify-loop-and-reviewer-depth",
+        "134-devops-harness-sees-the-request"
+      ],
+      "amended_by": [
+        "139-close-remaining-follow-ups"
+      ]
+    },
+    {
+      "path": "138-model-authored-files-replace-templates/spec.md",
+      "plan_path": null,
+      "verification_path": "138-model-authored-files-replace-templates/verification.md",
+      "id": "138-model-authored-files-replace-templates",
+      "title": "The Model Authors Every File and Test Command; All Templates Removed",
+      "area": "llm-harness",
+      "change_type": "feature",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-25",
+      "updated": "2026-09-25",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-25",
+      "implemented_on": "2026-09-25",
+      "amends": [
+        "042-llm-harness-devops",
+        "041-llm-harness-documentation",
+        "101-per-agent-tool-access-expansion",
+        "104-deferred-work-register"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "040-approval-preview-content-diff",
+        "056-devops-preflight-and-idempotent-writes",
+        "077-agent-enabled-means-llm-on-by-default",
+        "079-phase-a-connect-orphaned-tools",
+        "110-approval-state-survives-a-restart",
+        "129-deny-orchestrai-state-dir",
+        "134-devops-harness-sees-the-request",
+        "137-plan-step-acts-only-on-its-own-step",
+        "058-testing-agent-multi-ecosystem-runner-detection",
+        "080-run-command-approved-execution",
+        "111-testing-documentation-routing-fixes"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "139-close-remaining-follow-ups/spec.md",
+      "plan_path": null,
+      "verification_path": "139-close-remaining-follow-ups/verification.md",
+      "id": "139-close-remaining-follow-ups",
+      "title": "Close the Remaining Follow-ups From Specs 130–137",
+      "area": "tui",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-25",
+      "updated": "2026-09-25",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-25",
+      "implemented_on": "2026-09-25",
+      "amends": [
+        "130-tui-dashboard-parity",
+        "137-plan-step-acts-only-on-its-own-step"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "110-approval-state-survives-a-restart",
+        "119-coder-verify-loop-and-reviewer-depth",
+        "135-tui-80-column-header-and-titles",
+        "136-orchestrator-task-and-agent-metadata"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "140-target-path-for-and-on-prepositions/spec.md",
+      "plan_path": null,
+      "verification_path": null,
+      "id": "140-target-path-for-and-on-prepositions",
+      "title": "Target Path Named After \"for\" or \"on\" Is Recognized",
+      "area": "project-targeting",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-25",
+      "updated": "2026-09-25",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-25",
+      "implemented_on": "2026-09-25",
+      "amends": [
+        "087-target-path-resolver-first-match-bug"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "088-target-path-resolver-trailing-colon-bug",
+        "137-plan-step-acts-only-on-its-own-step",
+        "138-model-authored-files-replace-templates"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "141-audit-push-honors-orchestrator-port/spec.md",
+      "plan_path": null,
+      "verification_path": null,
+      "id": "141-audit-push-honors-orchestrator-port",
+      "title": "Agents Send Live Audit Events to the Configured Orchestrator Port",
+      "area": "ag-ui",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-25",
+      "updated": "2026-09-25",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-25",
+      "implemented_on": "2026-09-25",
+      "amends": [
+        "073-configurable-service-ports"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "021-ag-ui-event-protocol",
+        "108-durable-audit-trail",
+        "131-demo-preflight-and-ag-ui-demo-refresh"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "142-demo-rehearsal-more-scenarios/spec.md",
+      "plan_path": null,
+      "verification_path": "142-demo-rehearsal-more-scenarios/verification.md",
+      "id": "142-demo-rehearsal-more-scenarios",
+      "title": "More Scenarios in the AG-UI Demo Rehearsal",
+      "area": "quality-gates",
+      "change_type": "enhancement",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-25",
+      "updated": "2026-09-25",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-25",
+      "implemented_on": "2026-09-25",
+      "amends": [
+        "131-demo-preflight-and-ag-ui-demo-refresh"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "044-conversational-ask-layer",
+        "089-plan-step-skip-continue",
+        "120-supervisor-parallel-write-dispatch",
+        "138-model-authored-files-replace-templates"
+      ],
+      "amended_by": []
+    },
+    {
+      "path": "143-docker-and-commit-failures-are-failures/spec.md",
+      "plan_path": null,
+      "verification_path": "143-docker-and-commit-failures-are-failures/verification.md",
+      "id": "143-docker-and-commit-failures-are-failures",
+      "title": "Failed Docker Builds, Runs and Commits Fail Their Task; Image Tags Are Lowercase; Health Pings Never Kill Work",
+      "area": "devops-agent",
+      "change_type": "fix",
+      "status": "implemented",
+      "verification": "verified",
+      "created": "2026-09-25",
+      "updated": "2026-09-25",
+      "approved_by": "Muhamad-Yussuf",
+      "approved_on": "2026-09-25",
+      "implemented_on": "2026-09-25",
+      "amends": [
+        "079-phase-a-connect-orphaned-tools"
+      ],
+      "supersedes": [],
+      "superseded_by": [],
+      "related": [
+        "028-orchestrator-langgraph-supervisor",
+        "138-model-authored-files-replace-templates",
+        "142-demo-rehearsal-more-scenarios"
+      ],
+      "amended_by": []
+    }
+  ]
+}

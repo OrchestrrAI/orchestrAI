@@ -1,0 +1,39 @@
+#!/bin/sh
+# OrchestrAI pre-commit hook — runs the repository test suite before allowing
+# a commit. Installed via: git config core.hooksPath .githooks
+#
+# Skip only in a genuine emergency with: git commit --no-verify
+
+if ! command -v bun >/dev/null 2>&1; then
+  echo "pre-commit: 'bun' not found on PATH — cannot run tests. Aborting commit."
+  echo "Install Bun (https://bun.sh) or run 'git commit --no-verify' to skip (not recommended)."
+  exit 1
+fi
+
+echo "pre-commit: checking spec governance..."
+
+bun run specs:check
+status=$?
+
+if [ $status -ne 0 ]; then
+  echo ""
+  echo "pre-commit: spec governance check failed (exit $status) — commit aborted."
+  echo "Fix the reported metadata error or run 'bun run specs:catalog' for stale generated output."
+  exit 1
+fi
+
+echo "pre-commit: spec governance check passed."
+echo "pre-commit: running bun test..."
+
+bun test
+status=$?
+
+if [ $status -ne 0 ]; then
+  echo ""
+  echo "pre-commit: bun test failed (exit $status) — commit aborted."
+  echo "Fix the failing tests, or use 'git commit --no-verify' to bypass (not recommended)."
+  exit 1
+fi
+
+echo "pre-commit: bun test passed."
+exit 0

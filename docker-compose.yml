@@ -1,0 +1,224 @@
+# OrchestrAI — full demo stack. `docker compose up` runs all 6 services with
+# no Bun install, no manual env setup, and correct startup ordering (Compose
+# health-check-gated depends_on), unlike `bun run dev`'s unordered --parallel
+# startup. See specs/dockerization.spec.md and README.md for scope/limits —
+# this is a demo/judging convenience, not a production deployment.
+#
+# specs/051-planning-retirement-and-required-key/spec.md — Planning Agent
+# (previously its own container on :3001) is deleted entirely; plan-task
+# now belongs to the Orchestrator's own adaptive supervisor, which needs a
+# provider key configured (ORCHESTRAI_LLM_API_KEY/_PROVIDER/_MODEL) to
+# start at all — see CLAUDE.md.
+#
+# Target project: every container that touches a target project's filesystem
+# — mcp-http (DevOps's real reads/writes run there, not in devops-agent's own
+# container), testing-agent, documentation-agent, and security-agent — mounts
+# the SAME host directory to the SAME fixed in-container path, /target.
+# ORCHESTRAI_PROJECT_PATH is hardcoded to /target inside those containers; a
+# host env var of that name would be meaningless here (a Windows/host path
+# doesn't exist inside a Linux container without an explicit mount like this).
+#
+# Set ORCHESTRAI_HOST_TARGET_PATH on the host before `docker compose up` to
+# point at a real project, e.g.:
+#   ORCHESTRAI_HOST_TARGET_PATH=/c/Users/moham/orch-scratch docker compose up -d
+# It defaults to "." (this repo's own root) so `docker compose up` works with
+# zero setup as a self-test. Mounted read-write, since write skills need to
+# create files in it.
+x-target-mount: &target-mount
+  - type: bind
+    source: ${ORCHESTRAI_HOST_TARGET_PATH:-.}
+    target: /target
+
+x-healthcheck-defaults: &healthcheck-defaults
+  interval: 5s
+  timeout: 3s
+  retries: 5
+  start_period: 5s
+
+services:
+  mcp-http:
+    build: .
+    command: ["bun", "run", "mcp:http"]
+    ports:
+      - "3006:3006"
+    # MCP's tools receive project_path as an explicit call argument (not an
+    # env-resolved path — see CLAUDE.md's target-path-resolution section),
+    # so only the mount matters here, not ORCHESTRAI_PROJECT_PATH itself.
+    # This is where DevOps's real reads/writes actually execute.
+    volumes: *target-mount
+    environment:
+      # Only "mcp-http" is trusted beyond localhost/127.0.0.1 — see
+      # packages/shared/mcp-host-allowlist.ts. Bare-metal `bun run dev`
+      # never sets this and stays loopback-only by default.
+      ORCHESTRAI_MCP_ALLOWED_HOSTS: "mcp-http"
+      # Must bind beyond 127.0.0.1 or no other container (including
+      # devops-agent) can reach it at all, even with the Host-header
+      # allowlist above already correct. Loopback-only bind stays the
+      # bare-metal default — this is set only here.
+      ORCHESTRAI_MCP_BIND_HOST: "0.0.0.0"
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "bun", "-e", "fetch('http://localhost:3006/healthz').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+
+  devops-agent:
+    build: .
+    command: ["bun", "run", "devops-agent"]
+    ports:
+      - "3002:3002"
+    environment:
+      ORCHESTRAI_MCP_URL: "http://mcp-http:3006/mcp"
+      ORCHESTRAI_MCP_ALLOWED_HOSTS: "mcp-http"
+      ORCHESTRAI_SECURITY_URL: "http://security-agent:3005"
+      # DevOps only resolves/forwards this path string to mcp-http — it
+      # never reads the filesystem itself, so no volume mount is needed on
+      # this container, just the matching path string.
+      ORCHESTRAI_PROJECT_PATH: "/target"
+    depends_on:
+      mcp-http:
+        condition: service_healthy
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "bun", "-e", "fetch('http://localhost:3002/healthz').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+
+  testing-agent:
+    build: .
+    command: ["bun", "run", "testing-agent"]
+    ports:
+      - "3003:3003"
+    # Reads/spawns directly against the target itself — needs the mount too.
+    volumes: *target-mount
+    environment:
+      # specs/082-code-review-agent/verification.md — live-caught
+      # 2026-09-14: this agent is a real MCP client (specs/005/011) but
+      # this block never set ORCHESTRAI_MCP_URL, so it defaulted to
+      # http://127.0.0.1:3006/mcp inside its own container — nothing
+      # listens there, so it sat permanently in mcp.state "retrying"
+      # rather than ever reaching mcp-http over the compose network.
+      # /healthz still returned {status:"ok"} throughout, which is why
+      # this went unnoticed by prior "all healthy" passes.
+      ORCHESTRAI_MCP_URL: "http://mcp-http:3006/mcp"
+      ORCHESTRAI_MCP_ALLOWED_HOSTS: "mcp-http"
+      ORCHESTRAI_PROJECT_PATH: "/target"
+    depends_on:
+      mcp-http:
+        condition: service_healthy
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "bun", "-e", "fetch('http://localhost:3003/healthz').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+
+  documentation-agent:
+    build: .
+    command: ["bun", "run", "documentation-agent"]
+    ports:
+      - "3004:3004"
+    volumes: *target-mount
+    environment:
+      # Same real gap and fix as testing-agent above.
+      ORCHESTRAI_MCP_URL: "http://mcp-http:3006/mcp"
+      ORCHESTRAI_MCP_ALLOWED_HOSTS: "mcp-http"
+      ORCHESTRAI_PROJECT_PATH: "/target"
+    depends_on:
+      mcp-http:
+        condition: service_healthy
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "bun", "-e", "fetch('http://localhost:3004/healthz').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+
+  security-agent:
+    build: .
+    command: ["bun", "run", "security-agent"]
+    ports:
+      - "3005:3005"
+    volumes: *target-mount
+    environment:
+      ORCHESTRAI_PROJECT_PATH: "/target"
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "bun", "-e", "fetch('http://localhost:3005/healthz').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+
+  # specs/082-code-review-agent/spec.md — the first genuinely new agent.
+  # A real MCP client (git_diff/read_project_file), shaped like
+  # devops-agent's own block, not security-agent's — no target-volume
+  # mount here, since it never reads the filesystem itself.
+  code-review-agent:
+    build: .
+    command: ["bun", "run", "code-review-agent"]
+    ports:
+      - "3007:3007"
+    environment:
+      ORCHESTRAI_MCP_URL: "http://mcp-http:3006/mcp"
+      ORCHESTRAI_MCP_ALLOWED_HOSTS: "mcp-http"
+      ORCHESTRAI_PROJECT_PATH: "/target"
+    depends_on:
+      mcp-http:
+        condition: service_healthy
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "bun", "-e", "fetch('http://localhost:3007/healthz').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+
+  # specs/083-coder-agent/spec.md — the second genuinely new agent. A
+  # real MCP client (read_project_file/write_project_file), shaped
+  # exactly like code-review-agent's own block above — no target-volume
+  # mount here, since it never reads the filesystem itself.
+  coder-agent:
+    build: .
+    command: ["bun", "run", "coder-agent"]
+    ports:
+      - "3008:3008"
+    environment:
+      ORCHESTRAI_MCP_URL: "http://mcp-http:3006/mcp"
+      ORCHESTRAI_MCP_ALLOWED_HOSTS: "mcp-http"
+      ORCHESTRAI_PROJECT_PATH: "/target"
+    depends_on:
+      mcp-http:
+        condition: service_healthy
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "bun", "-e", "fetch('http://localhost:3008/healthz').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+
+  orchestrator:
+    build: .
+    command: ["bun", "run", "orchestrator"]
+    ports:
+      - "3000:3000"
+    environment:
+      ORCHESTRAI_DEVOPS_URL: "http://devops-agent:3002"
+      ORCHESTRAI_TESTING_URL: "http://testing-agent:3003"
+      ORCHESTRAI_DOCUMENTATION_URL: "http://documentation-agent:3004"
+      ORCHESTRAI_SECURITY_URL: "http://security-agent:3005"
+      ORCHESTRAI_CODE_REVIEW_URL: "http://code-review-agent:3007"
+      ORCHESTRAI_CODER_URL: "http://coder-agent:3008"
+      # specs/102-orchestrator-readonly-project-inspection/spec.md — the
+      # Orchestrator's own optional, read-only MCP client. Matches
+      # devops-agent's own block exactly. No volume mount needed here —
+      # every MCP client only ever forwards path strings as call
+      # arguments; mcp-http alone holds the target-project mount.
+      # Omitting these is precisely the bug specs/082's own compose pass
+      # found for two other agents (silently stuck in mcp.state:
+      # "retrying" forever while /healthz still said "ok") — added here
+      # from the start rather than rediscovered the same way.
+      ORCHESTRAI_MCP_URL: "http://mcp-http:3006/mcp"
+      ORCHESTRAI_MCP_ALLOWED_HOSTS: "mcp-http"
+      # specs/051 — the Orchestrator's own adaptive supervisor is the only
+      # plan-task planner now and requires a resolvable key to start at
+      # all. Set these on the host before `docker compose up`, or the
+      # orchestrator container will refuse to start.
+      ORCHESTRAI_LLM_PROVIDER: "${ORCHESTRAI_LLM_PROVIDER:-anthropic}"
+      ORCHESTRAI_LLM_API_KEY: "${ORCHESTRAI_LLM_API_KEY:?ORCHESTRAI_LLM_API_KEY must be set on the host}"
+      ORCHESTRAI_LLM_MODEL: "${ORCHESTRAI_LLM_MODEL:-}"
+    depends_on:
+      devops-agent:
+        condition: service_healthy
+      testing-agent:
+        condition: service_healthy
+      documentation-agent:
+        condition: service_healthy
+      security-agent:
+        condition: service_healthy
+      code-review-agent:
+        condition: service_healthy
+      coder-agent:
+        condition: service_healthy
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "bun", "-e", "fetch('http://localhost:3000/healthz').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]

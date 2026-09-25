@@ -1,0 +1,438 @@
+<!--
+  OrchestrAI — Project brief for a live team walkthrough, 2026-09-09.
+  Reuses the level-up-plan family's own design tokens for continuity
+  with the other reports published this session. All figures below were
+  re-verified live against the running repository, not carried over
+  from memory: `bun test`, `tsc --noEmit`, `specs/catalog.json`, and
+  `git log` were all re-read while writing this file.
+-->
+<title>OrchestrAI Project Brief</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --ground: #F4F6F8; --surface: #FFFFFF; --surface-sunk: #EDF1F5;
+    --ink: #16202E; --muted: #5C6B7F; --faint: #8593A5;
+    --accent: #0E7C7B; --accent-soft: #E2F1F0; --rule: #DCE3EA; --rule-strong: #C2CCD8;
+    --sev-crit: #A93226; --sev-crit-soft: #FBEAE7;
+    --sev-yours: #8A6212; --sev-yours-soft: #F8F0DE;
+    --sev-parked: #5C6B7F; --sev-parked-soft: #EDF1F5;
+    --ok: #1A7F4E; --ok-soft: #E3F3EA;
+    --shadow: 0 1px 2px rgba(22,32,46,.05), 0 6px 18px -12px rgba(22,32,46,.22);
+    --display: "Chivo", "Helvetica Neue", Arial, sans-serif;
+    --body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #10151C; --surface: #171E27; --surface-sunk: #1D2531;
+      --ink: #E6EBF1; --muted: #9CAABB; --faint: #6E7E92;
+      --accent: #3FB5B2; --accent-soft: #122E2E; --rule: #2A3441; --rule-strong: #3A4657;
+      --sev-crit: #E2695C; --sev-crit-soft: #301A17;
+      --sev-yours: #D9AE55; --sev-yours-soft: #2E2716;
+      --sev-parked: #9CAABB; --sev-parked-soft: #1D2531;
+      --ok: #6FCB9A; --ok-soft: #16281F;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 18px -12px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #10151C; --surface: #171E27; --surface-sunk: #1D2531;
+    --ink: #E6EBF1; --muted: #9CAABB; --faint: #6E7E92;
+    --accent: #3FB5B2; --accent-soft: #122E2E; --rule: #2A3441; --rule-strong: #3A4657;
+    --sev-crit: #E2695C; --sev-crit-soft: #301A17;
+    --sev-yours: #D9AE55; --sev-yours-soft: #2E2716;
+    --sev-parked: #9CAABB; --sev-parked-soft: #1D2531;
+    --ok: #6FCB9A; --ok-soft: #16281F;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 18px -12px rgba(0,0,0,.6);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px 100px; }
+
+  .mast { padding: 52px 0 30px; border-bottom: 1px solid var(--rule); }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; }
+  h1 { font-family: var(--display); font-size: clamp(30px,4.6vw,46px); line-height: 1.06; letter-spacing: -.02em; font-weight: 700; margin: 0 0 14px; text-wrap: balance; }
+  .lede { font-size: clamp(16px,1.9vw,18.5px); line-height: 1.55; color: var(--muted); max-width: 68ch; margin: 0; text-wrap: pretty; }
+  .stats { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 26px; }
+  .stat { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 9px 14px; display: flex; align-items: baseline; gap: 8px; box-shadow: var(--shadow); }
+  .stat b { font-family: var(--mono); font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+  .stat span { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+
+  .cols { display: grid; grid-template-columns: 176px minmax(0,1fr); gap: 52px; margin-top: 40px; align-items: start; }
+  @media (max-width: 880px) { .cols { grid-template-columns: 1fr; } .rail { display: none; } }
+  .rail { position: sticky; top: 24px; }
+  .rail p { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); margin: 0 0 10px; }
+  .rail ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
+  .rail a { display: block; padding: 4px 0 4px 11px; font-size: 13px; line-height: 1.35; color: var(--muted); text-decoration: none; border-left: 2px solid var(--rule); }
+  .rail a:hover, .rail a:focus-visible { color: var(--ink); border-left-color: var(--accent); }
+
+  section { padding-top: 10px; margin-bottom: 50px; scroll-margin-top: 20px; }
+  h2 { font-family: var(--display); font-size: clamp(21px,2.4vw,25px); letter-spacing: -.012em; font-weight: 700; margin: 0 0 6px; text-wrap: balance; }
+  h3 { font-family: var(--display); font-size: 15.5px; font-weight: 700; margin: 26px 0 8px; }
+  .kicker { font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px; }
+  p { margin: 0 0 13px; max-width: 68ch; text-wrap: pretty; }
+  .dek { color: var(--muted); font-size: 14.5px; max-width: 66ch; margin: 0 0 20px; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  code { font-family: var(--mono); font-size: .87em; background: var(--surface-sunk); padding: 1.5px 5px; border-radius: 3px; }
+  strong { font-weight: 650; }
+
+  figure { margin: 20px 0 22px; }
+  .figbox { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 20px 18px; overflow-x: auto; box-shadow: var(--shadow); }
+  svg { display: block; max-width: 100%; height: auto; margin: 0 auto; color: var(--ink); }
+  figcaption { font-size: 13.5px; line-height: 1.5; color: var(--muted); margin-top: 10px; max-width: 70ch; }
+
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit,minmax(230px,1fr)); gap: 14px; margin: 18px 0; }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 12px; margin: 18px 0; }
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px 17px; box-shadow: var(--shadow); }
+  .card h4 { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); margin: 0 0 8px; font-weight: 500; }
+  .card p { font-size: 13.5px; margin: 0; color: var(--ink); }
+  .card p.sub { color: var(--muted); margin-top: 4px; }
+
+  .tablewrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); margin: 16px 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 540px; }
+  th { text-align: left; font-family: var(--mono); font-size: 10.5px; letter-spacing: .09em; text-transform: uppercase; color: var(--faint); font-weight: 500; padding: 10px 14px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  td.mono, th.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .chip { display: inline-flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .04em; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .chip.ok { background: var(--ok-soft); color: var(--ok); }
+  .chip.yours { background: var(--sev-yours-soft); color: var(--sev-yours); }
+  .chip.parked { background: var(--sev-parked-soft); color: var(--sev-parked); }
+  .chip.crit { background: var(--sev-crit-soft); color: var(--sev-crit); }
+
+  pre { font-family: var(--mono); font-size: 12.5px; line-height: 1.7; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px 18px; overflow-x: auto; margin: 14px 0; box-shadow: var(--shadow); }
+  .cmd-label { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); margin: 18px 0 6px; }
+
+  .timeline { border-left: 2px solid var(--rule); margin-left: 4px; padding-left: 22px; display: flex; flex-direction: column; gap: 16px; }
+  .tl-item { position: relative; }
+  .tl-item::before { content: ""; position: absolute; left: -27px; top: 5px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--accent); }
+  .tl-item .tl-tag { font-family: var(--mono); font-size: 10.5px; color: var(--accent); font-weight: 600; }
+  .tl-item h4 { font-family: var(--display); font-size: 14.5px; font-weight: 700; margin: 2px 0 3px; }
+  .tl-item p { font-size: 13.5px; color: var(--muted); margin: 0; }
+
+  ul.clean { margin: 0 0 14px; padding-left: 20px; max-width: 66ch; }
+  ul.clean li { margin-bottom: 6px; }
+
+  .note { border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; padding: 15px 18px; margin: 20px 0; }
+  .note p { margin: 0; font-size: 14px; max-width: 64ch; }
+  .note p + p { margin-top: 8px; }
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow">OrchestrAI · project brief for a live walkthrough</p>
+    <h1>A local multi-agent build system, safe by construction, not yet battle-tested against real providers or a restart.</h1>
+    <p class="lede">
+      What it does today, how to run it live in the room, what changed most recently, how the
+      spec process that governs every change actually works, and an honest read on how much of
+      this is proven versus assumed.
+    </p>
+    <div class="stats">
+      <div class="stat"><b>6</b><span>processes</span></div>
+      <div class="stat"><b>64</b><span>spec checkpoints</span></div>
+      <div class="stat"><b>831</b><span>tests passing</span></div>
+      <div class="stat"><b>55</b><span>test files</span></div>
+      <div class="stat"><b>0</b><span>type errors</span></div>
+      <div class="stat"><b>~140<span style="font-size:10px"> MB</span></b><span>single binary</span></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <nav class="rail" aria-label="Sections">
+      <p>Contents</p>
+      <ol>
+        <li><a href="#capabilities">What it can do</a></li>
+        <li><a href="#architecture">How it's built</a></li>
+        <li><a href="#demo">Run it live</a></li>
+        <li><a href="#recent">Recent changes</a></li>
+        <li><a href="#specs">How specs work</a></li>
+        <li><a href="#tests">Tests &amp; CI/CD</a></li>
+        <li><a href="#real">How real is this</a></li>
+      </ol>
+    </nav>
+
+    <main>
+
+      <!-- ============ CAPABILITIES ============ -->
+      <section id="capabilities">
+        <p class="kicker">What it can do today</p>
+        <h2>One request in, a plan or a direct skill out, nothing written without a human</h2>
+        <p class="dek">Type a plain-English request. It either matches a specific skill directly, or the adaptive planner breaks it into steps and dispatches them one at a time — reading each step's real result before deciding the next.</p>
+
+        <div class="grid2">
+          <div class="card">
+            <h4>DevOps · :3002</h4>
+            <p><code>dockerize</code>, <code>create-ci</code>, <code>create-gitignore</code>, <code>create-compose</code>, <code>analyze-project</code>, <code>git-status</code></p>
+            <p class="sub">The four write skills preflight against the real target first — an identical re-run completes as a genuine no-op, never a redundant write.</p>
+          </div>
+          <div class="card">
+            <h4>Testing · :3003</h4>
+            <p><code>run-tests</code>, <code>check-coverage</code></p>
+            <p class="sub">Real manifest/lockfile/framework detection — Bun, npm, pnpm, yarn, Jest, Vitest, pytest — never a guess.</p>
+          </div>
+          <div class="card">
+            <h4>Documentation · :3004</h4>
+            <p><code>generate-readme</code>, <code>document-api</code></p>
+            <p class="sub">Route discovery is fully deterministic; an optional LLM pass improves the prose without touching what routes were found.</p>
+          </div>
+          <div class="card">
+            <h4>Security · :3005</h4>
+            <p><code>scan-secrets</code>, <code>check-gitignore-coverage</code>, <code>audit-dependencies</code></p>
+            <p class="sub">Read-only, no approval needed, no MCP — direct filesystem access by deliberate design.</p>
+          </div>
+        </div>
+
+        <p>Every write-capable action — the four DevOps skills and any test run — stops and shows a preview with the exact content that will be written, a diff against what's already there when overwriting, and waits for a person. That gate is the one property that has not changed shape across all 64 checkpoints below.</p>
+
+        <figure>
+          <div class="figbox">
+            <svg viewBox="0 0 720 210" role="img" aria-label="Three different mechanisms can choose a skill — keyword matching, a local embedding classifier, or an LLM router — and all three converge on one approval gate before a write-capable skill executes. No path bypasses the gate.">
+              <defs>
+                <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
+                </marker>
+                <marker id="a1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M0,1 L9,5 L0,9 z" fill="var(--accent)"/>
+                </marker>
+              </defs>
+              <text x="14" y="18" font-family="var(--mono)" font-size="10" letter-spacing="1.4" fill="var(--faint)">CHOOSES A SKILL</text>
+              <rect x="14" y="30" width="204" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1"/>
+              <text x="116" y="49" text-anchor="middle" font-size="12.5" font-weight="600">Keyword match</text>
+              <text x="116" y="65" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="var(--faint)">deterministic</text>
+
+              <rect x="258" y="30" width="204" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1"/>
+              <text x="360" y="49" text-anchor="middle" font-size="12.5" font-weight="600">Local classifier</text>
+              <text x="360" y="65" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="var(--faint)">static embeddings, no network</text>
+
+              <rect x="502" y="30" width="204" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1"/>
+              <text x="604" y="49" text-anchor="middle" font-size="12.5" font-weight="600">LLM router</text>
+              <text x="604" y="65" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="var(--faint)">opt-in, provider call</text>
+
+              <path d="M116,76 L116,100 L360,100 L360,116" fill="none" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M360,76 L360,116" fill="none" stroke="currentColor" stroke-width="1.2" marker-end="url(#a1)"/>
+              <path d="M604,76 L604,100 L360,100" fill="none" stroke="currentColor" stroke-width="1.2"/>
+              <text x="374" y="94" font-size="10.5" fill="var(--faint)">may name a write-capable skill</text>
+
+              <rect x="14" y="122" width="692" height="48" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.6"/>
+              <text x="360" y="144" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accent)">APPROVAL GATE</text>
+              <text x="360" y="160" text-anchor="middle" font-family="var(--mono)" font-size="9.5" fill="var(--accent)">actionId bound to immutable parameters · human decides</text>
+
+              <path d="M360,170 L360,190" fill="none" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#a1a)"/>
+              <text x="374" y="204" font-size="10.5" fill="var(--faint)">execution — Dockerfile, CI workflow, test run…</text>
+            </svg>
+          </div>
+          <figcaption>Figure 1. Three mechanisms of increasing cost and decreasing determinism can propose a skill; none of them can skip the gate below it.</figcaption>
+        </figure>
+      </section>
+
+      <!-- ============ ARCHITECTURE ============ -->
+      <section id="architecture">
+        <p class="kicker">How it's built</p>
+        <h2>Six processes, two protocols, one adaptive planner</h2>
+        <p class="dek">A2A-style HTTP moves tasks between the Orchestrator and its four agents; MCP exposes tools (git, file, analysis) to the three agents that need them. Security stays direct-filesystem by deliberate decision — already read-only and audited, converting it would cost real performance for architectural symmetry alone.</p>
+
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th class="mono">Port</th><th>Process</th><th>Role</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">3000</td><td>Orchestrator</td><td>Discovery, routing, the adaptive planner, approvals, dashboard, live events</td></tr>
+              <tr><td class="mono">3002</td><td>DevOps agent</td><td>Docker/CI/gitignore/compose generation, project analysis, git status</td></tr>
+              <tr><td class="mono">3003</td><td>Testing agent</td><td>Test execution and coverage, real runner detection</td></tr>
+              <tr><td class="mono">3004</td><td>Documentation agent</td><td>README and API-doc generation</td></tr>
+              <tr><td class="mono">3005</td><td>Security agent</td><td>Secret scan, gitignore coverage, dependency audit</td></tr>
+              <tr><td class="mono">3006</td><td>MCP server</td><td>Git, analysis, and file-generation tools — shared by DevOps/Testing/Documentation</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>The adaptive planner, specifically</h3>
+        <p>When a request is broad ("build and deploy my app") rather than a direct skill, the Orchestrator's own supervisor decides one step at a time — dispatch a skill, observe what actually happened, decide the next step. A failed <em>read-only</em> step lets it try something else; a failed <em>write-capable</em> step is treated as ambiguous and stops the run rather than assuming nothing happened. This replaced a separate, deleted Planning Agent — the Orchestrator itself is now the only planner, and it refuses to even start without a working provider key.</p>
+      </section>
+
+      <!-- ============ DEMO ============ -->
+      <section id="demo">
+        <p class="kicker">Run it live</p>
+        <h2>Three ways to start it; one is enough for a room</h2>
+
+        <p class="cmd-label">Fastest — no build, no provider key required to see routing/approvals work</p>
+        <pre>bun install
+bun run dev</pre>
+        <p>Starts all six processes in parallel with no lifecycle guarantees — fine for a live demo, not for anything you'd walk away from.</p>
+
+        <p class="cmd-label">Closer to real usage — port preflight, ordered startup, clean shutdown</p>
+        <pre>bun run orchestrai</pre>
+
+        <p class="cmd-label">What anyone else can actually install today</p>
+        <pre>npx orchestrai</pre>
+        <p style="color:var(--muted);font-size:13.5px">One caveat worth saying in the room: the published package is 21 commits behind <code>main</code> as of this writing — see "How real is this" below.</p>
+
+        <h3>What to click once it's running</h3>
+        <div class="grid3">
+          <div class="card"><h4>Orchestrator</h4><p><a href="http://localhost:3000/dashboard">localhost:3000/dashboard</a></p><p class="sub">Chat-first — type a request, watch it dispatch live</p></div>
+          <div class="card"><h4>DevOps</h4><p><a href="http://localhost:3002/dashboard">localhost:3002/dashboard</a></p><p class="sub">Approve/reject a real write, see the diff preview</p></div>
+          <div class="card"><h4>Security</h4><p><a href="http://localhost:3005/dashboard">localhost:3005/dashboard</a></p><p class="sub">Read-only findings, nothing to approve</p></div>
+        </div>
+
+        <h3>A script that shows the whole point in under a minute</h3>
+        <ol class="clean" style="padding-left:20px">
+          <li>Type <code>"build and deploy my bun app"</code> into the Orchestrator chat — the exact phrase this project's own live verification against a real Gemini deployment used.</li>
+          <li>Watch it dispatch <code>analyze-project</code> first, read the real result, <em>then</em> decide <code>dockerize</code> — not a static two-step plan written in advance.</li>
+          <li>It stops at <code>input-required</code> with a preview of the exact Dockerfile content. Reject it.</li>
+          <li>Confirm nothing was written — that's the whole safety argument in one click.</li>
+        </ol>
+      </section>
+
+      <!-- ============ RECENT CHANGES ============ -->
+      <section id="recent">
+        <p class="kicker">Recent changes</p>
+        <h2>The last stretch of work, most recent first</h2>
+        <p class="dek">Ten checkpoints landed since the last published release tag (<code>v0.1.17</code>) — 21 commits nobody running the published package has yet. Each line below is one shipped, tested spec.</p>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-tag">specs/055</span><h4>Provider call retry — transient vs. terminal errors</h4><p>A rate-limit or timeout now retries with bounded backoff instead of failing identically to a permanently bad key.</p></div>
+          <div class="tl-item"><span class="tl-tag">specs/049</span><h4>Browser setup page — <code>orchestrai init --web</code></h4><p>A third guided-setup surface alongside the terminal wizard and TUI form, single-use token, no outbound request.</p></div>
+          <div class="tl-item"><span class="tl-tag">specs/059</span><h4>Real terminal paste support</h4><p>Bracketed-paste handling across every text field in the TUI and the setup wizard, including the masked API-key prompt.</p></div>
+          <div class="tl-item"><span class="tl-tag">specs/057</span><h4>Cross-request read caching</h4><p>A follow-up question in the same conversation reuses a prior <code>git-status</code>/<code>analyze-project</code> result instead of redoing it — with a cheap re-check before trusting it.</p></div>
+          <div class="tl-item"><span class="tl-tag">specs/054</span><h4>LLM-based routing, third tier</h4><p>Consulted only when keyword matching and the local classifier both miss; validated against the live agent registry before ever being trusted.</p></div>
+          <div class="tl-item"><span class="tl-tag">specs/060</span><h4>Parallel read-only dispatch</h4><p>The planner can now fire off two independent read-only steps at once instead of waiting on each in turn — never a write-capable one.</p></div>
+          <div class="tl-item"><span class="tl-tag">specs/056</span><h4>Preflight and idempotent writes</h4><p>An identical re-run now completes as a genuine no-op instead of re-proposing a write that changes nothing.</p></div>
+          <div class="tl-item"><span class="tl-tag">specs/058</span><h4>Real multi-ecosystem test detection</h4><p>Jest, Vitest, npm, pnpm, yarn now genuinely detected — previously anything with a <code>scripts.test</code> field was guessed as Bun.</p></div>
+          <div class="tl-item"><span class="tl-tag">specs/062</span><h4>Guided-init TUI as its own process</h4><p>Fixed a crash where the auto-launched setup TUI shared a process with its own parent.</p></div>
+        </div>
+      </section>
+
+      <!-- ============ SPEC SYSTEM ============ -->
+      <section id="specs">
+        <p class="kicker">How specs work</p>
+        <h2>Nothing changes behavior without a written, approved checkpoint first</h2>
+        <p class="dek">Every one of the 64 checkpoints above exists as a file under <code>specs/</code> before the code that implements it. This isn't a suggestion — it's a hard stop enforced in the working process itself.</p>
+
+        <figure>
+          <div class="figbox">
+            <svg viewBox="0 0 720 176" role="img" aria-label="A spec moves through four lifecycle states — draft, approved, implemented, superseded or archived — with a separate, independent verification confidence tracked alongside it: pending, partial, or verified. A material change to an approved spec returns it to draft.">
+              <defs>
+                <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
+                </marker>
+              </defs>
+              <text x="14" y="18" font-family="var(--mono)" font-size="10" letter-spacing="1.2" fill="var(--faint)">LIFECYCLE STATUS</text>
+              <rect x="14" y="28" width="150" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1"/>
+              <text x="89" y="56" text-anchor="middle" font-size="12.5" font-weight="600">draft</text>
+              <rect x="196" y="28" width="150" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1"/>
+              <text x="271" y="56" text-anchor="middle" font-size="12.5" font-weight="600">approved</text>
+              <rect x="378" y="28" width="150" height="46" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.6"/>
+              <text x="453" y="56" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--accent)">implemented</text>
+              <rect x="560" y="28" width="150" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/>
+              <text x="635" y="50" text-anchor="middle" font-size="12" font-weight="600">superseded /</text>
+              <text x="635" y="65" text-anchor="middle" font-size="12" font-weight="600">archived</text>
+
+              <path d="M164,51 L196,51" fill="none" stroke="currentColor" stroke-width="1.2" marker-end="url(#a2)"/>
+              <text x="180" y="44" text-anchor="middle" font-size="9.5" fill="var(--faint)">Yusuf</text>
+              <path d="M346,51 L378,51" fill="none" stroke="currentColor" stroke-width="1.2" marker-end="url(#a2)"/>
+              <path d="M528,51 L560,51" fill="none" stroke="currentColor" stroke-width="1.2" marker-end="url(#a2)"/>
+
+              <path d="M271,74 L271,96 L89,96 L89,74" fill="none" stroke="currentColor" stroke-width="1.1" stroke-dasharray="3 3" marker-end="url(#a2)"/>
+              <text x="180" y="112" text-anchor="middle" font-size="9.5" fill="var(--faint)">material change → back to draft</text>
+
+              <text x="14" y="140" font-family="var(--mono)" font-size="10" letter-spacing="1.2" fill="var(--faint)">VERIFICATION — TRACKED SEPARATELY</text>
+              <rect x="14" y="150" width="120" height="26" rx="13" fill="var(--sev-parked-soft)"/>
+              <text x="74" y="167" text-anchor="middle" font-size="10.5" fill="var(--sev-parked)">pending</text>
+              <rect x="146" y="150" width="120" height="26" rx="13" fill="var(--sev-yours-soft)"/>
+              <text x="206" y="167" text-anchor="middle" font-size="10.5" fill="var(--sev-yours)">partial</text>
+              <rect x="278" y="150" width="120" height="26" rx="13" fill="var(--ok-soft)"/>
+              <text x="338" y="167" text-anchor="middle" font-size="10.5" fill="var(--ok)">verified</text>
+            </svg>
+          </div>
+          <figcaption>Figure 2. "The code exists" (status) and "we proved it works" (verification) are deliberately two different fields, so neither can be quietly inferred from the other.</figcaption>
+        </figure>
+
+        <h3>The rule that actually enforces it</h3>
+        <p>Before touching runtime behavior, architecture, or protocols: read the operating guide, write a numbered spec with schema-validated metadata (a stable area, a change type, safety constraints, acceptance criteria), run the catalog governance check, and present it. <strong>Then stop.</strong> No file gets edited outside <code>specs/</code> until there's an explicit approval — this applies to every coding agent working in the repo, and a spec's own draft banner is never itself authorization. A pre-commit hook runs the same governance check plus the full test suite on every commit, so a spec with bad metadata or a broken build cannot land silently.</p>
+        <p style="color:var(--muted);font-size:13.5px">Three checkpoints are exactly that right now, all sitting at this gate, waiting on review: <code>specs/063</code> (letting each agent pick its own provider, not only its own model), <code>specs/064</code> (the supervisor's startup key check becomes a warning instead of a hard stop), and <code>specs/065</code> (retiring keyword/local-classifier routing in favor of the LLM router deciding every skill dispatch — the biggest architectural bet in the queue, and the one most likely to change what Figure 1 above looks like if approved).</p>
+      </section>
+
+      <!-- ============ TESTS & CI ============ -->
+      <section id="tests">
+        <p class="kicker">Tests &amp; CI/CD</p>
+        <h2>831 tests, zero mocked around the safety gate</h2>
+        <div class="stats" style="margin:4px 0 20px">
+          <div class="stat"><b>831</b><span>tests passing</span></div>
+          <div class="stat"><b>0</b><span>failing</span></div>
+          <div class="stat"><b>1,613</b><span>assertions</span></div>
+          <div class="stat"><b>55</b><span>test files</span></div>
+        </div>
+
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Pipeline</th><th>Runs on</th><th>What it actually proves</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">ci.yml</td><td>every push/PR to <code>main</code></td><td>Spec governance, typecheck, full test suite, then starts a <strong>real process</strong> and submits two real HTTP requests — proving <code>plan-task</code> genuinely reaches the adaptive planner, not just that unit tests pass around it. No real provider call; the key it sets is deliberately non-functional.</td></tr>
+              <tr><td class="mono">build-binaries.yml</td><td><code>main</code>, tags, manual</td><td>Compiles and smoke-tests the standalone binary <strong>natively</strong> on Windows, Linux, and macOS runners — never cross-compiled, so each leg actually executes what it built.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The `ci.yml` smoke test exists because of a real regression <code>bun test</code> alone missed: every unit test built its own fake agent registry, so a code path that only broke against a genuinely running system stayed green in the suite while being dead in production. It's now caught structurally, not by remembering to check.</p>
+      </section>
+
+      <!-- ============ HOW REAL ============ -->
+      <section id="real">
+        <p class="kicker">How real is this, honestly</p>
+        <h2>The gate is proven. The edges around it are not, yet.</h2>
+        <div class="stats" style="margin:4px 0 22px">
+          <div class="stat"><b>46</b><span>fully verified</span></div>
+          <div class="stat"><b>14</b><span>partial verification</span></div>
+          <div class="stat"><b>3</b><span>drafted, unapproved</span></div>
+        </div>
+
+        <div class="grid2">
+          <div class="card">
+            <h4><span class="chip ok">solid</span></h4>
+            <p>The approval gate itself — unchanged in shape across every checkpoint, live-verified repeatedly including adversarial cases (mutate the file after approval, reject and confirm nothing wrote).</p>
+          </div>
+          <div class="card">
+            <h4><span class="chip ok">solid</span></h4>
+            <p>Live end-to-end runs with a real Gemini deployment: genuine multi-step adaptive dispatch, real approval/rejection, real dispatch-limit enforcement.</p>
+          </div>
+          <div class="card">
+            <h4><span class="chip crit">unproven</span></h4>
+            <p>Claude and OpenAI code paths have never made a real API call — every live pass in this project's history used Gemini only.</p>
+          </div>
+          <div class="card">
+            <h4><span class="chip crit">unproven</span></h4>
+            <p>Approval state is memory-only. Restart an agent mid-approval and that binding is gone — a documented invariant with no durability behind it.</p>
+          </div>
+          <div class="card">
+            <h4><span class="chip yours">gap</span></h4>
+            <p>The newest retry logic (specs/055) was written from documented error shapes, not a captured real one — untested against reality.</p>
+          </div>
+          <div class="card">
+            <h4><span class="chip yours">gap</span></h4>
+            <p>The published <code>npx orchestrai</code> package is 21 commits behind what's actually in this repo right now.</p>
+          </div>
+        </div>
+
+        <div class="note">
+          <p><strong>The honest one-line version:</strong> the architecture's core safety claim — a write always stops for a human, nothing bypasses that — is proven repeatedly and adversarially. What's unproven is provider behavior under real conditions with two of three providers, and whether any of this survives a process restart. Neither is a flaw in the design; both are work that hasn't happened yet.</p>
+        </div>
+
+        <h3>Open items, ranked</h3>
+        <p class="dek">The same ranking from the team status report — by what actually blocks trusting the tool day to day, not by how long each has been known.</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Item</th><th>Rating</th><th>Why it matters</th><th>Closes with</th></tr></thead>
+            <tbody>
+              <tr><td>Claude / GPT never called for real</td><td><span class="chip crit">critical</span></td><td>Every live-provider pass in this project's history used Gemini only. Anthropic/OpenAI code is complete but unproven.</td><td>One live session, real keys, both providers</td></tr>
+              <tr><td>Approval state is memory-only</td><td><span class="chip crit">critical</span></td><td>Restart an agent mid-approval and the <code>actionId</code> binding is gone — the orchestrator waits on a promise that never resolves.</td><td>New spec — durable task/approval state</td></tr>
+              <tr><td>specs/055 retry logic unproven</td><td><span class="chip yours">needs a live pass</span></td><td>Written from documented provider error shapes, not a captured real one — a real error could silently misclassify.</td><td>Same live-provider session as above</td></tr>
+              <tr><td><code>npx orchestrai</code> is 21 commits stale</td><td><span class="chip yours">shipping gap</span></td><td>Anyone installing today misses the last eight specs' worth of work, including the whole browser setup page.</td><td>Pin last <code>"latest"</code> dep, cut a release</td></tr>
+              <tr><td>14 specs, partial verification</td><td><span class="chip parked">tracked backlog</span></td><td>Splits into 3 real buckets: needs a live key (3), needs a real terminal/browser (4), pre-dates current standard (7).</td><td>Live session covers 3; rest need hands-on passes</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>

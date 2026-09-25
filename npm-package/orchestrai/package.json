@@ -1,0 +1,26 @@
+{
+  "name": "orchestrai",
+  "version": "0.1.27",
+  "description": "OrchestrAI — run the standalone orchestrai binary via bunx/npx with nothing pre-installed. The right platform binary is installed automatically as an optional dependency; no network download at runtime.",
+  "license": "MIT",
+  "bin": {
+    "orchestrai": "bin/orchestrai.js"
+  },
+  "files": [
+    "bin/",
+    "README.md",
+    "logo.png"
+  ],
+  "optionalDependencies": {
+    "orchestrai-windows-x64": "0.1.27",
+    "orchestrai-linux-x64": "0.1.27",
+    "orchestrai-darwin-arm64": "0.1.27"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Muhamad-Yussuf/devops-mcp-server.git"
+  }
+}

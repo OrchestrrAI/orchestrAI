@@ -1,0 +1,793 @@
+<meta charset="utf-8">
+<title>OrchestrAI — Protocol Cheat Sheet</title>
+<style>
+  :root {
+    --bg: #f3f5f7;
+    --surface: #ffffff;
+    --surface-2: #eef0f3;
+    --border: #d7dbe2;
+    --text: #1b1e29;
+    --text-muted: #5b606f;
+    --text-faint: #868c9c;
+
+    --mcp: #a3711a;
+    --mcp-bg: rgba(163, 113, 26, 0.10);
+    --a2a: #12798a;
+    --a2a-bg: rgba(18, 121, 138, 0.10);
+    --internal: #5f5796;
+    --internal-bg: rgba(95, 87, 150, 0.10);
+    --classifier: #2f7d4f;
+    --classifier-bg: rgba(47, 125, 79, 0.10);
+
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, Consolas, monospace;
+    --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12141c;
+      --surface: #1a1d28;
+      --surface-2: #20232f;
+      --border: #2c3040;
+      --text: #e7e8ee;
+      --text-muted: #9296ab;
+      --text-faint: #6d7box;
+      --text-faint: #6d7284;
+
+      --mcp: #e0a750;
+      --mcp-bg: rgba(224, 167, 80, 0.13);
+      --a2a: #5fc8d8;
+      --a2a-bg: rgba(95, 200, 216, 0.13);
+      --internal: #a79dd6;
+      --internal-bg: rgba(167, 157, 214, 0.13);
+      --classifier: #6fcf97;
+      --classifier-bg: rgba(111, 207, 151, 0.13);
+
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #12141c;
+    --surface: #1a1d28;
+    --surface-2: #20232f;
+    --border: #2c3040;
+    --text: #e7e8ee;
+    --text-muted: #9296ab;
+    --text-faint: #6d7284;
+
+    --mcp: #e0a750;
+    --mcp-bg: rgba(224, 167, 80, 0.13);
+    --a2a: #5fc8d8;
+    --a2a-bg: rgba(95, 200, 216, 0.13);
+    --internal: #a79dd6;
+    --internal-bg: rgba(167, 157, 214, 0.13);
+    --classifier: #6fcf97;
+    --classifier-bg: rgba(111, 207, 151, 0.13);
+
+    color-scheme: dark;
+  }
+
+  :root[data-theme="light"] {
+    --bg: #f3f5f7;
+    --surface: #ffffff;
+    --surface-2: #eef0f3;
+    --border: #d7dbe2;
+    --text: #1b1e29;
+    --text-muted: #5b606f;
+    --text-faint: #868c9c;
+
+    --mcp: #a3711a;
+    --mcp-bg: rgba(163, 113, 26, 0.10);
+    --a2a: #12798a;
+    --a2a-bg: rgba(18, 121, 138, 0.10);
+    --internal: #5f5796;
+    --internal-bg: rgba(95, 87, 150, 0.10);
+    --classifier: #2f7d4f;
+    --classifier-bg: rgba(47, 125, 79, 0.10);
+
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 48px 24px 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  header.top {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  h1 {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .lede {
+    color: var(--text-muted);
+    max-width: 62ch;
+    font-size: 15px;
+  }
+
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  h2 {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  h2 .num {
+    color: var(--text-faint);
+    opacity: 0.55;
+  }
+
+  p.section-note {
+    margin: 0;
+    color: var(--text-muted);
+    max-width: 66ch;
+  }
+
+  /* ---- color key ---- */
+  .key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+  }
+
+  .key-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+  }
+
+  .swatch {
+    width: 26px;
+    height: 3px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .swatch.dashed {
+    background: repeating-linear-gradient(to right, currentColor 0 6px, transparent 6px 10px);
+    height: 3px;
+  }
+
+  .swatch.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .c-mcp { color: var(--mcp); }
+  .c-a2a { color: var(--a2a); }
+  .c-internal { color: var(--internal); }
+  .c-classifier { color: var(--classifier); }
+  .swatch.c-mcp, .swatch.c-a2a, .swatch.c-internal, .swatch.c-classifier { background: currentColor; }
+  .swatch.dashed.c-a2a { background: repeating-linear-gradient(to right, var(--a2a) 0 6px, transparent 6px 10px); }
+  .swatch.dashed.c-classifier { background: repeating-linear-gradient(to right, var(--classifier) 0 4px, transparent 4px 7px); }
+
+  /* ---- figures ---- */
+  figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .diagram-frame {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 16px;
+    overflow-x: auto;
+  }
+
+  .diagram-frame svg {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-width: 640px;
+  }
+
+  figcaption {
+    font-size: 13px;
+    color: var(--text-muted);
+    max-width: 68ch;
+  }
+
+  /* ---- action table ---- */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 720px;
+  }
+
+  thead th {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    font-size: 13.5px;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  td.action code {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--text);
+    background: var(--surface-2);
+    padding: 2px 6px;
+    border-radius: 5px;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .chip {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .chip.mcp { color: var(--mcp); background: var(--mcp-bg); }
+  .chip.a2a { color: var(--a2a); background: var(--a2a-bg); }
+  .chip.a2a-direct { color: var(--a2a); background: var(--a2a-bg); border: 1px dashed var(--a2a); }
+  .chip.internal { color: var(--internal); background: var(--internal-bg); }
+  .chip.classifier { color: var(--classifier); background: var(--classifier-bg); }
+
+  td.say {
+    color: var(--text-muted);
+    font-style: italic;
+    max-width: 30ch;
+  }
+
+  /* ---- terminal tells ---- */
+  .tells {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  @media (max-width: 620px) {
+    .tells { grid-template-columns: 1fr; }
+  }
+
+  .tell {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .tell-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .tell.mcp .tell-label { color: var(--mcp); }
+  .tell.a2a .tell-label { color: var(--a2a); }
+
+  pre.jsonline {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  pre.jsonline .k { color: var(--text); font-weight: 600; }
+  .tell.mcp pre.jsonline .hit { color: var(--mcp); font-weight: 700; }
+  .tell.a2a pre.jsonline .hit { color: var(--a2a); font-weight: 700; }
+
+  footer.foot {
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--text-faint);
+  }
+</style>
+
+<div class="page">
+
+  <header class="top">
+    <div class="eyebrow">Live-demo reference · OrchestrAI</div>
+    <h1>Which wire is this, again?</h1>
+    <p class="lede">
+      Three different mechanisms move data between OrchestrAI's pieces —
+      the custom A2A-style task protocol, real MCP over Streamable HTTP,
+      and plain internal execution with neither. This page maps every
+      demoable action to the mechanism it actually uses, so you can narrate
+      it correctly while it's happening on screen.
+    </p>
+  </header>
+
+  <section aria-labelledby="key-h">
+    <h2 id="key-h"><span class="num">00</span> Color key — used across the diagrams below</h2>
+    <div class="key">
+      <span class="key-item"><span class="swatch c-a2a"></span>A2A-style · Orchestrator ↔ Agent</span>
+      <span class="key-item"><span class="swatch dashed c-a2a"></span>A2A · direct, Agent ↔ Agent (Tier 3)</span>
+      <span class="key-item"><span class="swatch c-mcp"></span>MCP · Streamable HTTP tool call</span>
+      <span class="key-item"><span class="swatch dot c-internal"></span>Internal only · no network hop</span>
+      <span class="key-item"><span class="swatch dashed c-classifier"></span>Local classifier · routing decision, no hop at all</span>
+    </div>
+  </section>
+
+  <section aria-labelledby="map-h">
+    <h2 id="map-h"><span class="num">01</span> System map</h2>
+    <p class="section-note">
+      Every agent talks to the Orchestrator over the same A2A-style protocol.
+      DevOps, Testing, and Documentation are all real MCP clients (sharing
+      one connection-lifecycle implementation); only DevOps additionally
+      makes one direct, Orchestrator-bypassing A2A call — to Security,
+      during
+      <code style="font-family:var(--font-mono);background:var(--surface-2);padding:1px 5px;border-radius:4px;">analyze-project</code>.
+      Planning and Security are the two agents that never leave their own
+      process — Security by deliberate decision (already read-only/audited,
+      converting it would cost latency for architectural symmetry alone).
+    </p>
+    <figure>
+      <div class="diagram-frame">
+        <svg viewBox="0 0 960 430" role="img" aria-label="System map: the Orchestrator connects to all five agents over the A2A-style protocol; DevOps, Testing, and Documentation all call the MCP HTTP server; DevOps additionally makes a direct A2A call to Security; Planning and Security only execute internally.">
+          <defs>
+            <marker id="arrow-a2a-1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <polygon points="0,0 10,5 0,10" style="fill:var(--a2a)" />
+            </marker>
+            <marker id="arrow-mcp-1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <polygon points="0,0 10,5 0,10" style="fill:var(--mcp)" />
+            </marker>
+          </defs>
+
+          <!-- fan: orchestrator to each agent -->
+          <g style="stroke:var(--a2a);stroke-width:1.6" marker-end="url(#arrow-a2a-1)">
+            <line x1="480" y1="78" x2="120" y2="168" />
+            <line x1="480" y1="78" x2="300" y2="168" />
+            <line x1="480" y1="78" x2="480" y2="168" />
+            <line x1="480" y1="78" x2="660" y2="168" />
+            <line x1="480" y1="78" x2="840" y2="168" />
+          </g>
+          <rect x="378" y="93" width="204" height="24" rx="12" style="fill:var(--surface)" />
+          <text x="480" y="109" text-anchor="middle" style="font:600 11px var(--font-mono);fill:var(--a2a)">A2A-style task protocol</text>
+
+          <!-- orchestrator box -->
+          <rect x="390" y="20" width="180" height="56" rx="8" style="fill:var(--surface-2);stroke:var(--border)" />
+          <text x="480" y="53" text-anchor="middle" style="font:600 13px var(--font-mono);fill:var(--text)">Orchestrator</text>
+          <text x="480" y="68" text-anchor="middle" style="font:11px var(--font-mono);fill:var(--text-faint)">:3000</text>
+
+          <!-- agent boxes -->
+          <g style="fill:var(--surface);stroke:var(--border)">
+            <rect x="45" y="170" width="150" height="60" rx="8" />
+            <rect x="225" y="170" width="150" height="60" rx="8" />
+            <rect x="405" y="170" width="150" height="60" rx="8" />
+            <rect x="585" y="170" width="150" height="60" rx="8" />
+            <rect x="765" y="170" width="150" height="60" rx="8" />
+          </g>
+          <g text-anchor="middle" style="font:600 12.5px var(--font-mono);fill:var(--text)">
+            <text x="120" y="198">Planning</text>
+            <text x="300" y="198">DevOps</text>
+            <text x="480" y="198">Testing</text>
+            <text x="660" y="198">Documentation</text>
+            <text x="840" y="198">Security</text>
+          </g>
+          <g text-anchor="middle" style="font:11px var(--font-mono);fill:var(--text-faint)">
+            <text x="120" y="214">:3001</text>
+            <text x="300" y="214">:3002</text>
+            <text x="480" y="214">:3003</text>
+            <text x="660" y="214">:3004</text>
+            <text x="840" y="214">:3005</text>
+          </g>
+
+          <!-- self loops: the two agents that never leave their own process -->
+          <g style="fill:none;stroke:var(--internal);stroke-width:1.4">
+            <path d="M 65 230 Q 120 258 175 230" />
+            <path d="M 785 230 Q 840 258 895 230" />
+          </g>
+          <g style="fill:var(--internal)">
+            <circle cx="175" cy="230" r="3" />
+            <circle cx="895" cy="230" r="3" />
+          </g>
+          <g text-anchor="middle" style="font:10.5px var(--font-mono);fill:var(--internal)">
+            <text x="120" y="272">internal only</text>
+            <text x="840" y="272">internal only</text>
+          </g>
+
+          <!-- DevOps, Testing, Documentation -> MCP server (all three are real MCP clients) -->
+          <line x1="300" y1="230" x2="200" y2="328" style="stroke:var(--mcp);stroke-width:1.6" marker-end="url(#arrow-mcp-1)" />
+          <line x1="480" y1="230" x2="310" y2="328" style="stroke:var(--mcp);stroke-width:1.6" marker-end="url(#arrow-mcp-1)" />
+          <line x1="660" y1="230" x2="420" y2="328" style="stroke:var(--mcp);stroke-width:1.6" marker-end="url(#arrow-mcp-1)" />
+          <rect x="150" y="330" width="320" height="56" rx="8" style="fill:var(--mcp-bg);stroke:var(--mcp)" />
+          <text x="310" y="355" text-anchor="middle" style="font:600 13px var(--font-mono);fill:var(--mcp)">MCP HTTP Server</text>
+          <text x="310" y="371" text-anchor="middle" style="font:11px var(--font-mono);fill:var(--mcp)">:3006 · Streamable HTTP</text>
+          <text x="240" y="255" text-anchor="middle" style="font:11px var(--font-mono);fill:var(--mcp)">MCP tool calls</text>
+
+          <!-- DevOps -> Security direct A2A, orthogonal routing -->
+          <path d="M 375 210 L 420 210 L 420 300 L 840 300 L 840 230" style="fill:none;stroke:var(--a2a);stroke-width:1.6;stroke-dasharray:6 5" marker-end="url(#arrow-a2a-1)" />
+          <rect x="520" y="288" width="220" height="22" rx="11" style="fill:var(--surface)" />
+          <text x="630" y="303" text-anchor="middle" style="font:600 10.5px var(--font-mono);fill:var(--a2a)">direct A2A · Tier 3 (secrets pre-check)</text>
+        </svg>
+      </div>
+      <figcaption>
+        Fig. 1 — the Orchestrator's fan-out is the only thing all five agents share.
+        DevOps, Testing, and Documentation are all real MCP clients (one shared
+        connection-lifecycle implementation); DevOps is additionally the only agent
+        that calls a peer directly instead of going back through the Orchestrator.
+        Planning and Security never leave their own process.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section aria-labelledby="route-h">
+    <h2 id="route-h"><span class="num">02</span> Routing: keyword match, then a local classifier</h2>
+    <p class="section-note">
+      Before any of the three wires above get chosen, the Orchestrator first has to decide
+      <em>which skill</em> a task is for at all — that decision itself is not a wire hop; it
+      all happens inside the Orchestrator's own process
+      (<code style="font-family:var(--font-mono);background:var(--surface-2);padding:1px 5px;border-radius:4px;">detectSkill()</code>),
+      before the winning skill's agent is ever contacted over any protocol.
+    </p>
+    <figure>
+      <div class="diagram-frame">
+        <svg viewBox="0 0 960 220" role="img" aria-label="Routing flow: input text first tries deterministic keyword matching; on a match it goes straight to that skill. If nothing matches, a local static-embedding classifier scores every skill; if its top score and margin both clear threshold that skill is used, otherwise the request falls back to the plan-task skill. No step in this flow is a network call.">
+          <defs>
+            <marker id="arrow-route" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <polygon points="0,0 10,5 0,10" style="fill:var(--a2a)" />
+            </marker>
+            <marker id="arrow-route-classifier" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <polygon points="0,0 10,5 0,10" style="fill:var(--classifier)" />
+            </marker>
+            <marker id="arrow-route-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <polygon points="0,0 10,5 0,10" style="fill:var(--text-muted)" />
+            </marker>
+          </defs>
+
+          <g style="fill:var(--surface);stroke:var(--border)">
+            <rect x="20" y="90" width="150" height="60" rx="8" />
+            <rect x="255" y="90" width="220" height="60" rx="8" />
+            <rect x="560" y="90" width="220" height="60" rx="8" />
+            <rect x="860" y="90" width="90" height="60" rx="8" />
+          </g>
+          <g text-anchor="middle" style="font:600 12.5px var(--font-mono);fill:var(--text)">
+            <text x="95" y="124">Task text</text>
+            <text x="365" y="118">Keyword match</text>
+            <text x="670" y="118">Local classifier</text>
+            <text x="905" y="124">Skill</text>
+          </g>
+          <g text-anchor="middle" style="font:10.5px var(--font-mono);fill:var(--text-faint)">
+            <text x="365" y="136">~20 deterministic rules</text>
+            <text x="670" y="136">score + margin ≥ threshold</text>
+          </g>
+
+          <!-- Task text -> Keyword match -->
+          <line x1="170" y1="120" x2="253" y2="120" style="stroke:var(--text-faint);stroke-width:1.4" marker-end="url(#arrow-route)" />
+
+          <!-- Keyword match -> Skill, on a match (goes over the top, straight to the skill) -->
+          <text x="670" y="42" text-anchor="middle" style="font:600 11px var(--font-mono);fill:var(--a2a)">match → that skill directly</text>
+          <path d="M 400 88 Q 670 20 895 88" style="fill:none;stroke:var(--a2a);stroke-width:1.6" marker-end="url(#arrow-route)" />
+
+          <!-- Keyword match -> Local classifier, no match -->
+          <text x="517" y="112" text-anchor="middle" style="font:10.5px var(--font-sans);fill:var(--text-muted)">no match</text>
+          <line x1="475" y1="120" x2="558" y2="120" style="stroke:var(--classifier);stroke-width:1.6;stroke-dasharray:6 5" marker-end="url(#arrow-route-classifier)" />
+
+          <!-- Local classifier -> Skill, confident -->
+          <text x="822" y="112" text-anchor="middle" style="font:10.5px var(--font-mono);fill:var(--classifier)">confident</text>
+          <line x1="780" y1="120" x2="858" y2="120" style="stroke:var(--classifier);stroke-width:1.6;stroke-dasharray:6 5" marker-end="url(#arrow-route-classifier)" />
+
+          <!-- Local classifier -> Skill, below threshold -> plan-task (still "a skill", just the default one) -->
+          <text x="670" y="196" text-anchor="middle" style="font:10.5px var(--font-mono);fill:var(--text-muted)">below threshold → plan-task (the default skill)</text>
+          <path d="M 600 150 Q 670 182 893 132" style="fill:none;stroke:var(--text-muted);stroke-width:1.6;stroke-dasharray:5 4" marker-end="url(#arrow-route-muted)" />
+        </svg>
+      </div>
+      <figcaption>
+        Fig. 2 — <code style="font-family:var(--font-mono)">minishlab/potion-base-8M</code> (Model2Vec static
+        embeddings): tokenize → look up one vector per token → mean-pool → cosine similarity against a small
+        example set per skill. No inference engine, no network call, not an LLM — and it never overrides a
+        keyword match, only fills the gap when nothing matched at all.
+      </figcaption>
+    </figure>
+    <p class="section-note">
+      <strong>Try it live:</strong> a phrase with no matching keyword, e.g.
+      <span style="font-family:var(--font-mono);color:var(--text)">"can you check if my repo has any leaked keys"</span>
+      — still correctly routes to <span style="font-family:var(--font-mono);color:var(--text)">scan-secrets</span>,
+      with no
+      <span style="font-family:var(--font-mono);color:var(--text)">"secret"</span>/<span style="font-family:var(--font-mono);color:var(--text)">"scan"</span>
+      keyword anywhere in the text. There's no wire-level audit line for this step the way there is for MCP/A2A
+      below — the tell is the assigned skill itself, visible in the task response and every dashboard/TUI.
+    </p>
+  </section>
+
+  <section aria-labelledby="seq-h">
+    <h2 id="seq-h"><span class="num">03</span> Sequence for "analyze my project"</h2>
+    <p class="section-note">
+      This is the one demo action that exercises all three mechanisms in a single run —
+      worth walking through hop by hop.
+    </p>
+    <figure>
+      <div class="diagram-frame">
+        <svg viewBox="0 0 960 460" role="img" aria-label="Sequence diagram for analyze-project: the browser posts to the Orchestrator over A2A-style HTTP, the Orchestrator forwards to DevOps, DevOps calls the MCP server, then DevOps directly calls Security over A2A, and results flow back up through polling and SSE.">
+          <defs>
+            <marker id="arrow-a2a-2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <polygon points="0,0 10,5 0,10" style="fill:var(--a2a)" />
+            </marker>
+            <marker id="arrow-mcp-2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <polygon points="0,0 10,5 0,10" style="fill:var(--mcp)" />
+            </marker>
+          </defs>
+
+          <!-- lifelines -->
+          <g style="stroke:var(--border);stroke-width:1.3;stroke-dasharray:3 4">
+            <line x1="80" y1="55" x2="80" y2="440" />
+            <line x1="280" y1="55" x2="280" y2="440" />
+            <line x1="480" y1="55" x2="480" y2="440" />
+            <line x1="680" y1="55" x2="680" y2="440" />
+            <line x1="880" y1="55" x2="880" y2="440" />
+          </g>
+
+          <!-- lane headers -->
+          <g style="fill:var(--surface-2);stroke:var(--border)">
+            <rect x="25" y="16" width="110" height="34" rx="7" />
+            <rect x="225" y="16" width="110" height="34" rx="7" />
+            <rect x="425" y="16" width="110" height="34" rx="7" />
+            <rect x="620" y="16" width="120" height="34" rx="7" />
+            <rect x="825" y="16" width="110" height="34" rx="7" />
+          </g>
+          <g text-anchor="middle" style="font:600 11.5px var(--font-mono);fill:var(--text)">
+            <text x="80" y="37">Browser</text>
+            <text x="280" y="37">Orchestrator</text>
+            <text x="480" y="37">DevOps Agent</text>
+            <text x="680" y="32">MCP Server</text>
+            <text x="680" y="44" style="font:10.5px var(--font-mono);fill:var(--text-faint)">:3006</text>
+            <text x="880" y="37">Security Agent</text>
+          </g>
+
+          <!-- arrows -->
+          <g style="font:11.5px var(--font-sans);fill:var(--text-muted)">
+            <text x="180" y="94" text-anchor="middle">POST /tasks — "analyze my project"</text>
+          </g>
+          <line x1="80" y1="100" x2="280" y2="100" style="stroke:var(--a2a);stroke-width:1.6" marker-end="url(#arrow-a2a-2)" />
+
+          <text x="380" y="138" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--text-muted)">POST / — A2A-style</text>
+          <line x1="280" y1="144" x2="480" y2="144" style="stroke:var(--a2a);stroke-width:1.6" marker-end="url(#arrow-a2a-2)" />
+
+          <text x="580" y="182" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--mcp)">MCP tool call: analyze_project</text>
+          <line x1="480" y1="188" x2="680" y2="188" style="stroke:var(--mcp);stroke-width:1.6" marker-end="url(#arrow-mcp-2)" />
+
+          <text x="580" y="226" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--mcp)">MCP result</text>
+          <line x1="680" y1="232" x2="480" y2="232" style="stroke:var(--mcp);stroke-width:1.6" marker-end="url(#arrow-mcp-2)" />
+
+          <text x="680" y="270" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--a2a)">POST / — direct A2A · Tier 3</text>
+          <line x1="480" y1="276" x2="880" y2="276" style="stroke:var(--a2a);stroke-width:1.6;stroke-dasharray:6 5" marker-end="url(#arrow-a2a-2)" />
+
+          <text x="680" y="314" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--a2a)">secrets scan result</text>
+          <line x1="880" y1="320" x2="480" y2="320" style="stroke:var(--a2a);stroke-width:1.6;stroke-dasharray:6 5" marker-end="url(#arrow-a2a-2)" />
+
+          <text x="380" y="358" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--text-muted)">GET /tasks/:id — poll</text>
+          <line x1="480" y1="364" x2="280" y2="364" style="stroke:var(--a2a);stroke-width:1.6" marker-end="url(#arrow-a2a-2)" />
+
+          <text x="180" y="402" text-anchor="middle" style="font:11.5px var(--font-sans);fill:var(--text-muted)">SSE update → dashboard</text>
+          <line x1="280" y1="408" x2="80" y2="408" style="stroke:var(--a2a);stroke-width:1.6" marker-end="url(#arrow-a2a-2)" />
+        </svg>
+      </div>
+      <figcaption>
+        Fig. 3 — top to bottom is time. Rows 3–4 are the MCP hop; rows 5–6 are the direct
+        A2A hop that never touches the Orchestrator; everything else is the ordinary
+        A2A-style protocol every agent uses.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section aria-labelledby="table-h">
+    <h2 id="table-h"><span class="num">04</span> Action → mechanism</h2>
+    <p class="section-note">The one to keep open while you click through the dashboards.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Type this exact text</th>
+            <th>Where</th>
+            <th>Mechanism</th>
+            <th>What actually fires</th>
+            <th>Say this</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="action"><code>analyze my project at "C:\Users\...\test-target-project"</code></td>
+            <td>Orchestrator</td>
+            <td><div class="chips"><span class="chip mcp">MCP</span><span class="chip a2a-direct">A2A · direct</span></div></td>
+            <td>DevOps calls MCP's <code style="font-family:var(--font-mono)">analyze_project</code>, then separately A2A-calls Security for a secrets pre-check — without going back through the Orchestrator.</td>
+            <td class="say">"Two hops, no approval — and the second one skips the Orchestrator entirely."</td>
+          </tr>
+          <tr>
+            <td class="action"><code>git status at "C:\Users\...\test-target-project"</code></td>
+            <td>Orchestrator or DevOps</td>
+            <td><div class="chips"><span class="chip mcp">MCP</span></div></td>
+            <td>One MCP tool call, <code style="font-family:var(--font-mono)">git_status</code>. Read-only, no approval.</td>
+            <td class="say">"Just one MCP call — the simplest case."</td>
+          </tr>
+          <tr>
+            <td class="action"><code>dockerize bun app on port 4000 at "C:\Users\...\test-target-project"</code></td>
+            <td>Orchestrator or DevOps</td>
+            <td><div class="chips"><span class="chip mcp">MCP</span></div></td>
+            <td>Held at <code style="font-family:var(--font-mono)">input-required</code> until you click Approve, then calls MCP's <code style="font-family:var(--font-mono)">create_dockerfile</code>.</td>
+            <td class="say">"Same wire as git status — just gated behind my approval this time."</td>
+          </tr>
+          <tr>
+            <td class="action"><code>create ci pipeline for bun at "C:\Users\...\test-target-project"</code></td>
+            <td>Orchestrator or DevOps</td>
+            <td><div class="chips"><span class="chip mcp">MCP</span></div></td>
+            <td>Approve → MCP's <code style="font-family:var(--font-mono)">create_github_action</code> writes <code style="font-family:var(--font-mono)">.github/workflows/ci.yml</code>.</td>
+            <td class="say">"Another approval-gated MCP write — watch the file appear only after I click Approve."</td>
+          </tr>
+          <tr>
+            <td class="action"><code>create gitignore for bun at "C:\Users\...\test-target-project"</code></td>
+            <td>Orchestrator or DevOps</td>
+            <td><div class="chips"><span class="chip mcp">MCP</span></div></td>
+            <td>Approve → MCP's <code style="font-family:var(--font-mono)">create_gitignore</code>. Reject it instead and no file appears at all.</td>
+            <td class="say">"Let's reject this one — notice nothing gets written."</td>
+          </tr>
+          <tr>
+            <td class="action"><code>run tests for my project</code></td>
+            <td>Testing dashboard</td>
+            <td><div class="chips"><span class="chip mcp">MCP</span></div></td>
+            <td>Held at <code style="font-family:var(--font-mono)">input-required</code>, showing the exact <code style="font-family:var(--font-mono)">bun test</code> argv. On approve, Testing Agent calls MCP's <code style="font-family:var(--font-mono)">run_tests</code> tool (fixed argv only) — it no longer spawns the process itself.</td>
+            <td class="say">"This one hits MCP too now — Testing became a real MCP client this session."</td>
+          </tr>
+          <tr>
+            <td class="action"><code>check test coverage</code></td>
+            <td>Testing dashboard</td>
+            <td><div class="chips"><span class="chip mcp">MCP</span></div></td>
+            <td>Identical path, MCP's <code style="font-family:var(--font-mono)">run_tests</code> called with the fixed <code style="font-family:var(--font-mono)">bun test --coverage</code> argv instead.</td>
+            <td class="say">"Same mechanism, different fixed command — never a free-text one."</td>
+          </tr>
+          <tr>
+            <td class="action"><code>generate a README for my project</code></td>
+            <td>Documentation dashboard</td>
+            <td><div class="chips"><span class="chip mcp">MCP</span></div></td>
+            <td>Held at <code style="font-family:var(--font-mono)">input-required</code>; on approve, Documentation Agent calls MCP's <code style="font-family:var(--font-mono)">write_project_file</code> — it no longer touches the filesystem directly itself.</td>
+            <td class="say">"Documentation is a real MCP client now too — same tool DevOps and Testing share."</td>
+          </tr>
+          <tr>
+            <td class="action"><code>document the API at C:/Users/...../test-target-project/src/server.ts</code></td>
+            <td>Documentation dashboard</td>
+            <td><div class="chips"><span class="chip mcp">MCP</span></div></td>
+            <td>Reads via MCP's <code style="font-family:var(--font-mono)">read_project_file</code>, scans <code style="font-family:var(--font-mono)">app.get/post/put/delete</code> routes, returns the doc as text. No approval unless you also add <code style="font-family:var(--font-mono)">save to "...md"</code>, which then calls MCP's <code style="font-family:var(--font-mono)">write_project_file</code> and does need one.</td>
+            <td class="say">"Even the read-only path goes through MCP now — it just doesn't need approval until it writes something."</td>
+          </tr>
+          <tr>
+            <td class="action"><code>scan for secrets at "C:\Users\...\test-target-project"</code></td>
+            <td>Security dashboard</td>
+            <td><div class="chips"><span class="chip internal">Internal</span></div></td>
+            <td>Security Agent scans its own filesystem directly. No MCP, no A2A — that direct A2A hop only exists when <em>DevOps</em> triggers it during analyze-project.</td>
+            <td class="say">"Internal again — this only becomes A2A when DevOps asks for it, not when I ask directly."</td>
+          </tr>
+          <tr>
+            <td class="action"><code>check gitignore coverage at "C:\Users\...\test-target-project"</code></td>
+            <td>Security dashboard</td>
+            <td><div class="chips"><span class="chip internal">Internal</span></div></td>
+            <td>Same internal filesystem read — flags <code style="font-family:var(--font-mono)">.env</code> as uncovered if there's no <code style="font-family:var(--font-mono)">.gitignore</code> yet.</td>
+            <td class="say">"Still internal — three different Security skills, zero network calls."</td>
+          </tr>
+          <tr>
+            <td class="action"><code>setup my project from scratch at "C:\Users\...\test-target-project"</code></td>
+            <td>Orchestrator</td>
+            <td><div class="chips"><span class="chip a2a">A2A-style</span><span class="chip mcp">MCP</span></div></td>
+            <td>Planning Agent writes a plan with no protocol calls at all; the Orchestrator then dispatches each step over A2A-style, and DevOps's steps additionally hit MCP.</td>
+            <td class="say">"This top layer — Orchestrator to any agent — is always A2A-style, no matter what the agent does next."</td>
+          </tr>
+          <tr>
+            <td class="action"><code>can you check if my repo has any leaked keys at "C:\Users\...\test-target-project"</code></td>
+            <td>Orchestrator</td>
+            <td><div class="chips"><span class="chip classifier">Local classifier</span><span class="chip mcp">MCP</span></div></td>
+            <td>No <code style="font-family:var(--font-mono)">"secret"</code>/<code style="font-family:var(--font-mono)">"scan"</code> keyword anywhere — every keyword rule misses, so the local Model2Vec classifier picks <code style="font-family:var(--font-mono)">scan-secrets</code> (score+margin above threshold), then Security scans internally as usual.</td>
+            <td class="say">"No keyword matched that at all — a local classifier picked the skill, not a rule I wrote."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="tell-h">
+    <h2 id="tell-h"><span class="num">05</span> Spot it in the terminal</h2>
+    <p class="section-note">
+      Every hop logs one audit line. The <span style="font-family:var(--font-mono);color:var(--text)">"kind"</span>
+      field is the tell — point at it live.
+    </p>
+    <div class="tells">
+      <div class="tell mcp">
+        <span class="tell-label">MCP tool call</span>
+        <pre class="jsonline">{"audit":{<span class="k">"kind"</span>:<span class="hit">"mcp-tool-call"</span>,<span class="k">"caller"</span>:"devops-agent","target":"analyze_project","outcome":"completed", …}}</pre>
+      </div>
+      <div class="tell a2a">
+        <span class="tell-label">Direct A2A call</span>
+        <pre class="jsonline">{"audit":{<span class="k">"kind"</span>:<span class="hit">"a2a-call"</span>,<span class="k">"caller"</span>:"devops-agent","target":"security-agent","outcome":"completed", …}}</pre>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">orchestrai · protocol reference · generated for the live demo walkthrough</footer>
+
+</div>

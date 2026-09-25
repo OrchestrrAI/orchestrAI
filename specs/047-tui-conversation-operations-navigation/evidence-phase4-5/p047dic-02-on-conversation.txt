@@ -1,0 +1,40 @@
+                                                                                                                        
+ OrchestrAI   [1 Chat]   2 Tasks   3 Agents        ● live · 4/4 agents                                                  
+ project: C:\Users\moham\test-target-project   approvals: 2                                                             
+                                                                                                                        
+ ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐ 
+ │                                                                                                                    │ 
+ │ you                                                                                                                │ 
+ │ build and deploy my bun app                                                                                        │ 
+ │ ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐ │ 
+ │ │ ⏸ devops-agent · dockerize · input-required — approval required                                                │ │ 
+ │ │ target: C:\Users\moham\test-target-project\Dockerfile · action: Call MCP tool "create_dockerfile" to write     │ │ 
+ │ │ dockerize                                                                                                      │ │ 
+ │ │ [2] review in Tasks                                                                                            │ │ 
+ │ └────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘ │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ │                                                                                                                    │ 
+ └────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘ 
+ thread 3/3 · conv-3944a8cc-96b5-40b0-82a9-04e60231f0a9 · [/] threads · Enter/n type · c new · 1/2/3 modes              
+                                                                                                                        

@@ -1,0 +1,19 @@
+{
+  "name": "orchestrai-linux-x64",
+  "version": "0.1.27",
+  "description": "OrchestrAI standalone binary — Linux x64. Installed automatically as an optional dependency of the \"orchestrai\" package; not meant to be installed directly.",
+  "license": "MIT",
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "files": [
+    "bin/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Muhamad-Yussuf/devops-mcp-server.git"
+  }
+}

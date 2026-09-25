@@ -1,0 +1,82 @@
+event: STATE_SNAPSHOT
+data: {"type":"STATE_SNAPSHOT","snapshot":{"agents":[{"name":"devops-agent","url":"http://localhost:3002","status":"online","skills":["dockerize","create-compose","create-ci","create-gitignore","analyze-project","git-status"]},{"name":"planning-agent","url":"http://localhost:3001","status":"online","skills":["plan-task","suggest-agents"]}],"tasks":[]},"timestamp":1788276756022}
+
+event: RUN_STARTED
+data: {"type":"RUN_STARTED","threadId":"task-7d040ae9-acb5-4c2f-981c-4e188c92f892","runId":"task-7d040ae9-acb5-4c2f-981c-4e188c92f892","timestamp":1788276758009}
+
+: heartbeat
+
+: heartbeat
+
+: heartbeat
+
+: heartbeat
+
+: heartbeat
+
+: heartbeat
+
+: heartbeat
+
+: heartbeat
+
+event: RUN_STARTED
+data: {"type":"RUN_STARTED","threadId":"child-d2d8997a-ca4f-463e-8ab9-16d38d781027","runId":"child-d2d8997a-ca4f-463e-8ab9-16d38d781027","timestamp":1788276799129}
+
+event: STEP_STARTED
+data: {"type":"STEP_STARTED","runId":"task-7d040ae9-acb5-4c2f-981c-4e188c92f892","stepName":"1. analyze-project","timestamp":1788276799130}
+
+event: TOOL_CALL_START
+data: {"type":"TOOL_CALL_START","runId":"child-d2d8997a-ca4f-463e-8ab9-16d38d781027","toolCallId":"a85b0fb7-3c8a-4270-97c2-9a0c59085ecc","toolCallName":"analyze_project","caller":"devops-agent","timestamp":1788276799154}
+
+event: TOOL_CALL_START
+data: {"type":"TOOL_CALL_START","runId":"task-7d040ae9-acb5-4c2f-981c-4e188c92f892","toolCallId":"child-d2d8997a-ca4f-463e-8ab9-16d38d781027","toolCallName":"analyze-project","caller":"orchestrator-supervisor","timestamp":1788276799160}
+
+event: TOOL_CALL_RESULT
+data: {"type":"TOOL_CALL_RESULT","runId":"child-d2d8997a-ca4f-463e-8ab9-16d38d781027","toolCallId":"a85b0fb7-3c8a-4270-97c2-9a0c59085ecc","messageId":"a85b0fb7-3c8a-4270-97c2-9a0c59085ecc","content":"completed; resultBytes=500; resultTruncated=false","outcome":"completed","durationMs":23,"timestamp":1788276799161}
+
+event: TOOL_CALL_START
+data: {"type":"TOOL_CALL_START","runId":"child-d2d8997a-ca4f-463e-8ab9-16d38d781027","toolCallId":"a2a-a2ffae1e-d9c3-449a-9922-de0b574b080e","toolCallName":"security-agent","caller":"devops-agent","timestamp":1788276799164}
+
+event: TOOL_CALL_RESULT
+data: {"type":"TOOL_CALL_RESULT","runId":"child-d2d8997a-ca4f-463e-8ab9-16d38d781027","toolCallId":"a2a-a2ffae1e-d9c3-449a-9922-de0b574b080e","messageId":"a2a-a2ffae1e-d9c3-449a-9922-de0b574b080e","content":"failed; resultBytes=58; resultTruncated=false","outcome":"failed","durationMs":4,"timestamp":1788276799170}
+
+event: RUN_FINISHED
+data: {"type":"RUN_FINISHED","threadId":"child-d2d8997a-ca4f-463e-8ab9-16d38d781027","runId":"child-d2d8997a-ca4f-463e-8ab9-16d38d781027","outcome":{"type":"success"},"timestamp":1788276799666}
+
+event: STEP_FINISHED
+data: {"type":"STEP_FINISHED","runId":"task-7d040ae9-acb5-4c2f-981c-4e188c92f892","stepName":"1. analyze-project","outcome":"completed","timestamp":1788276800170}
+
+event: TOOL_CALL_RESULT
+data: {"type":"TOOL_CALL_RESULT","runId":"task-7d040ae9-acb5-4c2f-981c-4e188c92f892","toolCallId":"child-d2d8997a-ca4f-463e-8ab9-16d38d781027","messageId":"child-d2d8997a-ca4f-463e-8ab9-16d38d781027","content":"completed; resultBytes=0; resultTruncated=false","outcome":"completed","durationMs":1023,"timestamp":1788276800184}
+
+event: RUN_STARTED
+data: {"type":"RUN_STARTED","threadId":"child-5b848fd1-7625-4c7e-80da-7b6a9c42cc8b","runId":"child-5b848fd1-7625-4c7e-80da-7b6a9c42cc8b","timestamp":1788276801043}
+
+event: STEP_STARTED
+data: {"type":"STEP_STARTED","runId":"task-7d040ae9-acb5-4c2f-981c-4e188c92f892","stepName":"2. git-status","timestamp":1788276801043}
+
+event: TOOL_CALL_START
+data: {"type":"TOOL_CALL_START","runId":"child-5b848fd1-7625-4c7e-80da-7b6a9c42cc8b","toolCallId":"ee8f6d86-c45f-404c-b323-d887c5d83446","toolCallName":"git_status","caller":"devops-agent","timestamp":1788276801052}
+
+event: TOOL_CALL_START
+data: {"type":"TOOL_CALL_START","runId":"task-7d040ae9-acb5-4c2f-981c-4e188c92f892","toolCallId":"child-5b848fd1-7625-4c7e-80da-7b6a9c42cc8b","toolCallName":"git-status","caller":"orchestrator-supervisor","timestamp":1788276801053}
+
+: heartbeat
+
+event: TOOL_CALL_RESULT
+data: {"type":"TOOL_CALL_RESULT","runId":"child-5b848fd1-7625-4c7e-80da-7b6a9c42cc8b","toolCallId":"ee8f6d86-c45f-404c-b323-d887c5d83446","messageId":"ee8f6d86-c45f-404c-b323-d887c5d83446","content":"completed; resultBytes=237; resultTruncated=false","outcome":"completed","durationMs":66,"timestamp":1788276801120}
+
+event: RUN_FINISHED
+data: {"type":"RUN_FINISHED","threadId":"child-5b848fd1-7625-4c7e-80da-7b6a9c42cc8b","runId":"child-5b848fd1-7625-4c7e-80da-7b6a9c42cc8b","outcome":{"type":"success"},"timestamp":1788276801562}
+
+event: STEP_FINISHED
+data: {"type":"STEP_FINISHED","runId":"task-7d040ae9-acb5-4c2f-981c-4e188c92f892","stepName":"2. git-status","outcome":"completed","timestamp":1788276802062}
+
+event: TOOL_CALL_RESULT
+data: {"type":"TOOL_CALL_RESULT","runId":"task-7d040ae9-acb5-4c2f-981c-4e188c92f892","toolCallId":"child-5b848fd1-7625-4c7e-80da-7b6a9c42cc8b","messageId":"child-5b848fd1-7625-4c7e-80da-7b6a9c42cc8b","content":"completed; resultBytes=0; resultTruncated=false","outcome":"completed","durationMs":1009,"timestamp":1788276802069}
+
+: heartbeat
+
+: heartbeat
+

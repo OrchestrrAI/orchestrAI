@@ -1,0 +1,244 @@
+name: Build Binaries
+
+# specs/019-cicd-recreate-and-binary-builds/spec.md — builds the standalone
+# orchestrai binary natively on each platform (not cross-compiled from one
+# runner), so each job can actually execute and smoke-test its own output.
+# Deliberately main-only + manual dispatch (plus, as of specs/032, an
+# immutable-tag push), not every PR: these are large (~100-140 MB)
+# artifacts.
+#
+# Publishes to a rolling "latest" GitHub Release (recreated on every push
+# to main), not just workflow-run artifacts — a Release has a stable,
+# permanent, no-login-required download URL; artifacts expire (90 days by
+# default) and require repo access to fetch, which defeats the point of
+# "give someone a link to run this."
+#
+# specs/032-npm-package-distribution/spec.md added the macos-latest leg
+# (Open Decision B: build it, don't sign it — see that spec for the
+# Gatekeeper caveat this deliberately leaves unresolved) and the
+# tag-triggered immutable-release path (Open Decision A: the npm wrapper
+# needs a real, reproducible pinned artifact behind each published
+# version, not just the rolling "latest" this workflow already produced).
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+      - run: bun install --frozen-lockfile
+      # specs/020-semantic-intent-fallback/spec.md — bun build --compile needs
+      # models/potion-base-8M/* to exist ON DISK at build time (it embeds
+      # them via a dynamic import that Bun's bundler still has to resolve
+      # statically to bundle) -- this is a hard build-time requirement, not
+      # an optional one; skipping this step fails the build outright rather
+      # than degrading gracefully.
+      - run: bun run fetch-model
+      - run: bun run build
+
+      - name: Smoke test the binary
+        shell: bash
+        run: |
+          set -e
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            BIN="dist/bin/orchestrai.exe"
+          else
+            BIN="dist/bin/orchestrai"
+            chmod +x "$BIN"
+          fi
+          "./$BIN" --only security-agent > supervisor.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:3005/healthz > /dev/null; then
+              echo "Binary is healthy."
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Binary did not become healthy within 30s:"
+          cat supervisor.log
+          exit 1
+
+      # specs/032: each platform's binary must land in the release under a
+      # DISTINCT final filename. Windows keeps its existing orchestrai.exe
+      # name and Linux keeps its existing bare orchestrai name (both
+      # unchanged, to avoid breaking anything that already links to
+      # today's published assets) — but bun build --compile names macOS's
+      # output "orchestrai" too (no extension, same as Linux; see
+      # scripts/build-binary.ts's own platform-to-name mapping), which
+      # would silently collide with the Linux artifact once both are
+      # merged into one release-assets/ directory below. Renamed here,
+      # before upload, rather than discovered as an overwritten asset
+      # after the fact.
+      - name: Rename macOS binary to avoid colliding with Linux's
+        if: runner.os == 'macOS'
+        run: mv dist/bin/orchestrai dist/bin/orchestrai-macos-arm64
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: orchestrai-${{ matrix.os == 'windows-latest' && 'windows-x64' || matrix.os == 'macos-latest' && 'macos-arm64' || 'linux-x64' }}
+          path: |
+            dist/bin/orchestrai.exe
+            dist/bin/orchestrai
+            dist/bin/orchestrai-macos-arm64
+          if-no-files-found: ignore
+          # These are transient, consumed by this same run's release/
+          # publish-npm jobs within minutes — the actual permanent copies
+          # live in the GitHub Release and npm, neither of which counts
+          # against Actions storage. Left at GitHub's ~90-day default,
+          # 100+ of these silently accumulated to 90% of the free 0.5GB
+          # Actions-storage quota; 1 day is ample margin for same-run
+          # consumption while letting GitHub clean up automatically.
+          retention-days: 1
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          pattern: orchestrai-*
+          path: release-assets
+          merge-multiple: true
+
+      - name: Publish rolling "latest" release
+        if: github.ref == 'refs/heads/main'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          gh release delete latest --yes --cleanup-tag --repo "$GITHUB_REPOSITORY" || true
+          gh release create latest release-assets/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Latest build" \
+            --notes "Automatically rebuilt from the latest push to main (commit ${GITHUB_SHA}). Not a versioned release — always reflects the current state of main." \
+            --target "$GITHUB_SHA"
+
+      # specs/032-npm-package-distribution/spec.md, Open Decision A: the
+      # npm wrapper resolves a specific tagged release, not the rolling
+      # "latest" above — a package version has to mean something fixed.
+      # Only fires on an actual "v*" tag push (git tag v1.2.3 && git push
+      # --tags), a deliberate, manual act — never auto-created, matching
+      # this spec's own Non-Goal against automatic version bumping. Once
+      # published, this release is never deleted or recreated by this
+      # workflow (unlike "latest" above), so a pinned npm version keeps
+      # resolving the identical binary indefinitely.
+      - name: Publish immutable versioned release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          TAG="${GITHUB_REF#refs/tags/}"
+          gh release create "$TAG" release-assets/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$TAG" \
+            --notes "Immutable, versioned build from commit ${GITHUB_SHA}. Unlike the rolling \"latest\" release, this one is never recreated — a pinned reference to this exact binary." \
+            --target "$GITHUB_SHA"
+
+  # specs/032-npm-package-distribution/spec.md — publishes the binaries
+  # through npm's own registry instead of (not replacing) the GitHub
+  # Release above. This is deliberate, not redundant: this repository is
+  # private, and both the GitHub Releases API and its asset-download URLs
+  # return 404 for a fully unauthenticated request (confirmed live with
+  # plain curl during that spec's drafting) — so an unauthenticated
+  # `bunx`/`npx` on a machine with no repo access could never reach the
+  # release above no matter how the wrapper package were written.
+  # Publishing the binary as npm packages' own tarball content has no
+  # dependency on GitHub repo visibility at all: npm's registry is public
+  # regardless.
+  #
+  # Four packages, not one — npm's per-tarball limit is a fixed 256 MB
+  # (confirmed against real reported 413 errors; not raisable even on a
+  # paid plan), and this repository's own binaries, while each
+  # individually well under that (Windows packs to ~71 MB, confirmed via
+  # a real local `npm pack`), would exceed it if all three platforms were
+  # bundled into one tarball together. Split per-platform instead — the
+  # same "meta package + per-platform optionalDependencies" pattern
+  # esbuild/swc/turbo use — so npm's own os/cpu-based install filtering
+  # downloads exactly one binary, never all three.
+  publish-npm:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          pattern: orchestrai-*
+          path: release-assets
+          merge-multiple: true
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Assemble each platform package and the meta package
+        run: |
+          set -e
+          TAG="${GITHUB_REF#refs/tags/v}"
+
+          mkdir -p npm-package/windows-x64/bin npm-package/linux-x64/bin npm-package/darwin-arm64/bin
+          cp release-assets/orchestrai.exe npm-package/windows-x64/bin/orchestrai.exe
+          cp release-assets/orchestrai npm-package/linux-x64/bin/orchestrai
+          chmod +x npm-package/linux-x64/bin/orchestrai
+          cp release-assets/orchestrai-macos-arm64 npm-package/darwin-arm64/bin/orchestrai-macos-arm64
+          chmod +x npm-package/darwin-arm64/bin/orchestrai-macos-arm64
+
+          # Every package's own version, plus the meta package's pinned
+          # optionalDependencies versions, all set to the exact same tag —
+          # npm won't resolve an optionalDependency pinned to a version
+          # that was never published, so these three MUST be published
+          # together, in this order, before the meta package.
+          for dir in windows-x64 linux-x64 darwin-arm64; do
+            node -e "const p='npm-package/$dir/package.json';const j=require('./'+p);j.version='$TAG';require('fs').writeFileSync(p, JSON.stringify(j,null,2)+'\n')"
+          done
+          node -e "
+            const p = 'npm-package/orchestrai/package.json';
+            const j = require('./' + p);
+            j.version = '$TAG';
+            for (const dep of Object.keys(j.optionalDependencies)) j.optionalDependencies[dep] = '$TAG';
+            require('fs').writeFileSync(p, JSON.stringify(j, null, 2) + '\n');
+          "
+
+      # Requires an NPM_TOKEN repository secret (an npm automation/publish
+      # token) — deliberately not created here. Until that secret exists,
+      # this step fails loud with npm's own authentication error rather
+      # than silently skipping, which is the correct behavior: a missing
+      # publish credential should be visible, not swallowed.
+      - name: Publish platform packages, then the meta package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -e
+          # The leading "./" matters and is not decorative: `npm publish
+          # npm-package/windows-x64` (no leading ./) is parsed by npm as a
+          # GitHub shorthand package spec ("owner/repo"), not a local
+          # path — found live when this job's first real run failed with
+          # `git ls-remote ssh://git@github.com/npm-package/win32-x64.git
+          # ... Permission denied (publickey)`. Reproduced and confirmed
+          # fixed with a local `npm publish --dry-run` before being
+          # re-pushed here.
+          #
+          # windows-x64 (not win32-x64, its original name): the original
+          # name was rejected by npm's spam-detection filter with a 403 on
+          # three separate live attempts (one non-interrupted, fully
+          # authenticated) while the identically-shaped
+          # orchestrai-linux-x64/orchestrai-darwin-arm64 names published
+          # cleanly in the same session — see specs/032's verification.md
+          # for the full trail. Renamed rather than retried further.
+          npm publish ./npm-package/windows-x64 --access public
+          npm publish ./npm-package/linux-x64 --access public
+          npm publish ./npm-package/darwin-arm64 --access public
+          npm publish ./npm-package/orchestrai --access public

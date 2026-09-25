@@ -1,0 +1,12 @@
+{
+  "name": "@orchestrai/agent-devops",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "hono": "^4.13.0",
+    "@langchain/core": "^1.2.8",
+    "@langchain/langgraph": "^1.4.10",
+    "zod": "^4.4.3"
+  }
+}

@@ -1,0 +1,6 @@
+# The existing TypeScript/JavaScript sources use CRLF on Windows. Treat the
+# carriage return as part of the line ending so `git diff --check` still catches
+# real trailing spaces without flagging every reference-only line edit.
+*.ts  whitespace=cr-at-eol
+*.tsx whitespace=cr-at-eol
+*.js  whitespace=cr-at-eol

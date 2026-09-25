@@ -1,0 +1,9 @@
+{
+  "name": "@orchestrai/mcp",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^4.4.3"
+  }
+}

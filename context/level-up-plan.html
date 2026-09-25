@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<!--
+  OrchestrAI Level-Up Plan — standalone copy of the published artifact
+  https://claude.ai/code/artifact/c1981198-5150-45f8-a4b4-b65e0940a58b
+
+  Planning document, not runtime code and not a spec. It orders the open
+  work queue; it authorizes nothing. Every item still needs its own
+  approval per CLAUDE.md working-procedure step 8.
+-->
+<title>OrchestrAI Level-Up Plan</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --ground: #F4F6F8;
+    --surface: #FFFFFF;
+    --surface-sunk: #EDF1F5;
+    --ink: #16202E;
+    --muted: #5C6B7F;
+    --faint: #8593A5;
+    --accent: #0E7C7B;
+    --accent-soft: #E2F1F0;
+    --rule: #DCE3EA;
+    --sev-critical: #B3261E;
+    --sev-critical-soft: #FBE9E7;
+    --sev-leverage: #0E7C7B;
+    --sev-leverage-soft: #E2F1F0;
+    --sev-polish: #4A5FC1;
+    --sev-polish-soft: #EAEDFB;
+    --sev-hold: #8A6212;
+    --sev-hold-soft: #F8F0DE;
+
+    --display: "Chivo", "Helvetica Neue", Arial, sans-serif;
+    --body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #10151C;
+      --surface: #171E27;
+      --surface-sunk: #1D2531;
+      --ink: #E6EBF1;
+      --muted: #9CAABB;
+      --faint: #6E7E92;
+      --accent: #3FB5B2;
+      --accent-soft: #122E2E;
+      --rule: #2A3441;
+      --sev-critical: #F08A80;
+      --sev-critical-soft: #33201E;
+      --sev-leverage: #3FB5B2;
+      --sev-leverage-soft: #122E2E;
+      --sev-polish: #98A7EE;
+      --sev-polish-soft: #1E2340;
+      --sev-hold: #D9AE55;
+      --sev-hold-soft: #2E2716;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #10151C;
+    --surface: #171E27;
+    --surface-sunk: #1D2531;
+    --ink: #E6EBF1;
+    --muted: #9CAABB;
+    --faint: #6E7E92;
+    --accent: #3FB5B2;
+    --accent-soft: #122E2E;
+    --rule: #2A3441;
+    --sev-critical: #F08A80;
+    --sev-critical-soft: #33201E;
+    --sev-leverage: #3FB5B2;
+    --sev-leverage-soft: #122E2E;
+    --sev-polish: #98A7EE;
+    --sev-polish-soft: #1E2340;
+    --sev-hold: #D9AE55;
+    --sev-hold-soft: #2E2716;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead { border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 28px; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(30px, 5vw, 42px);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+    text-wrap: balance;
+  }
+  .standfirst {
+    margin: 0;
+    max-width: 64ch;
+    color: var(--muted);
+    font-size: 16px;
+  }
+
+  /* ---------- status strip ---------- */
+  .status {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0 0 40px;
+  }
+  .status div { background: var(--surface); padding: 14px 16px; }
+  .status dt {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin: 0 0 4px;
+  }
+  .status dd {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 21px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+  .status dd span { font-size: 13px; font-family: var(--body); font-weight: 400; color: var(--muted); }
+
+  /* ---------- phases ---------- */
+  .phase { margin: 0 0 44px; }
+  .phase-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-left: 14px;
+    border-left: 4px solid var(--ph);
+    margin-bottom: 6px;
+  }
+  .phase-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ph);
+    background: var(--ph-soft);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+  .phase h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  .phase-note {
+    padding-left: 18px;
+    margin: 0 0 18px;
+    color: var(--muted);
+    font-size: 14.5px;
+    max-width: 68ch;
+  }
+
+  .items { display: grid; gap: 14px; }
+  @media (min-width: 760px) { .items { grid-template-columns: 1fr 1fr; } }
+
+  .item {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 18px 18px 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  .item-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ph);
+    background: var(--ph-soft);
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .tag.neutral { color: var(--muted); background: var(--surface-sunk); }
+  .item h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 16.5px;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+    text-wrap: balance;
+  }
+  .field { margin: 0 0 10px; }
+  .field:last-child { margin-bottom: 0; }
+  .field dt {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 2px;
+  }
+  .field dd { margin: 0; font-size: 14px; color: var(--ink); }
+  .field.value dd { color: var(--ink); }
+  .field.cost dd { color: var(--muted); font-size: 13.5px; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: var(--surface-sunk);
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+
+  /* ---------- excluded ---------- */
+  .excluded {
+    background: var(--surface-sunk);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin-top: 8px;
+  }
+  .excluded h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 19px;
+    letter-spacing: -0.015em;
+    margin: 0 0 4px;
+  }
+  .excluded > p { margin: 0 0 16px; color: var(--muted); font-size: 14.5px; max-width: 66ch; }
+  .excluded ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+  .excluded li { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; font-size: 14px; }
+  .excluded li::before {
+    content: "✕";
+    font-family: var(--mono);
+    color: var(--sev-critical);
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .excluded strong { font-weight: 600; }
+
+  footer {
+    margin-top: 40px;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+    color: var(--faint);
+    font-size: 13px;
+  }
+  footer code { background: none; padding: 0; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">OrchestrAI · planning · 2026-09-05</p>
+    <h1>Level-Up Plan</h1>
+    <p class="standfirst">
+      Twelve items, ordered by what actually breaks today versus what is merely missing.
+      Six are drafted specs awaiting approval, two are proposals from this session, and four are
+      open items already sitting in the repo — including the verification backlog, which is far
+      smaller than its count suggests. Nothing here is implemented.
+    </p>
+  </header>
+
+  <dl class="status">
+    <div><dt>Specs total</dt><dd>59</dd></div>
+    <div><dt>Verified</dt><dd>39</dd></div>
+    <div><dt>Partial / pending</dt><dd>12 <span>· 5 real</span></dd></div>
+    <div><dt>Tests passing</dt><dd>717 <span>/ 717</span></dd></div>
+    <div><dt>Published</dt><dd>v0.1.17</dd></div>
+  </dl>
+
+  <!-- PHASE 1 -->
+  <section class="phase" style="--ph: var(--sev-critical); --ph-soft: var(--sev-critical-soft);">
+    <div class="phase-head">
+      <span class="phase-num">Phase 1</span>
+      <h2>Fix what is actually broken</h2>
+    </div>
+    <p class="phase-note">
+      Each of these produces a wrong or fatal result in the current build. They rank above every
+      new capability below, because shipping more features on top of a broken default path
+      compounds rather than adds.
+    </p>
+
+    <div class="items">
+
+      <article class="item">
+        <div class="item-top"><span class="tag">specs/048</span><span class="tag neutral">open finding</span></div>
+        <h3>The guided-init auto-launch kills the whole stack</h3>
+        <dl>
+          <div class="field"><dt>Effect</dt><dd>
+            <code>orchestrai init</code> → Ctrl+S in a real terminal — the default interactive
+            path — starts all six services, reports every one healthy, then dies about a second
+            later while creating a second <code>CliRenderer</code>. Already isolated to an
+            application-free repro containing none of this repo's code.
+          </dd></div>
+          <div class="field value"><dt>Value</dt><dd>
+            A shipped feature is broken in its own default mode. Anyone using <code>init</code>
+            from a real terminal hits this; only <code>--headless</code> escapes it.
+          </dd></div>
+          <div class="field cost"><dt>Cost</dt><dd>
+            Small code change, real decision: work around it by spawning the viewer as its own
+            process, or wait on upstream <code>@opentui/core</code>. Closes 048 rather than
+            opening a new spec.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag">specs/058</span><span class="tag neutral">drafted</span></div>
+        <h3>Testing Agent calls every Node project “bun”</h3>
+        <dl>
+          <div class="field"><dt>Effect</dt><dd>
+            <code>detectRunner()</code> classifies <em>any</em> <code>package.json</code> with a
+            test script as Bun. A real Jest or Vitest project gets <code>bun test</code> in the
+            approval preview a human is asked to sign off on.
+          </dd></div>
+          <div class="field value"><dt>Value</dt><dd>
+            Not a crash — a plausible-looking wrong answer, which is the worse failure. Replaces
+            the guess with real lockfile/manifest detection, and reports ambiguity instead of
+            picking one.
+          </dd></div>
+          <div class="field cost"><dt>Cost</dt><dd>
+            Medium. Real fixture projects per ecosystem, plus one <code>RUNNER_ARGV</code> entry
+            per newly supported profile. Go / Rust / .NET deliberately deferred.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag">specs/056</span><span class="tag neutral">drafted</span></div>
+        <h3>Existing files can still be silently overwritten</h3>
+        <dl>
+          <div class="field"><dt>Effect</dt><dd>
+            Adds create / no-op / update / blocked classification before any DevOps write. An exact
+            no-op never reaches a write tool at all, and the approval binds a content fingerprint
+            re-checked immediately before the real write.
+          </dd></div>
+          <div class="field value"><dt>Value</dt><dd>
+            Closes the post-approval drift window — a file changed after you approved can no longer
+            be written over unreviewed. Applies to all four write skills, not just Dockerfiles.
+          </dd></div>
+          <div class="field cost"><dt>Cost</dt><dd>
+            Medium. Touches the four write paths and the <code>ApprovalPreview</code> shape; no
+            change to the approval gate's own mechanics.
+          </dd></div>
+        </dl>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- PHASE 2 -->
+  <section class="phase" style="--ph: var(--sev-leverage); --ph-soft: var(--sev-leverage-soft);">
+    <div class="phase-head">
+      <span class="phase-num">Phase 2</span>
+      <h2>Real capability leverage</h2>
+    </div>
+    <p class="phase-note">
+      Nothing here is broken today — these make the system meaningfully more capable, and both are
+      small because they reuse machinery that already exists.
+    </p>
+
+    <div class="items">
+
+      <article class="item">
+        <div class="item-top"><span class="tag">specs/060</span><span class="tag neutral">proposed</span></div>
+        <h3>Parallel dispatch, read-only steps first</h3>
+        <dl>
+          <div class="field"><dt>Effect</dt><dd>
+            The supervisor may fan out several <em>read-only</em> steps concurrently instead of
+            one at a time. A plan opening with <code>analyze-project</code> plus
+            <code>git-status</code> stops being sequential for no reason.
+          </dd></div>
+          <div class="field value"><dt>Value</dt><dd>
+            Real wall-clock speedup on multi-step plans, and it sidesteps the hard problem
+            entirely: read-only skills have no approval gate, so concurrent approvals never arise.
+            <code>SKILL_TIER_REGISTRY</code> already knows which skills qualify.
+          </dd></div>
+          <div class="field cost"><dt>Cost</dt><dd>
+            Small. <code>Promise.all()</code> inside the existing dispatch node, gated on every
+            branch being read-only. The two runaway bounds must count per branch.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag">specs/054</span><span class="tag neutral">drafted</span></div>
+        <h3>Capability-driven routing tier</h3>
+        <dl>
+          <div class="field"><dt>Effect</dt><dd>
+            Adds an LLM router <em>below</em> keyword matching and the local classifier, consulted
+            only when both miss, validated against the live Agent-Card capability snapshot before
+            anything dispatches.
+          </dd></div>
+          <div class="field value"><dt>Value</dt><dd>
+            Unusually-phrased requests reach the one skill they actually meant, instead of falling
+            through to a full <code>plan-task</code> run. The approval gate is untouched — a
+            router-named write still needs the same human click.
+          </dd></div>
+          <div class="field cost"><dt>Cost</dt><dd>
+            Small. One structured completion plus a schema, following the Security harness shape —
+            no graph, because there is nothing for a loop to loop on.
+          </dd></div>
+        </dl>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- PHASE 3 -->
+  <section class="phase" style="--ph: var(--sev-polish); --ph-soft: var(--sev-polish-soft);">
+    <div class="phase-head">
+      <span class="phase-num">Phase 3</span>
+      <h2>Efficiency and unfinished edges</h2>
+    </div>
+    <p class="phase-note">
+      Worth doing, none of it urgent. One is an optimization, one is a daily annoyance, one is
+      simply an approved spec that is three-fifths done.
+    </p>
+
+    <div class="items">
+
+      <article class="item">
+        <div class="item-top"><span class="tag">specs/057</span><span class="tag neutral">drafted</span></div>
+        <h3>Project snapshot reuse within a conversation</h3>
+        <dl>
+          <div class="field"><dt>Effect</dt><dd>
+            Read-only inspection results are cached per conversation, fingerprinted and TTL-bounded.
+            Writes always re-check fresh regardless of cache age.
+          </dd></div>
+          <div class="field value"><dt>Value</dt><dd>
+            Stops re-inspecting the same project on every follow-up turn in a thread. Asking about
+            status then asking to dockerize no longer pays for the same inspection twice.
+          </dd></div>
+          <div class="field cost"><dt>Cost</dt><dd>
+            Medium, and best sequenced after 056 so one fingerprint definition stays authoritative
+            instead of two independently invented ones.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag">specs/059</span><span class="tag neutral">spike first</span></div>
+        <h3>Paste actually works in the TUI</h3>
+        <dl>
+          <div class="field"><dt>Effect</dt><dd>
+            Bracketed paste into chat, the task composer, target paths, model names, and the masked
+            key field — as one atomic insertion, size-bounded, never interpreted as keybindings.
+          </dd></div>
+          <div class="field value"><dt>Value</dt><dd>
+            Removes a real daily friction: pasting a project path or an API key is the most obvious
+            thing to do and currently the thing that does not work.
+          </dd></div>
+          <div class="field cost"><dt>Cost</dt><dd>
+            <strong>Unknown until a spike.</strong> The mechanism exists in
+            <code>@opentui/core</code>, but whether this repo's deliberately hand-rolled fields can
+            receive it is unverified. Approval buys the research, not a guaranteed fix.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag">5 specs</span><span class="tag neutral">needs your hands</span></div>
+        <h3>Close the verification backlog in one sitting</h3>
+        <dl>
+          <div class="field"><dt>Effect</dt><dd>
+            Five specs sit at <code>partial</code> for the same reason, not five different ones:
+            <code>010</code> disconnect behaviour, <code>012</code> real keystrokes,
+            <code>044</code> the TUI chat view, <code>046</code> real-browser widths and history,
+            <code>032</code> a macOS or Linux install from an actual machine of that platform.
+          </dd></div>
+          <div class="field value"><dt>Value</dt><dd>
+            Turns the scariest number in the catalog into what it really is. Four of the five are
+            one terminal session; the fifth needs a Mac. Three further partials —
+            <code>001</code>, <code>002</code>, <code>003</code> — need nothing at all: they
+            predate the verification discipline and say so honestly.
+          </dd></div>
+          <div class="field cost"><dt>Cost</dt><dd>
+            No code. An afternoon at a real terminal plus one borrowed Mac, then recording the
+            results in each spec's own verification record.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag">specs/047</span><span class="tag neutral">phases 4–5</span></div>
+        <h3>Finish the TUI navigation spec</h3>
+        <dl>
+          <div class="field"><dt>Effect</dt><dd>
+            Phase 4 links tasks to exact Chat/Tasks approvals; Phase 5 adds layout hardening and the
+            80×24 minimum-viewport check that a sub-minimum resize currently needs.
+          </dd></div>
+          <div class="field value"><dt>Value</dt><dd>
+            Closes an approved spec sitting at three of five phases, and clears one of the two
+            genuinely-incomplete entries in the catalog.
+          </dd></div>
+          <div class="field cost"><dt>Cost</dt><dd>
+            Medium, already broken down in that spec's own <code>plan.md</code>. Its Phase 2
+            real-terminal gate is still awaiting your sign-off.
+          </dd></div>
+        </dl>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- PHASE 4 -->
+  <section class="phase" style="--ph: var(--sev-hold); --ph-soft: var(--sev-hold-soft);">
+    <div class="phase-head">
+      <span class="phase-num">Phase 4</span>
+      <h2>Parked — start only on a trigger</h2>
+    </div>
+    <p class="phase-note">
+      Each of these is real work with a real payoff, and none of it is worth starting now. The
+      trigger matters more than the item: begin when the named condition actually occurs, not
+      because the list has an empty slot.
+    </p>
+
+    <div class="items">
+
+      <article class="item">
+        <div class="item-top"><span class="tag">specs/055</span><span class="tag neutral">deprioritized</span></div>
+        <h3>Provider budgets and transient-error retry</h3>
+        <dl>
+          <div class="field"><dt>Effect</dt><dd>
+            Distinguishes a transient 429 or 5xx from a permanently bad key, and retries only the
+            transient one with bounded backoff. Today both fail a task closed, identically.
+          </dd></div>
+          <div class="field value"><dt>Value</dt><dd>
+            A rate limit resolves itself in under a minute; killing the whole task for it is wrong.
+            Matters more since 051 removed the deterministic fallback.
+          </dd></div>
+          <div class="field cost"><dt>Cost</dt><dd>
+            <strong>Trigger:</strong> a rate limit or provider outage bites again, or someone else
+            runs this on a free tier. You deprioritized it deliberately after moving off free.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag neutral">not planned</span></div>
+        <h3>MCP SDK v2 and the 2026-07-28 protocol</h3>
+        <dl>
+          <div class="field"><dt>Effect</dt><dd>
+            Protocol-level sessions disappear, which would delete the hand-rolled stale-session
+            detection, reconnect-retry, ping keepalive, and session-termination code in
+            <code>packages/shared/mcp-client.ts</code>.
+          </dd></div>
+          <div class="field value"><dt>Value</dt><dd>
+            Removes real complexity you carry today. But the headline features — stateless scaling,
+            header-based routing, authorization hardening — solve remote multi-instance problems
+            your loopback-only design has explicitly opted out of. As of 2026-09-08 the project's
+            own target was set explicitly to "polished local tool" — that mismatch is now
+            permanent, not incidental, so no future version of this project on its current
+            architectural bet makes those features valuable.
+          </dd></div>
+          <div class="field cost"><dt>Retired, not deferred</dt><dd>
+            Originally trigger-gated on "v1 SDK deprecation actually bites." Assuming no
+            deprecation ever lands, that trigger never fires, so this isn't parked pending a
+            future re-check — it's retired from the roadmap. No spec number was ever allocated,
+            and none should be. Revisit only if the project's own target changes away from a
+            purely local tool (see Value above).
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag">specs/049</span><span class="tag neutral">unimplemented</span></div>
+        <h3>Browser setup page for init</h3>
+        <dl>
+          <div class="field"><dt>Effect</dt><dd>
+            The guided-init flow, in a browser, as an alternative to the TUI form that
+            <code>specs/048</code> already delivered.
+          </dd></div>
+          <div class="field value"><dt>Value</dt><dd>
+            Approved a while ago and never built. The TUI form covers the same job today, so this
+            is a convenience surface, not a gap.
+          </dd></div>
+          <div class="field cost"><dt>Cost</dt><dd>
+            <strong>Trigger:</strong> someone actually asks to configure this from a browser.
+            Otherwise it is a second surface to keep in sync with the one config contract for no
+            current demand.
+          </dd></div>
+        </dl>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="excluded">
+    <h2>Deliberately not on this plan</h2>
+    <p>
+      Naming what is excluded is half the value of a roadmap — each of these was considered in
+      this session and rejected for a specific reason, not overlooked.
+    </p>
+    <ul>
+      <li><span><strong>Full AG-UI adoption / <code>@ag-ui/langgraph</code>.</strong> Requires a deployed LangGraph API server plus its own databases. Your spike already found no embedded-execution mode, and it would break the single-binary distribution you shipped today.</span></li>
+      <li><span><strong>LangGraph Server / Platform.</strong> Real persistence and native resume, but it means a new always-on service, Postgres and Redis, and re-deriving every one of spec 028's safety guarantees against a different execution model.</span></li>
+      <li><span><strong>Level-3 parallel dispatch with concurrent approvals.</strong> Two simultaneous write-capable steps break "rejection is terminal" and require both clients to render N pending approvals. Revisit only if Phase 2's read-only fan-out proves insufficient.</span></li>
+      <li><span><strong>Wrapping single-shot LLM calls in graphs.</strong> A one-node graph is state schema, edges and a recursion limit that never decide anything — the same bug surface as spec 028's real event-correlation bug, for no payoff.</span></li>
+      <li><span><strong>A CI-provided provider key.</strong> Spec 052 already proves dispatch works with a deliberately fake key; spending real quota on every pull request buys nothing.</span></li>
+    </ul>
+  </section>
+
+  <footer>
+    Sequencing rationale: broken before missing, missing before slow, slow before speculative.
+    Every item above needs its own approval before implementation, per <code>CLAUDE.md</code>
+    working-procedure step 8 — this plan orders the queue, it does not authorize any of it.
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<!--
+  OrchestrAI Level-Up Plan — Progress
+  Standalone status update against context/level-up-plan.html (the
+  original queue, dated 2026-09-05). Reuses that file's own design
+  system verbatim (same tokens, same type, same card language) — this
+  is a status report on the same plan, not a new one.
+
+  Planning document, not runtime code and not a spec. Recording what
+  happened does not retroactively authorize anything; every item below
+  that shows PARKED still needs its own approval per CLAUDE.md
+  working-procedure step 8 before implementation.
+-->
+<title>Level-Up Progress</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --ground: #F4F6F8;
+    --surface: #FFFFFF;
+    --surface-sunk: #EDF1F5;
+    --ink: #16202E;
+    --muted: #5C6B7F;
+    --faint: #8593A5;
+    --accent: #0E7C7B;
+    --accent-soft: #E2F1F0;
+    --rule: #DCE3EA;
+    --sev-done: #0E7C7B;
+    --sev-done-soft: #E2F1F0;
+    --sev-yours: #8A6212;
+    --sev-yours-soft: #F8F0DE;
+    --sev-parked: #5C6B7F;
+    --sev-parked-soft: #EDF1F5;
+    --ok: #1A7F4E;
+    --ok-soft: #E3F3EA;
+
+    --display: "Chivo", "Helvetica Neue", Arial, sans-serif;
+    --body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #10151C;
+      --surface: #171E27;
+      --surface-sunk: #1D2531;
+      --ink: #E6EBF1;
+      --muted: #9CAABB;
+      --faint: #6E7E92;
+      --accent: #3FB5B2;
+      --accent-soft: #122E2E;
+      --rule: #2A3441;
+      --sev-done: #3FB5B2;
+      --sev-done-soft: #122E2E;
+      --sev-yours: #D9AE55;
+      --sev-yours-soft: #2E2716;
+      --sev-parked: #9CAABB;
+      --sev-parked-soft: #1D2531;
+      --ok: #6FCB9A;
+      --ok-soft: #16281F;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #10151C;
+    --surface: #171E27;
+    --surface-sunk: #1D2531;
+    --ink: #E6EBF1;
+    --muted: #9CAABB;
+    --faint: #6E7E92;
+    --accent: #3FB5B2;
+    --accent-soft: #122E2E;
+    --rule: #2A3441;
+    --sev-done: #3FB5B2;
+    --sev-done-soft: #122E2E;
+    --sev-yours: #D9AE55;
+    --sev-yours-soft: #2E2716;
+    --sev-parked: #9CAABB;
+    --sev-parked-soft: #1D2531;
+    --ok: #6FCB9A;
+    --ok-soft: #16281F;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .masthead { border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 28px; }
+  .eyebrow {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 10px;
+  }
+  h1 {
+    font-family: var(--display); font-weight: 700; font-size: clamp(30px, 5vw, 42px);
+    line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 12px; text-wrap: balance;
+  }
+  .standfirst { margin: 0; max-width: 66ch; color: var(--muted); font-size: 16px; }
+
+  .status {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px; background: var(--rule); border: 1px solid var(--rule);
+    border-radius: 8px; overflow: hidden; margin: 0 0 40px;
+  }
+  .status div { background: var(--surface); padding: 14px 16px; }
+  .status dt {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.09em;
+    text-transform: uppercase; color: var(--faint); margin: 0 0 4px;
+  }
+  .status dd {
+    margin: 0; font-family: var(--display); font-weight: 600; font-size: 21px;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
+  }
+  .status dd span { font-size: 13px; font-family: var(--body); font-weight: 400; color: var(--muted); }
+
+  .phase { margin: 0 0 44px; }
+  .phase-head {
+    display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+    padding-left: 14px; border-left: 4px solid var(--ph); margin-bottom: 6px;
+  }
+  .phase-num {
+    font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ph); background: var(--ph-soft);
+    padding: 3px 8px; border-radius: 4px;
+  }
+  .phase h2 { font-family: var(--display); font-weight: 700; font-size: 22px; letter-spacing: -0.015em; margin: 0; }
+  .phase-note { padding-left: 18px; margin: 0 0 18px; color: var(--muted); font-size: 14.5px; max-width: 68ch; }
+
+  .items { display: grid; gap: 14px; }
+  @media (min-width: 760px) { .items { grid-template-columns: 1fr 1fr; } }
+
+  .item {
+    background: var(--surface); border: 1px solid var(--rule); border-radius: 10px;
+    padding: 18px 18px 16px; display: flex; flex-direction: column;
+  }
+  .item-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .tag {
+    font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--ph);
+    background: var(--ph-soft); padding: 2px 7px; border-radius: 4px; white-space: nowrap;
+  }
+  .tag.neutral { color: var(--muted); background: var(--surface-sunk); }
+  .tag.ok { color: var(--ok); background: var(--ok-soft); }
+  .item h3 {
+    font-family: var(--display); font-weight: 600; font-size: 16.5px; line-height: 1.3;
+    letter-spacing: -0.01em; margin: 0 0 12px; text-wrap: balance;
+  }
+  .field { margin: 0 0 10px; }
+  .field:last-child { margin-bottom: 0; }
+  .field dt {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--faint); margin-bottom: 2px;
+  }
+  .field dd { margin: 0; font-size: 14px; color: var(--ink); }
+  .field.value dd { color: var(--ink); }
+  .field.cost dd { color: var(--muted); font-size: 13.5px; }
+
+  code {
+    font-family: var(--mono); font-size: 0.88em; background: var(--surface-sunk);
+    padding: 1px 4px; border-radius: 3px;
+  }
+
+  .excluded {
+    background: var(--surface-sunk); border: 1px solid var(--rule); border-radius: 10px;
+    padding: 22px 24px; margin-top: 8px;
+  }
+  .excluded h2 { font-family: var(--display); font-weight: 700; font-size: 19px; letter-spacing: -0.015em; margin: 0 0 4px; }
+  .excluded > p { margin: 0 0 16px; color: var(--muted); font-size: 14.5px; max-width: 66ch; }
+  .excluded ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+  .excluded li { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; font-size: 14px; }
+  .excluded li::before {
+    content: "○"; font-family: var(--mono); color: var(--sev-parked); font-size: 12px; line-height: 1.7;
+  }
+  .excluded strong { font-weight: 600; }
+
+  footer {
+    margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--rule);
+    color: var(--faint); font-size: 13px;
+  }
+  footer code { background: none; padding: 0; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">OrchestrAI · planning · 2026-09-07 · status update</p>
+    <h1>Level-Up Progress</h1>
+    <p class="standfirst">
+      Against the queue in <code>context/level-up-plan.html</code> (2026-09-05): all seven items
+      from Phases 1–3 are drafted, approved, and implemented — three ended up smaller than scoped
+      once real investigation replaced assumption. Three items now need a real terminal or a real
+      provider key, not more code. One spec remains parked, unapproved, exactly as deliberately left.
+    </p>
+  </header>
+
+  <dl class="status">
+    <div><dt>Specs total</dt><dd>61 <span>· was 59</span></dd></div>
+    <div><dt>Verified</dt><dd>46 <span>· was 39</span></dd></div>
+    <div><dt>Partial</dt><dd>12 <span>· 3 need you</span></dd></div>
+    <div><dt>Draft / unapproved</dt><dd>1 <span>· specs/055</span></dd></div>
+    <div><dt>Tests passing</dt><dd>791 <span>/ 791</span></dd></div>
+  </dl>
+
+  <!-- DONE -->
+  <section class="phase" style="--ph: var(--sev-done); --ph-soft: var(--sev-done-soft);">
+    <div class="phase-head">
+      <span class="phase-num">Done</span>
+      <h2>Every item from Phases 1–3, approved and shipped</h2>
+    </div>
+    <p class="phase-note">
+      Approved one at a time, implemented, tested, and committed in order — the exact sequence the
+      original plan laid out. Three surfaced a real finding along the way that changed their own
+      scope for the better, recorded honestly rather than glossed over.
+    </p>
+
+    <div class="items">
+
+      <article class="item">
+        <div class="item-top"><span class="tag ok">specs/062</span><span class="tag neutral">amends 048</span></div>
+        <h3>The guided-init auto-launch crash, fixed</h3>
+        <dl>
+          <div class="field"><dt>What shipped</dt><dd>
+            The auto-launched TUI now spawns as its own process instead of sharing the setup form's
+            process — a fresh process has zero prior renderers, so the second-<code>CliRenderer</code>
+            crash can't happen at all.
+          </dd></div>
+          <div class="field value"><dt>Verified</dt><dd>
+            <code>bun test</code>/typecheck clean; the crash itself needs a real terminal to
+            re-confirm gone — see “Needs your hands” below.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag ok">specs/058</span><span class="tag neutral">verified</span></div>
+        <h3>Real test-runner detection, not a guess</h3>
+        <dl>
+          <div class="field"><dt>What shipped</dt><dd>
+            <code>detectRunner()</code> now reads real lockfiles/config (npm, pnpm, yarn, Jest,
+            Vitest) instead of calling every project “bun”. Two genuinely conflicting signals report
+            ambiguity instead of picking one.
+          </dd></div>
+          <div class="field value"><dt>Verified</dt><dd>
+            Live against the real exported agent app: a Jest fixture's preview correctly reads
+            <code>npx jest</code>, never <code>bun test</code>.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag ok">specs/056</span><span class="tag neutral">verified</span></div>
+        <h3>No more silent overwrites</h3>
+        <dl>
+          <div class="field"><dt>What shipped</dt><dd>
+            Every DevOps write is classified create/no-op/update/blocked before any approval exists;
+            an exact no-op never reaches a write tool. Approvals bind a content fingerprint re-checked
+            immediately before the real write.
+          </dd></div>
+          <div class="field value"><dt>Bonus find</dt><dd>
+            The dashboard's diff view had been silently dead code for every DevOps write since
+            <code>specs/040</code> shipped — <code>previousContent</code> was never actually populated.
+            Fixed as a side effect.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag ok">specs/060</span><span class="tag neutral">partial</span></div>
+        <h3>Read-only steps now run in parallel</h3>
+        <dl>
+          <div class="field"><dt>What shipped</dt><dd>
+            The supervisor may fan out several read-only steps concurrently in one decision — any
+            write-capable skill anywhere in the batch falls back to today's exact single-dispatch
+            path.
+          </dd></div>
+          <div class="field value"><dt>Bonus find</dt><dd>
+            A real latent bug: the dispatcher only ever read the model's <em>first</em> tool call —
+            an extra one would've been silently dropped. Now every ignored call is visible in the
+            audit log.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag ok">specs/054</span><span class="tag neutral">partial</span></div>
+        <h3>A third routing tier, below the two deterministic ones</h3>
+        <dl>
+          <div class="field"><dt>What shipped</dt><dd>
+            An LLM router consulted only when keyword matching and the local classifier both miss,
+            validated against the live capability snapshot before anything dispatches. No key
+            configured means this tier is simply unreachable.
+          </dd></div>
+          <div class="field value"><dt>Verified</dt><dd>
+            All 36 pre-existing routing tests pass unmodified — the two deterministic tiers are
+            byte-identical to before.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag ok">specs/057</span><span class="tag neutral">verified</span></div>
+        <h3>Project snapshot reuse within a conversation</h3>
+        <dl>
+          <div class="field"><dt>What shipped</dt><dd>
+            Read-only results cache per conversation. <code>git-status</code> trusts a TTL alone;
+            <code>analyze-project</code> cross-checks a cheap <code>git-status</code> call first —
+            there's no cheaper signal than <code>git-status</code> for <code>git-status</code> itself.
+          </dd></div>
+          <div class="field value"><dt>Bonus find</dt><dd>
+            A real bug caught by a test, not inspection: a cache-hit-pending task was missing the id
+            its own completion-polling needed, so an invalidated entry's fresh redispatch would have
+            hung forever.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag ok">specs/059</span><span class="tag neutral">verified</span></div>
+        <h3>Paste actually works in the TUI — and needed less than feared</h3>
+        <dl>
+          <div class="field"><dt>What shipped</dt><dd>
+            <code>usePaste()</code> is a real, working, documented hook — the original spike's own
+            "no such export found" was an incomplete search. Wired into the guided-init form's
+            hand-rolled fields and the masked key reader.
+          </dd></div>
+          <div class="field value"><dt>Bonus find</dt><dd>
+            The TUI's chat input and task composer needed <strong>zero</strong> code changes — they
+            turned out to already be real native components whose built-in paste handling just
+            works. Confirmed live, not assumed.
+          </dd></div>
+        </dl>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- NEEDS YOUR HANDS -->
+  <section class="phase" style="--ph: var(--sev-yours); --ph-soft: var(--sev-yours-soft);">
+    <div class="phase-head">
+      <span class="phase-num">Needs your hands</span>
+      <h2>Three items, all blocked on you, not on more code</h2>
+    </div>
+    <p class="phase-note">
+      Each of these has a mechanism that's fully built and proven by mocked tests — what's missing
+      is a real terminal or a real provider key, neither of which this session has.
+    </p>
+
+    <div class="items">
+
+      <article class="item">
+        <div class="item-top"><span class="tag">specs/062</span><span class="tag neutral">real terminal</span></div>
+        <h3>Confirm the guided-init crash is actually gone</h3>
+        <dl>
+          <div class="field"><dt>What to do</dt><dd>
+            <code>orchestrai init</code> → fill the form → Ctrl+S in a real terminal. Confirm the
+            stack starts, the TUI opens, nothing crashes; confirm the existing two-step quit still
+            works and no process is left orphaned.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag">specs/060</span><span class="tag neutral">live provider</span></div>
+        <h3>Watch a real model choose to parallelize</h3>
+        <dl>
+          <div class="field"><dt>What to do</dt><dd>
+            With a real <code>ORCHESTRAI_LLM_API_KEY</code>, ask something that plausibly wants two
+            independent read-only steps at once (e.g. "analyze this project and show me its git
+            status"). Either the model fans out or it doesn't — both are a complete result.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag">specs/054</span><span class="tag neutral">live provider</span></div>
+        <h3>Watch the router actually get consulted</h3>
+        <dl>
+          <div class="field"><dt>What to do</dt><dd>
+            With a real key, ask something that genuinely misses both the keyword and the local
+            classifier. Confirm the router is reached, a real proposal validates and dispatches, and
+            a deliberately-offline-skill proposal fails closed.
+          </dd></div>
+        </dl>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- STILL PARKED -->
+  <section class="phase" style="--ph: var(--sev-parked); --ph-soft: var(--sev-parked-soft);">
+    <div class="phase-head">
+      <span class="phase-num">Still parked</span>
+      <h2>Unchanged since the original plan</h2>
+    </div>
+    <p class="phase-note">
+      Nothing here moved this session — each was deliberately left for a named trigger, and none of
+      those triggers has occurred.
+    </p>
+
+    <div class="items">
+
+      <article class="item">
+        <div class="item-top"><span class="tag">specs/055</span><span class="tag neutral">draft, unapproved</span></div>
+        <h3>Provider budgets and transient-error retry</h3>
+        <dl>
+          <div class="field cost"><dt>Trigger, unchanged</dt><dd>
+            A rate limit or provider outage bites again, or someone else runs this on a free tier.
+            You deprioritized it deliberately after moving off free — the only spec in the catalog
+            still <code>draft</code>.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag neutral">retired 2026-09-08</span></div>
+        <h3>MCP SDK v2 and the 2026-07-28 protocol</h3>
+        <dl>
+          <div class="field cost"><dt>Verdict</dt><dd>
+            Was trigger-gated on "v1 SDK deprecation actually bites." With the project's own
+            target now explicitly "polished local tool," v2's headline features (stateless
+            scaling, remote routing, auth hardening) solve a problem this architecture has
+            opted out of permanently, not temporarily — so under an assume-no-deprecation
+            reading the trigger never fires. Retired from the roadmap rather than left parked;
+            no spec number allocated, none reserved. Revisit only if the target changes away
+            from a purely local tool.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag">specs/049</span><span class="tag neutral">approved, unimplemented</span></div>
+        <h3>Browser setup page for init</h3>
+        <dl>
+          <div class="field cost"><dt>Trigger, unchanged</dt><dd>
+            Someone actually asks to configure this from a browser. The TUI form (specs/048/062)
+            covers the same job today.
+          </dd></div>
+        </dl>
+      </article>
+
+      <article class="item">
+        <div class="item-top"><span class="tag">5 specs</span><span class="tag neutral">unchanged backlog</span></div>
+        <h3>The pre-existing verification backlog</h3>
+        <dl>
+          <div class="field cost"><dt>Untouched this session</dt><dd>
+            <code>010</code>/<code>012</code>/<code>044</code>/<code>046</code> each need one real
+            terminal or browser session; <code>032</code> needs an actual Mac or Linux machine. Not
+            part of this session's own seven-item queue — still exactly where the original plan left
+            them.
+          </dd></div>
+        </dl>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="excluded">
+    <h2>Still deliberately excluded</h2>
+    <p>Unchanged from the original plan — each considered and rejected for a specific, named reason.</p>
+    <ul>
+      <li><span><strong>Full AG-UI adoption / <code>@ag-ui/langgraph</code>.</strong> Needs a deployed LangGraph API server plus its own databases; breaks the single-binary distribution.</span></li>
+      <li><span><strong>LangGraph Server / Platform.</strong> A new always-on service, Postgres and Redis, and re-deriving every safety guarantee against a different execution model.</span></li>
+      <li><span><strong>Level-3 parallel dispatch with concurrent approvals.</strong> Breaks "rejection is terminal." Revisit only if the read-only fan-out (now shipped) proves insufficient.</span></li>
+      <li><span><strong>Wrapping single-shot LLM calls in graphs.</strong> State schema and edges that never decide anything, for no payoff.</span></li>
+      <li><span><strong>A CI-provided provider key.</strong> Spec 052 already proves dispatch works with a deliberately fake key.</span></li>
+    </ul>
+  </section>
+
+  <footer>
+    Source queue: <code>context/level-up-plan.html</code> (2026-09-05). This file records what
+    happened against it — it does not itself authorize anything still marked parked, per
+    <code>CLAUDE.md</code> working-procedure step 8.
+  </footer>
+
+</div>
+</body>
+</html>

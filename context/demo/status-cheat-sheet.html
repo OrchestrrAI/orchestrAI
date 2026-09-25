@@ -1,0 +1,523 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OrchestrAI — Current Architecture</title>
+<style>
+  :root {
+    --bg: #f3f5f7;
+    --surface: #ffffff;
+    --surface-2: #eef0f3;
+    --border: #d7dbe2;
+    --text: #1b1e29;
+    --text-muted: #5b606f;
+    --text-faint: #868c9c;
+
+    --mcp: #a3711a;
+    --mcp-bg: rgba(163, 113, 26, 0.10);
+    --a2a: #12798a;
+    --a2a-bg: rgba(18, 121, 138, 0.10);
+    --internal: #5f5796;
+    --internal-bg: rgba(95, 87, 150, 0.10);
+    --classifier: #2f7d4f;
+    --classifier-bg: rgba(47, 125, 79, 0.10);
+    --llm: #a3455f;
+    --llm-bg: rgba(163, 69, 95, 0.10);
+    --agui: #2f5fa8;
+    --agui-bg: rgba(47, 95, 168, 0.10);
+    --gate: #b4442c;
+    --gate-bg: rgba(180, 68, 44, 0.10);
+
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, Consolas, monospace;
+    --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12141c; --surface: #1a1d28; --surface-2: #20232f; --border: #2c3040;
+      --text: #e7e8ee; --text-muted: #9296ab; --text-faint: #6d7284;
+      --mcp: #e0a750; --mcp-bg: rgba(224, 167, 80, 0.13);
+      --a2a: #5fc8d8; --a2a-bg: rgba(95, 200, 216, 0.13);
+      --internal: #a79dd6; --internal-bg: rgba(167, 157, 214, 0.13);
+      --classifier: #6fcf97; --classifier-bg: rgba(111, 207, 151, 0.13);
+      --llm: #e08098; --llm-bg: rgba(224, 128, 152, 0.13);
+      --agui: #7ba7e8; --agui-bg: rgba(123, 167, 232, 0.13);
+      --gate: #f0836a; --gate-bg: rgba(240, 131, 106, 0.13);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #12141c; --surface: #1a1d28; --surface-2: #20232f; --border: #2c3040;
+    --text: #e7e8ee; --text-muted: #9296ab; --text-faint: #6d7284;
+    --mcp: #e0a750; --mcp-bg: rgba(224, 167, 80, 0.13);
+    --a2a: #5fc8d8; --a2a-bg: rgba(95, 200, 216, 0.13);
+    --internal: #a79dd6; --internal-bg: rgba(167, 157, 214, 0.13);
+    --classifier: #6fcf97; --classifier-bg: rgba(111, 207, 151, 0.13);
+    --llm: #e08098; --llm-bg: rgba(224, 128, 152, 0.13);
+    --agui: #7ba7e8; --agui-bg: rgba(123, 167, 232, 0.13);
+    --gate: #f0836a; --gate-bg: rgba(240, 131, 106, 0.13);
+    color-scheme: dark;
+  }
+
+  :root[data-theme="light"] {
+    --bg: #f3f5f7; --surface: #ffffff; --surface-2: #eef0f3; --border: #d7dbe2;
+    --text: #1b1e29; --text-muted: #5b606f; --text-faint: #868c9c;
+    --mcp: #a3711a; --mcp-bg: rgba(163, 113, 26, 0.10);
+    --a2a: #12798a; --a2a-bg: rgba(18, 121, 138, 0.10);
+    --internal: #5f5796; --internal-bg: rgba(95, 87, 150, 0.10);
+    --classifier: #2f7d4f; --classifier-bg: rgba(47, 125, 79, 0.10);
+    --llm: #a3455f; --llm-bg: rgba(163, 69, 95, 0.10);
+    --agui: #2f5fa8; --agui-bg: rgba(47, 95, 168, 0.10);
+    --gate: #b4442c; --gate-bg: rgba(180, 68, 44, 0.10);
+    color-scheme: light;
+  }
+
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-sans); line-height: 1.55; }
+  .page { max-width: 1040px; margin: 0 auto; padding: 40px 24px 72px; }
+
+  .top { border-bottom: 1px solid var(--border); padding-bottom: 24px; margin-bottom: 8px; }
+  .eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); }
+  h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.15; margin: 10px 0 12px; letter-spacing: -0.02em; }
+  .lede { color: var(--text-muted); font-size: 16px; max-width: 72ch; margin: 0; }
+  .stamp { font-family: var(--font-mono); font-size: 12px; color: var(--text-faint); margin-top: 14px; }
+
+  section { margin-top: 40px; }
+  h2 { font-size: 19px; margin: 0 0 10px; display: flex; align-items: baseline; gap: 10px; letter-spacing: -0.01em; }
+  .num { font-family: var(--font-mono); font-size: 12px; color: var(--text-faint); border: 1px solid var(--border); border-radius: 5px; padding: 2px 7px; flex: none; }
+  .section-note { color: var(--text-muted); font-size: 14.5px; max-width: 78ch; margin: 0 0 16px; }
+
+  code, .mono { font-family: var(--font-mono); font-size: .92em; }
+  p code, td code, li code { background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+
+  .key { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+  .key-item { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); }
+  .swatch { width: 22px; height: 0; border-top: 2.5px solid currentColor; flex: none; }
+  .swatch.dashed { border-top-style: dashed; }
+  .swatch.dot { border-top-style: dotted; }
+  .c-a2a { color: var(--a2a); } .c-mcp { color: var(--mcp); } .c-internal { color: var(--internal); }
+  .c-classifier { color: var(--classifier); } .c-llm { color: var(--llm); } .c-agui { color: var(--agui); }
+
+  .diagram-frame { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; overflow-x: auto; }
+  .diagram-frame svg { display: block; min-width: 660px; width: 100%; height: auto; }
+  figure { margin: 0; }
+  figcaption { color: var(--text-faint); font-size: 12.5px; margin-top: 8px; font-family: var(--font-mono); }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 560px; }
+  th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-faint); font-weight: 600; background: var(--surface-2); }
+  tr:last-child td { border-bottom: none; }
+
+  .tag { font-family: var(--font-mono); font-size: 11.5px; padding: 2px 7px; border-radius: 5px; white-space: nowrap; display: inline-block; }
+  .t-mcp { background: var(--mcp-bg); color: var(--mcp); }
+  .t-a2a { background: var(--a2a-bg); color: var(--a2a); }
+  .t-internal { background: var(--internal-bg); color: var(--internal); }
+  .t-classifier { background: var(--classifier-bg); color: var(--classifier); }
+  .t-llm { background: var(--llm-bg); color: var(--llm); }
+  .t-agui { background: var(--agui-bg); color: var(--agui); }
+  .t-gate { background: var(--gate-bg); color: var(--gate); }
+
+  .callout { border: 1px solid var(--border); border-left: 3px solid var(--gate); background: var(--surface); border-radius: 8px; padding: 14px 16px; margin-top: 16px; }
+  .callout.good { border-left-color: var(--classifier); }
+  .callout.info { border-left-color: var(--agui); }
+  .callout h3 { margin: 0 0 6px; font-size: 14px; letter-spacing: -0.01em; }
+  .callout p { margin: 0; font-size: 14px; color: var(--text-muted); }
+  .callout p + p { margin-top: 8px; }
+
+  .say { border-left: 3px solid var(--border); padding: 2px 0 2px 14px; margin: 14px 0; color: var(--text); font-size: 15px; }
+  .say::before { content: "say it like this"; display: block; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--text-faint); margin-bottom: 4px; }
+
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .card h3 { margin: 0 0 8px; font-size: 14px; }
+  .card ul { margin: 0; padding-left: 18px; font-size: 13.5px; color: var(--text-muted); }
+  .card li { margin-bottom: 4px; }
+
+  .foot { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--border); color: var(--text-faint); font-size: 12.5px; font-family: var(--font-mono); }
+
+  @media print {
+    body { background: #fff; }
+    section { break-inside: avoid; }
+    .diagram-frame { break-inside: avoid; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="top">
+    <div class="eyebrow">Live-demo reference · OrchestrAI</div>
+    <h1>Where the system actually stands</h1>
+    <p class="lede">
+      The companion sheet to <code>protocol-cheat-sheet.html</code>, brought up to
+      the current architecture. Since that page was written the system gained an
+      opt-in LLM planning harness, official AG-UI protocol conformance with runtime
+      validation, and authoritative skill dispatch. This page maps what exists
+      now — which wire carries what, which tier decided a route, and exactly where
+      the safety boundary sits — so you can narrate it correctly while it is
+      happening on screen.
+    </p>
+    <p class="stamp">Reflects <code>main</code> @ specs 001–030 · verified 2026-08-20 · 277 tests, 0 type errors</p>
+  </header>
+
+  <section aria-labelledby="key-h">
+    <h2 id="key-h"><span class="num">00</span> Color key</h2>
+    <div class="key">
+      <span class="key-item"><span class="swatch c-a2a"></span>A2A-style · Orchestrator ↔ Agent</span>
+      <span class="key-item"><span class="swatch dashed c-a2a"></span>A2A · direct, Agent ↔ Agent</span>
+      <span class="key-item"><span class="swatch c-mcp"></span>MCP · Streamable HTTP tool call</span>
+      <span class="key-item"><span class="swatch dashed c-llm"></span>LLM provider · opt-in, network</span>
+      <span class="key-item"><span class="swatch dot c-agui"></span>AG-UI · SSE to clients</span>
+      <span class="key-item"><span class="swatch dot c-internal"></span>Internal only · no network hop</span>
+    </div>
+  </section>
+
+  <section aria-labelledby="map-h">
+    <h2 id="map-h"><span class="num">01</span> System map — what changed</h2>
+    <p class="section-note">
+      Four agents are now real MCP clients, not three: Planning joined them, but
+      only through its harness and only for two read-only tools. Security remains
+      deliberately direct-filesystem. The genuinely new edges since the original
+      sheet are Planning's read-only MCP access, its optional call out to an LLM
+      provider, and the AG-UI event stream feeding both clients.
+    </p>
+    <figure>
+      <div class="diagram-frame">
+        <svg viewBox="0 0 960 470" role="img" aria-label="System map: browser dashboard and terminal UI both consume the Orchestrator's AG-UI SSE stream. The Orchestrator dispatches to five agents over the A2A-style protocol. DevOps, Testing, Documentation and Planning all call the MCP HTTP server; DevOps additionally makes a direct A2A call to Security; Planning optionally calls an external LLM provider.">
+          <defs>
+            <marker id="ar-a2a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,0 10,5 0,10" style="fill:var(--a2a)"/></marker>
+            <marker id="ar-mcp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,0 10,5 0,10" style="fill:var(--mcp)"/></marker>
+            <marker id="ar-agui" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,0 10,5 0,10" style="fill:var(--agui)"/></marker>
+            <marker id="ar-llm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,0 10,5 0,10" style="fill:var(--llm)"/></marker>
+          </defs>
+
+          <!-- clients -->
+          <g style="font-family:var(--font-mono);font-size:12px">
+            <rect x="250" y="14" width="180" height="34" rx="7" style="fill:var(--surface-2);stroke:var(--border)"/>
+            <text x="340" y="36" text-anchor="middle" style="fill:var(--text)">browser dashboard</text>
+            <rect x="530" y="14" width="180" height="34" rx="7" style="fill:var(--surface-2);stroke:var(--border)"/>
+            <text x="620" y="36" text-anchor="middle" style="fill:var(--text)">terminal UI (TUI)</text>
+          </g>
+
+          <!-- AG-UI SSE up to clients -->
+          <g style="stroke:var(--agui);stroke-width:1.6;stroke-dasharray:2 3;fill:none" marker-end="url(#ar-agui)">
+            <path d="M460 88 L340 52"/>
+            <path d="M500 88 L620 52"/>
+          </g>
+          <text x="480" y="74" text-anchor="middle" style="font-family:var(--font-mono);font-size:10.5px;fill:var(--agui)">AG-UI · GET /events</text>
+
+          <!-- orchestrator -->
+          <rect x="380" y="90" width="200" height="42" rx="8" style="fill:var(--a2a-bg);stroke:var(--a2a);stroke-width:1.5"/>
+          <text x="480" y="116" text-anchor="middle" style="font-family:var(--font-mono);font-size:13px;fill:var(--text)">Orchestrator :3000</text>
+
+          <!-- fan to agents -->
+          <g style="stroke:var(--a2a);stroke-width:1.5" marker-end="url(#ar-a2a)">
+            <line x1="440" y1="132" x2="105" y2="196"/>
+            <line x1="460" y1="132" x2="285" y2="196"/>
+            <line x1="480" y1="132" x2="465" y2="196"/>
+            <line x1="510" y1="132" x2="645" y2="196"/>
+            <line x1="530" y1="132" x2="825" y2="196"/>
+          </g>
+
+          <!-- agents -->
+          <g style="font-family:var(--font-mono);font-size:11.5px">
+            <rect x="30" y="200" width="150" height="40" rx="7" style="fill:var(--surface);stroke:var(--border)"/>
+            <text x="105" y="217" text-anchor="middle" style="fill:var(--text)">Planning :3001</text>
+            <text x="105" y="232" text-anchor="middle" style="fill:var(--text-faint);font-size:10px">plan-task</text>
+
+            <rect x="210" y="200" width="150" height="40" rx="7" style="fill:var(--surface);stroke:var(--border)"/>
+            <text x="285" y="217" text-anchor="middle" style="fill:var(--text)">DevOps :3002</text>
+            <text x="285" y="232" text-anchor="middle" style="fill:var(--text-faint);font-size:10px">6 skills</text>
+
+            <rect x="390" y="200" width="150" height="40" rx="7" style="fill:var(--surface);stroke:var(--border)"/>
+            <text x="465" y="217" text-anchor="middle" style="fill:var(--text)">Testing :3003</text>
+            <text x="465" y="232" text-anchor="middle" style="fill:var(--text-faint);font-size:10px">run-tests</text>
+
+            <rect x="570" y="200" width="150" height="40" rx="7" style="fill:var(--surface);stroke:var(--border)"/>
+            <text x="645" y="217" text-anchor="middle" style="fill:var(--text)">Docs :3004</text>
+            <text x="645" y="232" text-anchor="middle" style="fill:var(--text-faint);font-size:10px">generate-readme</text>
+
+            <rect x="750" y="200" width="150" height="40" rx="7" style="fill:var(--internal-bg);stroke:var(--internal)"/>
+            <text x="825" y="217" text-anchor="middle" style="fill:var(--text)">Security :3005</text>
+            <text x="825" y="232" text-anchor="middle" style="fill:var(--text-faint);font-size:10px">direct fs</text>
+          </g>
+
+          <!-- direct A2A devops -> security -->
+          <path d="M360 220 L370 268 L790 268 L890 244" style="fill:none;stroke:var(--a2a);stroke-width:1.5;stroke-dasharray:5 4" marker-end="url(#ar-a2a)"/>
+          <text x="580" y="283" text-anchor="middle" style="font-family:var(--font-mono);font-size:10.5px;fill:var(--a2a)">direct A2A · secrets pre-check (bypasses Orchestrator)</text>
+
+          <!-- MCP down to server -->
+          <g style="stroke:var(--mcp);stroke-width:1.5" marker-end="url(#ar-mcp)">
+            <path d="M105 240 L105 320 L400 320 L455 348" style="fill:none"/>
+            <path d="M285 240 L285 332 L440 348" style="fill:none"/>
+            <path d="M465 240 L480 348" style="fill:none"/>
+            <path d="M645 240 L645 332 L520 348" style="fill:none"/>
+          </g>
+
+          <rect x="360" y="352" width="240" height="42" rx="8" style="fill:var(--mcp-bg);stroke:var(--mcp);stroke-width:1.5"/>
+          <text x="480" y="378" text-anchor="middle" style="font-family:var(--font-mono);font-size:13px;fill:var(--text)">MCP HTTP server :3006</text>
+          <text x="480" y="414" text-anchor="middle" style="font-family:var(--font-mono);font-size:10.5px;fill:var(--text-faint)">13 tools · git, analysis, file generation</text>
+
+          <!-- LLM provider -->
+          <path d="M30 220 L20 300 L120 300" style="fill:none;stroke:var(--llm);stroke-width:1.5;stroke-dasharray:5 4" marker-end="url(#ar-llm)"/>
+          <rect x="20" y="392" width="230" height="40" rx="7" style="fill:var(--llm-bg);stroke:var(--llm);stroke-dasharray:4 3"/>
+          <text x="135" y="409" text-anchor="middle" style="font-family:var(--font-mono);font-size:11.5px;fill:var(--text)">LLM provider (opt-in)</text>
+          <text x="135" y="424" text-anchor="middle" style="font-family:var(--font-mono);font-size:10px;fill:var(--text-faint)">off unless ORCHESTRAI_LLM_HARNESS=1</text>
+          <path d="M105 240 L60 300 L60 390" style="fill:none;stroke:var(--llm);stroke-width:1.5;stroke-dasharray:5 4" marker-end="url(#ar-llm)"/>
+        </svg>
+      </div>
+      <figcaption>Planning now reaches MCP — read-only tools only — and optionally an LLM provider. Everything else is unchanged.</figcaption>
+    </figure>
+  </section>
+
+  <section aria-labelledby="ladder-h">
+    <h2 id="ladder-h"><span class="num">02</span> How a skill gets chosen — three tiers, in order</h2>
+    <p class="section-note">
+      This is the answer to "is it just calling an LLM for everything?" — no.
+      Each tier only runs if the one above it found nothing, and the approval
+      gate is identical regardless of which tier decided.
+    </p>
+    <figure>
+      <div class="diagram-frame">
+        <svg viewBox="0 0 900 300" role="img" aria-label="Routing ladder: incoming text goes to deterministic keyword matching first; if unmatched, to a local static-embedding classifier; if still unresolved, defaults to plan-task, which may optionally use the LLM harness. All paths converge on the same approval gate.">
+          <defs>
+            <marker id="ar-flow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,0 10,5 0,10" style="fill:var(--text-faint)"/></marker>
+          </defs>
+          <g style="font-family:var(--font-mono);font-size:12px">
+            <rect x="20" y="24" width="150" height="38" rx="7" style="fill:var(--surface-2);stroke:var(--border)"/>
+            <text x="95" y="48" text-anchor="middle" style="fill:var(--text)">task text</text>
+
+            <rect x="215" y="20" width="200" height="46" rx="7" style="fill:var(--classifier-bg);stroke:var(--classifier);stroke-width:1.5"/>
+            <text x="315" y="40" text-anchor="middle" style="fill:var(--text)">1 · keyword match</text>
+            <text x="315" y="56" text-anchor="middle" style="fill:var(--text-faint);font-size:10px">deterministic · instant</text>
+
+            <rect x="215" y="110" width="200" height="52" rx="7" style="fill:var(--classifier-bg);stroke:var(--classifier);stroke-width:1.5;stroke-dasharray:4 3"/>
+            <text x="315" y="130" text-anchor="middle" style="fill:var(--text)">2 · local classifier</text>
+            <text x="315" y="145" text-anchor="middle" style="fill:var(--text-faint);font-size:10px">static embeddings · on-device</text>
+            <text x="315" y="157" text-anchor="middle" style="fill:var(--text-faint);font-size:10px">score ≥ .30 · margin ≥ .05</text>
+
+            <rect x="215" y="206" width="200" height="52" rx="7" style="fill:var(--llm-bg);stroke:var(--llm);stroke-width:1.5;stroke-dasharray:4 3"/>
+            <text x="315" y="226" text-anchor="middle" style="fill:var(--text)">3 · plan-task</text>
+            <text x="315" y="241" text-anchor="middle" style="fill:var(--text-faint);font-size:10px">keyword planner, or LLM harness</text>
+            <text x="315" y="253" text-anchor="middle" style="fill:var(--text-faint);font-size:10px">if explicitly enabled</text>
+
+            <rect x="600" y="110" width="230" height="52" rx="8" style="fill:var(--gate-bg);stroke:var(--gate);stroke-width:2"/>
+            <text x="715" y="131" text-anchor="middle" style="fill:var(--text);font-size:13px">the approval gate</text>
+            <text x="715" y="148" text-anchor="middle" style="fill:var(--text-faint);font-size:10px">identical for all three tiers</text>
+          </g>
+
+          <g style="stroke:var(--text-faint);stroke-width:1.4;fill:none" marker-end="url(#ar-flow)">
+            <line x1="170" y1="43" x2="212" y2="43"/>
+            <path d="M180 43 L180 136 L212 136"/>
+            <path d="M180 136 L180 232 L212 232"/>
+            <path d="M415 43 L520 43 L520 130 L597 130"/>
+            <path d="M415 136 L597 136"/>
+            <path d="M415 232 L520 232 L520 145 L597 145"/>
+          </g>
+          <text x="192" y="98" style="font-family:var(--font-mono);font-size:10px;fill:var(--text-faint)">no match</text>
+          <text x="192" y="196" style="font-family:var(--font-mono);font-size:10px;fill:var(--text-faint)">below threshold</text>
+        </svg>
+      </div>
+      <figcaption>Tier 2 never overrides a tier-1 match. Tier 3's LLM path is off by default.</figcaption>
+    </figure>
+    <div class="say">
+      Most of this system is deliberately not AI. The non-deterministic part is
+      allowed to <em>suggest</em>; it is never what makes something safe.
+    </div>
+  </section>
+
+  <section aria-labelledby="gate-h">
+    <h2 id="gate-h"><span class="num">03</span> The approval gate — and which port enforces it</h2>
+    <p class="section-note">
+      The most important thing on this page. There are two <code>/approve</code>
+      endpoints and they do different jobs. Demonstrating the wrong one makes a
+      working gate look broken.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Endpoint</th><th>Role</th><th>Empty body</th><th>Wrong actionId</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>:3002/tasks/orch-&lt;id&gt;/approve</code><br><span class="tag t-gate">enforcement</span></td>
+            <td>The agent. Holds the pending action immutably, bound to a server-issued <code>actionId</code>.</td>
+            <td><strong>400</strong><br><span class="mono" style="font-size:11.5px">'actionId' must be a non-empty string</span></td>
+            <td><strong>409</strong><br><span class="mono" style="font-size:11.5px">Stale or mismatched actionId</span></td>
+          </tr>
+          <tr>
+            <td><code>:3000/tasks/&lt;id&gt;/approve</code><br><span class="tag t-a2a">forwarder</span></td>
+            <td>The Orchestrator. Never accepts a client-supplied <code>actionId</code> — it forwards the one it already holds, so a client cannot forge or override it.</td>
+            <td><strong>200</strong> — proceeds, by design</td>
+            <td><strong>200</strong> — the field is ignored entirely</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <h3>Demo trap</h3>
+      <p>
+        Run the "forged approval" beat against <code>:3002</code>. Against
+        <code>:3000</code> an empty body succeeds and writes the file — correct
+        behavior, since that hop is a trusted forwarder rather than the
+        enforcement point, but on stage it reads exactly like a bypassed gate.
+      </p>
+    </div>
+    <div class="callout good">
+      <h3>What the gate actually guarantees</h3>
+      <p>
+        The preview a human sees carries the exact tool, absolute target path,
+        full parameters, overwrite flag and risks. The <code>actionId</code> is
+        bound to those exact parameters, so nothing can change between preview
+        and execution. It is a stale-action and correlation guard — not a secret,
+        not proof of identity.
+      </p>
+    </div>
+  </section>
+
+  <section aria-labelledby="dispatch-h">
+    <h2 id="dispatch-h"><span class="num">04</span> Skill dispatch is authoritative now</h2>
+    <p class="section-note">
+      New since the original sheet, and worth knowing because it came from a real
+      incident. Previously an agent re-derived the skill from the task's free
+      text, even when the Orchestrator had already decided one.
+    </p>
+    <div class="callout">
+      <h3>The bug, found live</h3>
+      <p>
+        An LLM-authored plan step was correctly named <code>git-status</code>, but
+        its description mentioned an observed <code>Dockerfile</code>. The
+        receiving agent ran its own text detector over that description, matched
+        <code>dockerize</code>, and queued a file write instead.
+      </p>
+      <p>
+        The approval gate caught it — the action stopped at
+        <code>input-required</code> and was rejected, nothing was written. But
+        skill identity itself had not been authoritative.
+      </p>
+    </div>
+    <div class="callout good">
+      <h3>The fix</h3>
+      <p>
+        The Orchestrator now sends the skill it already decided on with every
+        dispatch, and every agent executes exactly that — never re-deriving one
+        from description text. Agents also validate that they actually own the
+        skill they were handed. Legacy submissions without the field keep the old
+        text-detection behavior unchanged.
+      </p>
+    </div>
+  </section>
+
+  <section aria-labelledby="agui-h">
+    <h2 id="agui-h"><span class="num">05</span> The live event stream is protocol-conformant</h2>
+    <p class="section-note">
+      <code>GET /events</code> emits AG-UI events sourced from the official
+      <code>@ag-ui/core</code> package, and every event is validated against the
+      real schemas at runtime before it reaches the stream — not merely typed
+      against them. Two independent clients consume it.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Lifecycle moment</th><th>Event</th></tr></thead>
+        <tbody>
+          <tr><td>Task submitted</td><td><span class="tag t-agui">RUN_STARTED</span></td></tr>
+          <tr><td>Plan step dispatched / finished</td><td><span class="tag t-agui">STEP_STARTED</span> <span class="tag t-agui">STEP_FINISHED</span></td></tr>
+          <tr><td>MCP tool call or direct A2A call</td><td><span class="tag t-agui">TOOL_CALL_START</span> <span class="tag t-agui">TOOL_CALL_RESULT</span> <span style="color:var(--text-faint);font-size:12px">— correlated by <code>toolCallId</code></span></td></tr>
+          <tr><td>Approval required / resolved</td><td><span class="tag t-agui">CUSTOM</span> <span style="color:var(--text-faint);font-size:12px">— <code>orchestrai.*</code> extension, informational only</span></td></tr>
+          <tr><td>Terminal</td><td><span class="tag t-agui">RUN_FINISHED</span> <span class="tag t-agui">RUN_ERROR</span></td></tr>
+          <tr><td>Client connects mid-run</td><td><span class="tag t-agui">STATE_SNAPSHOT</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout info">
+      <h3>Honest detail worth telling</h3>
+      <p>
+        Adopting the official schemas proved an earlier claim wrong: two of the
+        nine event types did not actually conform — <code>TOOL_CALL_RESULT</code>
+        was missing a required <code>messageId</code>, and
+        <code>RUN_FINISHED.outcome</code> was a bare string where the schema
+        requires an object. Both were fixed rather than documented as deviations.
+        All nine now genuinely validate.
+      </p>
+      <p>
+        The approval <code>CUSTOM</code> events are informational only. AG-UI has
+        no native human-in-the-loop primitive, so a client must never treat one as
+        authorization — approving still requires the real <code>actionId</code>-bound
+        request.
+      </p>
+    </div>
+  </section>
+
+  <section aria-labelledby="harness-h">
+    <h2 id="harness-h"><span class="num">06</span> The LLM harness — scoped deliberately narrow</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>What it can do</h3>
+        <ul>
+          <li>Run only for Planning's <code>plan-task</code> skill</li>
+          <li>Call exactly two <strong>read-only</strong> MCP tools: <code>git_status</code>, <code>analyze_project</code></li>
+          <li>Loop: decide → call → observe → decide again</li>
+          <li>Name skills only from a live capability snapshot of what agents actually advertise</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>What it structurally cannot do</h3>
+        <ul>
+          <li>Reach any write-capable tool — the graph builder throws at build time if edited to bind one</li>
+          <li>Invent a skill: output is schema-validated before dispatch</li>
+          <li>Run at all unless <code>ORCHESTRAI_LLM_HARNESS=1</code> and a key are set</li>
+          <li>Weaken the approval gate in any way</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout">
+      <h3>Fail-closed, not fallback</h3>
+      <p>
+        Invalid output gets one bounded retry with feedback. Exhausted retries, an
+        API error, a timeout or a tool failure all resolve to <strong>zero plan
+        steps</strong> — the same "no actionable steps" response the keyword path
+        gives for unmatched input. It never silently falls back to another
+        provider or to the keyword planner.
+      </p>
+    </div>
+  </section>
+
+  <section aria-labelledby="status-h">
+    <h2 id="status-h"><span class="num">07</span> Status — what's real, what isn't</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>Real and verified</h3>
+        <ul>
+          <li>MCP over Streamable HTTP, 13 tools</li>
+          <li>Agent-to-agent HTTP, including one Orchestrator-bypassing hop</li>
+          <li>Real file writes against a real target project, behind the gate</li>
+          <li>Live SSE to two independent clients</li>
+          <li>277 tests · 0 type errors · CI green on Windows and Linux</li>
+          <li>One standalone binary (~140 MB) — no Bun, no source tree needed</li>
+          <li>30 governed specs; every behavioral change reviewed before written</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Deliberately not done</h3>
+        <ul>
+          <li>No persistence — all task state is in memory</li>
+          <li>No authentication or authorization</li>
+          <li>Ports and agent URLs are hardcoded</li>
+          <li>No production sandbox beyond path containment and a no-shell execution boundary</li>
+          <li>No Coder or Code Review agent</li>
+          <li>Parent plan status reports the dispatch loop finishing, not that every step succeeded</li>
+        </ul>
+      </div>
+    </div>
+    <div class="say">
+      It's a prototype with a real safety model — not a production platform. The
+      boundaries are the part we actually finished.
+    </div>
+  </section>
+
+  <p class="foot">
+    context/demo/status-cheat-sheet.html · companion to protocol-cheat-sheet.html and judge-script.md<br>
+    Sources: CLAUDE.md, specs/021, 026, 027, 029, 030 · figures reflect verified behavior, not intent
+  </p>
+
+</div>
