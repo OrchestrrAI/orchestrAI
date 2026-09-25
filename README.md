@@ -13,6 +13,34 @@ orchestrai`, also shippable as one standalone binary) run alongside them.
 The Orchestrator requires a configured LLM provider key to start at all
 (`specs/051` — it is the only `plan-task` planner; see below).
 
+<p align="center">
+  <img src="https://img.shields.io/badge/maintained-yes-brightgreen" alt="Maintained">
+  <a href="https://github.com/OrchestrrAI/orchestrAI/actions/workflows/ci.yml"><img src="https://github.com/OrchestrrAI/orchestrAI/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://www.npmjs.com/package/orchestrai"><img src="https://img.shields.io/npm/v/orchestrai?logo=npm&label=npm" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/orchestrai"><img src="https://img.shields.io/npm/l/orchestrai?label=license" alt="License"></a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Bun-1.x-000000?logo=bun&logoColor=white" alt="Bun">
+  <img src="https://img.shields.io/badge/TypeScript-7.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Hono-4.x-E36002?logo=hono&logoColor=white" alt="Hono">
+  <img src="https://img.shields.io/badge/SQLite-bun%3Asqlite-003B57?logo=sqlite&logoColor=white" alt="SQLite">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/LangGraph-1.4-1C3C3C?logo=langchain&logoColor=white" alt="LangGraph">
+  <img src="https://img.shields.io/badge/MCP%20SDK-1.30-6E56CF" alt="MCP SDK">
+  <img src="https://img.shields.io/badge/AG--UI-0.0.58-0A7EA4" alt="AG-UI">
+  <img src="https://img.shields.io/badge/OpenTUI-0.5-555555" alt="OpenTUI">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/tests-1631%20passing-brightgreen" alt="Tests">
+  <img src="https://img.shields.io/badge/typecheck-0%20errors-brightgreen" alt="Typecheck">
+  <img src="https://img.shields.io/badge/specs-142-8A2BE2" alt="Specs">
+  <img src="https://img.shields.io/badge/platforms-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey" alt="Platforms">
+</p>
+
 See [CLAUDE.md](CLAUDE.md) for the full architecture, current source of
 truth for implemented behavior, and the operating guide this project's
 own coding agents follow.

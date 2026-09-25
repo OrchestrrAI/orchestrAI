@@ -79,3 +79,6 @@ npm-package/darwin-arm64/bin/*
 !.claude/agents/
 !.claude/commands/
 !.claude/launch.json
+
+# Local working notes (not for the repo)
+md-extras/
